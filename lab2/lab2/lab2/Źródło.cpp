@@ -12,7 +12,7 @@ int main()
 		blad = false;
 		try
 		{
-			dodajAbonenta(klienci, i + 1);
+			dodajAbonenta(klienci, i);
 		}
 		catch (const char* blad1)
 		{
