@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\endgame.cpp" />
+    <ClCompile Include="source\AI.cpp" />
+    <ClCompile Include="source\singlePlayer.cpp" />
+    <ClCompile Include="source\cards\card_ten.cpp" />
+    <ClCompile Include="source\cards\card_ace.cpp" />
+    <ClCompile Include="source\cards\card_eight.cpp" />
+    <ClCompile Include="source\cards\card_five.cpp" />
+    <ClCompile Include="source\cards\card_four.cpp" />
+    <ClCompile Include="source\cards\card_jack.cpp" />
+    <ClCompile Include="source\cards\card_king.cpp" />
+    <ClCompile Include="source\cards\card_nine.cpp" />
+    <ClCompile Include="source\cards\card_queen.cpp" />
+    <ClCompile Include="source\cards\card_seven.cpp" />
+    <ClCompile Include="source\cards\card_six.cpp" />
+    <ClCompile Include="source\cards\card_three.cpp" />
+    <ClCompile Include="source\cards\card_two.cpp" />
+    <ClCompile Include="source\card.cpp" />
+    <ClCompile Include="source\game.cpp" />
+    <ClCompile Include="source\singlePlayerSettings.cpp" />
+    <ClCompile Include="source\menu.cpp" />
+    <ClCompile Include="source\gameState.cpp" />
+    <ClCompile Include="source\button.cpp" />
+    <ClCompile Include="source\object.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\stateMachine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\headers\endgame.h" />
+    <ClInclude Include="source\headers\AI.h" />
+    <ClInclude Include="source\headers\singlePlayer.h" />
+    <ClInclude Include="source\headers\cards\card_ten.h" />
+    <ClInclude Include="source\headers\cards\card_ace.h" />
+    <ClInclude Include="source\headers\cards\card_eight.h" />
+    <ClInclude Include="source\headers\cards\card_five.h" />
+    <ClInclude Include="source\headers\cards\card_four.h" />
+    <ClInclude Include="source\headers\cards\card_jack.h" />
+    <ClInclude Include="source\headers\cards\card_king.h" />
+    <ClInclude Include="source\headers\cards\card_nine.h" />
+    <ClInclude Include="source\headers\cards\card_queen.h" />
+    <ClInclude Include="source\headers\cards\card_seven.h" />
+    <ClInclude Include="source\headers\cards\card_six.h" />
+    <ClInclude Include="source\headers\cards\card_three.h" />
+    <ClInclude Include="source\headers\cards\card_two.h" />
+    <ClInclude Include="source\headers\game.h" />
+    <ClInclude Include="source\headers\card.h" />
+    <ClInclude Include="source\headers\singlePlayerSettings.h" />
+    <ClInclude Include="source\headers\menu.h" />
+    <ClInclude Include="source\headers\gameState.h" />
+    <ClInclude Include="source\headers\button.h" />
+    <ClInclude Include="source\headers\object.h" />
+    <ClInclude Include="source\headers\stateMachine.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CE63A70D-3A78-CFBE-03FA-721E6FCDCBEF}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Makao</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\build\Debug-windows-x86_64\</OutDir>
+    <IntDir>..\build\Debug-windows-x86_64\data\obj\</IntDir>
+    <TargetName>Makao</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\build\Release-windows-x86_64\</OutDir>
+    <IntDir>..\build\Release-windows-x86_64\data\obj\</IntDir>
+    <TargetName>Makao</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\vendor\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;sfml-audio-d.lib;sfml-graphics-d.lib;sfml-main-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\vendor\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\vendor\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;sfml-audio.lib;sfml-graphics.lib;sfml-main.lib;sfml-network.lib;sfml-system.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\vendor\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

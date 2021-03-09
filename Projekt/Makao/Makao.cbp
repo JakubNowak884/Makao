@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Makao" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../build/Debug-windows-x86_64/Makao" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/Debug-windows-x86_64/data/obj/" />
+				<Option deps_output="../build/Debug-windows-x86_64/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-Wall" />
+					<Add directory="../vendor/SFML-2.5.1/include/" />
+				</Compiler>
+				<Linker>
+					<Add library="opengl32.lib" />
+					<Add library="freetype.lib" />
+					<Add library="winmm.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="openal32.lib" />
+					<Add library="flac.lib" />
+					<Add library="vorbisenc.lib" />
+					<Add library="vorbisfile.lib" />
+					<Add library="vorbis.lib" />
+					<Add library="ogg.lib" />
+					<Add library="ws2_32.lib" />
+					<Add library="sfml-audio-d.lib" />
+					<Add library="sfml-graphics-d.lib" />
+					<Add library="sfml-main-d.lib" />
+					<Add library="sfml-network-d.lib" />
+					<Add library="sfml-system-d.lib" />
+					<Add library="sfml-window-d.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add directory="../vendor/SFML-2.5.1/lib/" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../build/Release-windows-x86_64/Makao" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/Release-windows-x86_64/data/obj/" />
+				<Option deps_output="../build/Release-windows-x86_64/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add directory="../vendor/SFML-2.5.1/include/" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="opengl32.lib" />
+					<Add library="freetype.lib" />
+					<Add library="winmm.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="openal32.lib" />
+					<Add library="flac.lib" />
+					<Add library="vorbisenc.lib" />
+					<Add library="vorbisfile.lib" />
+					<Add library="vorbis.lib" />
+					<Add library="ogg.lib" />
+					<Add library="ws2_32.lib" />
+					<Add library="sfml-audio.lib" />
+					<Add library="sfml-graphics.lib" />
+					<Add library="sfml-main.lib" />
+					<Add library="sfml-network.lib" />
+					<Add library="sfml-system.lib" />
+					<Add library="sfml-window.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add directory="../vendor/SFML-2.5.1/lib/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="source/main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
