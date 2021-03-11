@@ -31,4 +31,6 @@ int main()
 	std::cout << test1 << std::endl;
 	function(test1);
 	std::cout << test1 << std::endl;
+
+	return (0);
 }
