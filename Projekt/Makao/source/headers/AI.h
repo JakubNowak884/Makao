@@ -4,19 +4,7 @@
 #include <list>
 #include <string>
 
-#include "cards\card_ace.h"
-#include "cards\card_two.h"
-#include "cards\card_three.h"
-#include "cards\card_four.h"
-#include "cards\card_five.h"
-#include "cards\card_six.h"
-#include "cards\card_seven.h"
-#include "cards\card_eight.h"
-#include "cards\card_nine.h"
-#include "cards/card_ten.h"
-#include "cards\card_jack.h"
-#include "cards\card_queen.h"
-#include "cards\card_king.h"
+#include "card.h"
 
 class AI
 {
@@ -26,6 +14,7 @@ class AI
 
 	int ID;
 	int won;
+	int delay;
 
 public:
 	AI(std::list<card*>& deck, sf::Font& font, int _ID);
@@ -33,13 +22,14 @@ public:
 
 	int getID();
 	int getWon();
+	int& getDelay();
 	bool handEmpty();
 
 	void setWon(int _won);
 
-	bool hasACardAbleToPlay(std::list<card*>& deck, bool addDraw);
-	card* playACard(std::list<card*>& deck, bool addDraw);
-	card* drawACard(std::list<card*>& deck, bool addDraw, int howMany = 1);
+	bool hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	card* playACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	card* drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
 	void draw(sf::RenderWindow& window);
 };
 

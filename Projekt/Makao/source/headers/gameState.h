@@ -2,8 +2,9 @@
 
 #include "button.h"
 #include "AI.h"
+#include "card.h"
 
-enum class gameStateNumber { def, quit, menu, singlePlayerSettings, singlePlayer, endgame };
+enum class gameStateNumber { def, quit, menu, singlePlayerSettings, singlePlayer, endgame, setSuit, setFigure, resume };
 
 class gameState
 {
@@ -12,6 +13,8 @@ class gameState
 	public:
 		static void setAmountOfPlayers(int amount);
 		static int getAmountOfPlayers();
+		virtual void setCurrentSuit(suitNumber _suit) {};
+		virtual void setCurrentFigure(figureNumber _figure) {};
 		sf::Vector2f getMousePos(sf::RenderWindow& window);
 		virtual AI* getAI(int number);
 		virtual int getWon();

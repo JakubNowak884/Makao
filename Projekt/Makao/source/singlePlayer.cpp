@@ -20,29 +20,36 @@ gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 			return gameStateNumber::endgame;
 		}
 
-		if (turn == bot->getID())
+		if (bot->getDelay() == 0)
 		{
-			if (bot->getWon() == 0)
+			if (turn == bot->getID())
 			{
-				if (bot->hasACardAbleToPlay(deck, addDraw))
+				if (bot->getWon() == 0)
 				{
-					cardDoThings(bot->playACard(deck, addDraw));
-					if (bot->handEmpty())
+					if (bot->hasACardAbleToPlay(deck, actionCardIsActive, currentSuit, currentFigure))
 					{
-						bot->setWon(1 + wonCounter);
-						wonCounter++;
+						cardDoThings(bot->playACard(deck, actionCardIsActive, currentSuit, currentFigure), bot->getDelay(), bot->getID());
+						if (bot->handEmpty())
+						{
+							bot->setWon(1 + wonCounter);
+							wonCounter++;
+						}
 					}
-				}
-				else
-				{
-					if (deck.front() != deck.back())
-						cardDoThings(bot->drawACard(deck, addDraw, addDrawAmount));
-				}
+					else
+					{
+						if (deck.front() != deck.back())
+							cardDoThings(bot->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), bot->getDelay(), bot->getID());
+					}
 
+				}
+				turn--;
 			}
+		}
+		else
+		{
+			bot->getDelay()--;
 			turn--;
 		}
-
 		
 
 		if (bot->getWon() != 0)

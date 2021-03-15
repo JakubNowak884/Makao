@@ -13,7 +13,7 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (!game->uptade(event, window)) window.close();
+            if (!game->update(event, window)) window.close();
 
             if (event.type == sf::Event::Closed) window.close();
         }

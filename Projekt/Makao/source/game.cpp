@@ -2,78 +2,26 @@
 
 game::game()
 {
-	texture.loadFromFile("../resources/textures/suit.png");
+	textureSuit.loadFromFile("../resources/textures/suit.png");
 	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
 	b_fold = new button("Pas", font, 150, 100, 400, 250);
 	b_draw = new button("Dobierz", font, 350, 100, 400, 550);
 
+	wanting.setFont(font);
+	wanting.setCharacterSize(32);
+	wanting.setFillColor(sf::Color::White);
+	wanting.setPosition(225, 600);
+
 	std::vector<card*> deckToCopy;
 
-	for (int i = 0; i < 4; i++)
+	for (int suit = 1; suit < 5; suit++)
 	{
-		card* newCard = new card_ace("A", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_two("2", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_three("3", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_four("4", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_five("5", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_six("6", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_seven("7", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_eight("8", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_nine("9", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_ten("10", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_jack("J", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_queen("Q", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		card* newCard = new card_king("K", suitNumber(i), font, texture, 120, 180, 400, 400, sf::Color::White);
-		deckToCopy.push_back(newCard);
+		for (int figure = 1; figure < 14; figure++)
+		{
+			card* newCard = new card(figureNumber(figure), suitNumber(suit), font, textureSuit, 120, 180, 400, 400, sf::Color::White);
+			deckToCopy.push_back(newCard);
+		}
 	}
 
 	//shuffling
@@ -99,14 +47,30 @@ game::game()
 	won = 0;
 	wonCounter = 0;
 
-	addDraw = false;
+	actionCardIsActive = false;
 	addDrawAmount = 1;
+	currentSuit = suitNumber::null;
+	currentFigure = figureNumber::null;
+
+	delay = 0;
+	myDelay = 0;
+	jackID = 0;
 }
 
 game::~game()
 {
 	delete b_fold;
 	delete b_draw;
+}
+
+void game::setCurrentSuit(suitNumber _suit)
+{
+	currentSuit = _suit;
+}
+
+void game::setCurrentFigure(figureNumber _figure)
+{
+	currentFigure = _figure;
 }
 
 AI* game::getAI(int number)
@@ -119,14 +83,13 @@ int game::getWon()
 	return won;
 }
 
-void game::drawACard(int howMany)
+card* game::drawACard(int howMany)
 {
-	if (howMany == 0) return;
-	if (deck.back()->ableToPlay(deck.front(), addDraw))
+	if (deck.back()->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
 	{
 		deck.push_front(deck.back());
 		deck.pop_back();
-		cardDoThings(deck.front());
+		return deck.front();
 	}
 	else
 	{
@@ -138,106 +101,139 @@ void game::drawACard(int howMany)
 			deck.pop_back();
 			hand.back()->setPositon(sf::Vector2f(x + 128, 800));
 		}
-		cardDoThings(nullptr);
+		return nullptr;
 	}
 }
 
-void game::cardDoThings(card* current)
+gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
 {
 	if (current == nullptr)
 	{
-		addDraw = false;
+		_delay = delay;
+		delay = 0;
+		actionCardIsActive = false;
 		addDrawAmount = 1;
+		currentSuit = suitNumber::null;
+		if (ID == jackID)
+			currentFigure = figureNumber::null;
 	}
-	else if (typeid(*current).name() == typeid(card_two).name())
+	else if (current->getFigure() == figureNumber::ace)
 	{
-		if (!addDraw)
+		actionCardIsActive = true;
+		return gameStateNumber::setSuit;
+	}
+	else if (current->getFigure() == figureNumber::two)
+	{
+		if (!actionCardIsActive)
 			addDrawAmount += 1;
 		else 
 			addDrawAmount += 2;
-		addDraw = true;
+		actionCardIsActive = true;
 	}
-	else if (typeid(*current).name() == typeid(card_three).name())
+	else if (current->getFigure() == figureNumber::three)
 	{
-		if (!addDraw)
+		if (!actionCardIsActive)
 			addDrawAmount += 2;
 		else
 			addDrawAmount += 3;
-		addDraw = true;
+		actionCardIsActive = true;
+	}
+	else if (current->getFigure() == figureNumber::four)
+	{
+		delay++;
+		actionCardIsActive = true;
+	}
+	else if (current->getFigure() == figureNumber::jack)
+	{
+		actionCardIsActive = true;
+		jackID = ID;
+		return gameStateNumber::setFigure;
 	}
 	else
 	{
-		addDraw = false;
+		_delay = delay;
+		delay = 0;
+		actionCardIsActive = false;
 		addDrawAmount = 1;
+		currentSuit = suitNumber::null;
+		if (ID == jackID)
+			currentFigure = figureNumber::null;
 	}
+	return gameStateNumber::def;
 }
 
 gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (event.type == sf::Event::MouseWheelScrolled)
+	if (myDelay == 0)
 	{
-		if (event.mouseWheelScroll.delta > 0 && (*hand.begin())->getX() < 800)
+		if (event.type == sf::Event::MouseWheelScrolled)
 		{
-			for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+			if (event.mouseWheelScroll.delta > 0 && (*hand.begin())->getX() < 800)
 			{
-				(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+				for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+				{
+					(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+				}
+			}
+			else if (event.mouseWheelScroll.delta < 0 && hand.back()->getX() > 0)
+			{
+				for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+				{
+					(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
+				}
 			}
 		}
-		else if (event.mouseWheelScroll.delta < 0 && hand.back()->getX() > 0)
-		{
-			for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
-			{
-				(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
-			}
-		}
-	}
 
-	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
-	{
-		(*i)->uptade(getMousePos(window));
-		if ((*i)->ableToPlay(deck.front(), addDraw, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
+		for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
 		{
-			(*i)->setChosen(false);
-			deck.push_front((*i));
-			auto j = hand.erase(i);
-			for (j; j != hand.end(); j++)
-				(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
-			second = true;
-			cardDoThings(deck.front());
-			if (hand.empty())
+			(*i)->uptade(getMousePos(window));
+			if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
 			{
-				won = 1 + wonCounter;
-				wonCounter++;
+				(*i)->setChosen(false);
+				deck.push_front((*i));
+				auto j = hand.erase(i);
+				for (j; j != hand.end(); j++)
+					(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
+				second = true;
+				if (hand.empty())
+				{
+					won = 1 + wonCounter;
+					wonCounter++;
+				}
+				return cardDoThings(deck.front(), myDelay, 1);
 			}
-			break;
 		}
-	}
 
-	if (b_fold->clicked(event))
+		if (b_fold->clicked(event))
+		{
+			second = false;
+			b_fold->setChosen(false);
+			turn++;
+		}
+
+		if (b_draw->clicked(event))
+		{
+			b_draw->setChosen(false);
+			turn++;
+			return cardDoThings(drawACard(addDrawAmount), myDelay, 1);
+		}
+
+		deck.front()->setPosition(sf::Vector2f(400, 400));
+
+		if (second)
+			b_fold->uptade(getMousePos(window));
+
+		if (!second && deck.front() != deck.back())
+			b_draw->uptade(getMousePos(window));
+
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+			return gameStateNumber::menu;
+	}
+	else
 	{
-		second = false;
-		b_fold->setChosen(false);
+		myDelay--;
 		turn++;
 	}
-
-	if (b_draw->clicked(event))
-	{
-		drawACard(addDrawAmount);
-		b_draw->setChosen(false);
-		turn++;
-	}
-
-	deck.front()->setPosition(sf::Vector2f(400, 400));
-
-	if (second) 
-		b_fold->uptade(getMousePos(window));
-
-	if (!second && deck.front() != deck.back()) 
-		b_draw->uptade(getMousePos(window));
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-		return gameStateNumber::menu;
-
 	return gameStateNumber::def;
 }
 
@@ -245,11 +241,59 @@ void game::draw(sf::RenderWindow& window)
 {
 	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		//if ((*i)->getX() > 0 && (*i)->getX() < 800) 
+		if ((*i)->getX() > -200 && (*i)->getX() < 1000) 
 			(*i)->draw(window);
 	}
 
 	deck.front()->draw(window);
 	b_fold->draw(window);
 	b_draw->draw(window);
+	if (currentSuit != suitNumber::null || currentFigure != figureNumber::null)
+	{
+		std::string toText = "Zadanie: ";
+		if (currentSuit != suitNumber::null)
+			switch (currentSuit)
+			{
+			case suitNumber::clubs:
+				toText += "trefl";
+				break;
+			case suitNumber::diamonds:
+				toText += "karo";
+				break;
+			case suitNumber::hearts:
+				toText += "serc";
+				break;
+			case suitNumber::spades:
+				toText += "pik";
+				break;
+			default:
+				break;
+			}
+		else
+			switch (currentFigure)
+			{
+			case figureNumber::five:
+				toText += "piatek";
+				break;
+			case figureNumber::six:
+				toText += "szostek";
+				break;
+			case figureNumber::seven:
+				toText += "siodemek";
+				break;
+			case figureNumber::eight:
+				toText += "osemek";
+				break;
+			case figureNumber::nine:
+				toText += "dziewiatek";
+				break;
+			case figureNumber::ten:
+				toText += "dziesiatek";
+				break;
+			default:
+				break;
+			}
+		wanting.setString(toText);
+		window.draw(wanting);
+	}
 }

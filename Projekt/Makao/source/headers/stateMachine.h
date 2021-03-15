@@ -4,6 +4,8 @@
 #include "singlePlayerSettings.h"
 #include "singlePlayer.h"
 #include "endgame.h"
+#include "setSuit.h"
+#include "setFigure.h"
 
 class stateMachine
 {
@@ -14,7 +16,7 @@ public:
     stateMachine();
     ~stateMachine();
 
-    bool uptade(sf::Event event, sf::RenderWindow& window);
+    bool update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };
 

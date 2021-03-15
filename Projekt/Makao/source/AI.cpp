@@ -21,6 +21,7 @@ AI::AI(std::list<card*>& deck, sf::Font& font, int _ID)
 
 	ID = _ID;
 	won = 0;
+	delay = 0;
 }
 
 AI::~AI()
@@ -38,6 +39,11 @@ int AI::getWon()
 	return won;
 }
 
+int& AI::getDelay()
+{
+	return delay;
+}
+
 bool AI::handEmpty()
 {
 	return hand.empty();
@@ -48,21 +54,21 @@ void AI::setWon(int _won)
 	won = _won;
 }
 
-bool AI::hasACardAbleToPlay(std::list<card*>& deck, bool addDraw)
+bool AI::hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
 	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front(), addDraw))
+		if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
 			return true;
 	}
 	return false;
 }
 
-card* AI::playACard(std::list<card*>& deck, bool addDraw)
+card* AI::playACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
 	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front(), addDraw))
+		if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
 		{
 			deck.push_front((*i));
 			i = hand.erase(i);
@@ -71,10 +77,9 @@ card* AI::playACard(std::list<card*>& deck, bool addDraw)
 	}
 }
 
-card* AI::drawACard(std::list<card*>& deck, bool addDraw, int howMany)
+card* AI::drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
-	if (howMany == 0) return nullptr;
-	if (deck.back()->ableToPlay(deck.front(), addDraw))
+	if (deck.back()->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
 	{
 		deck.push_front(deck.back());
 		deck.pop_back();

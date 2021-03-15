@@ -7,29 +7,21 @@
 #include <iterator>
 
 #include "gameState.h"
-#include "cards\card_ace.h"
-#include "cards\card_two.h"
-#include "cards\card_three.h"
-#include "cards\card_four.h"
-#include "cards\card_five.h"
-#include "cards\card_six.h"
-#include "cards\card_seven.h"
-#include "cards\card_eight.h"
-#include "cards\card_nine.h"
-#include "cards/card_ten.h"
-#include "cards\card_jack.h"
-#include "cards\card_queen.h"
-#include "cards\card_king.h"
 
 class game :
     public gameState
 {
-    sf::Texture texture;
+    sf::Texture textureSuit;
+    sf::Text wanting;
 
     button* b_fold;
     button* b_draw;
 
     std::vector<card*> hand;
+
+    int delay;
+    int myDelay;
+    int jackID;
 
 protected:
     sf::Font font;
@@ -40,16 +32,20 @@ protected:
     int won;
     int wonCounter;
 
-    bool addDraw;
+    bool actionCardIsActive;
     int addDrawAmount;
+    suitNumber currentSuit;
+    figureNumber currentFigure;
 
 public:
     game();
     ~game();
+    void setCurrentSuit(suitNumber _suit) override;
+    void setCurrentFigure(figureNumber _figure) override;
     virtual AI* getAI(int number);
     int getWon() override;
-    void drawACard(int howMany = 1);
-    void cardDoThings(card* current);
+    card* drawACard(int howMany = 1);
+    gameStateNumber cardDoThings(card* current, int& _delay, int ID);
     virtual gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     virtual void draw(sf::RenderWindow& window);
 };

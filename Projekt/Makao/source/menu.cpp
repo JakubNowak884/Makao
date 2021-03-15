@@ -31,6 +31,8 @@ gameStateNumber menu::update(sf::Event event, sf::RenderWindow& window)
     b_singlePlayer->uptade(getMousePos(window));
     b_multiPlayer->uptade(getMousePos(window));
     b_quit->uptade(getMousePos(window));
+
+    return gameStateNumber::def;
 }
 
 void menu::draw(sf::RenderWindow& window)

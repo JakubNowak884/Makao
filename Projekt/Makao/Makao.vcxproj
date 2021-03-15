@@ -11,22 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\setFigure.cpp" />
+    <ClCompile Include="source\setSuit.cpp" />
     <ClCompile Include="source\endgame.cpp" />
     <ClCompile Include="source\AI.cpp" />
     <ClCompile Include="source\singlePlayer.cpp" />
-    <ClCompile Include="source\cards\card_ten.cpp" />
-    <ClCompile Include="source\cards\card_ace.cpp" />
-    <ClCompile Include="source\cards\card_eight.cpp" />
-    <ClCompile Include="source\cards\card_five.cpp" />
-    <ClCompile Include="source\cards\card_four.cpp" />
-    <ClCompile Include="source\cards\card_jack.cpp" />
-    <ClCompile Include="source\cards\card_king.cpp" />
-    <ClCompile Include="source\cards\card_nine.cpp" />
-    <ClCompile Include="source\cards\card_queen.cpp" />
-    <ClCompile Include="source\cards\card_seven.cpp" />
-    <ClCompile Include="source\cards\card_six.cpp" />
-    <ClCompile Include="source\cards\card_three.cpp" />
-    <ClCompile Include="source\cards\card_two.cpp" />
     <ClCompile Include="source\card.cpp" />
     <ClCompile Include="source\game.cpp" />
     <ClCompile Include="source\singlePlayerSettings.cpp" />
@@ -38,22 +27,11 @@
     <ClCompile Include="source\stateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\headers\setFigure.h" />
+    <ClInclude Include="source\headers\setSuit.h" />
     <ClInclude Include="source\headers\endgame.h" />
     <ClInclude Include="source\headers\AI.h" />
     <ClInclude Include="source\headers\singlePlayer.h" />
-    <ClInclude Include="source\headers\cards\card_ten.h" />
-    <ClInclude Include="source\headers\cards\card_ace.h" />
-    <ClInclude Include="source\headers\cards\card_eight.h" />
-    <ClInclude Include="source\headers\cards\card_five.h" />
-    <ClInclude Include="source\headers\cards\card_four.h" />
-    <ClInclude Include="source\headers\cards\card_jack.h" />
-    <ClInclude Include="source\headers\cards\card_king.h" />
-    <ClInclude Include="source\headers\cards\card_nine.h" />
-    <ClInclude Include="source\headers\cards\card_queen.h" />
-    <ClInclude Include="source\headers\cards\card_seven.h" />
-    <ClInclude Include="source\headers\cards\card_six.h" />
-    <ClInclude Include="source\headers\cards\card_three.h" />
-    <ClInclude Include="source\headers\cards\card_two.h" />
     <ClInclude Include="source\headers\game.h" />
     <ClInclude Include="source\headers\card.h" />
     <ClInclude Include="source\headers\singlePlayerSettings.h" />
