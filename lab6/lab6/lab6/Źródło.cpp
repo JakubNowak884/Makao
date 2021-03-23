@@ -68,7 +68,7 @@ int main()
 	auto sp4 = wp1.lock();
 	std::cout << *sp4;
 	std::cout << " przypisane jest " << wp1.use_count() << " wskaznikow" << std::endl;
-	//weak.lock wynosi 0 (weak_ptr jest nullptr) gdy use_count wynosi 0
+	//weak.lock wynosi 0 (zwrocony wskaznik jest nullptr) gdy use_count wynosi 0
 	//dla wskaznika shared lepiej uzyc reset
 
 	return (0);
