@@ -5,13 +5,13 @@ class setFigure :
 {
     sf::Font font;
     gameState* game;
-
-    button* b_five;
-    button* b_six;
-    button* b_seven;
-    button* b_eight;
-    button* b_nine;
-    button* b_ten;
+    
+    std::unique_ptr<button> b_five;
+    std::unique_ptr<button> b_six;
+    std::unique_ptr<button> b_seven;
+    std::unique_ptr<button> b_eight;
+    std::unique_ptr<button> b_nine;
+    std::unique_ptr<button> b_ten;
 
 public:
     setFigure(gameState* _game);

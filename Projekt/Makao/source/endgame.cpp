@@ -20,12 +20,11 @@ endgame::endgame(gameState* prev)
 	}
 	text.setString(first);
 
-	b_menu = new button("Wroc do menu", font, 600, 100, 400, 700);
+	b_menu = std::make_unique<button>("Wroc do menu", font, 600, 100, 400, 700);
 }
 
 endgame::~endgame()
 {
-	delete b_menu;
 }
 
 gameStateNumber endgame::update(sf::Event event, sf::RenderWindow& window)

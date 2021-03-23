@@ -10,18 +10,14 @@ singlePlayerSettings::singlePlayerSettings()
 	settings.setPosition(0, 0);
 	settings.setString("Wybierz ilosc graczy\n komputerowych:");
 
-	b_2 = new button("2", font, 100, 100, 200, 400);
-	b_3 = new button("3", font, 100, 100, 400, 400);
-	b_4 = new button("4", font, 100, 100, 600, 400);
-	b_toMenu = new button("Wroc do menu", font, 600, 150, 400, 600);
+	b_2 = std::make_unique<button>("2", font, 100, 100, 200, 400);
+	b_3 = std::make_unique<button>("3", font, 100, 100, 400, 400);
+	b_4 = std::make_unique<button>("4", font, 100, 100, 600, 400);
+	b_toMenu = std::make_unique<button>("Wroc do menu", font, 600, 150, 400, 600);
 }
 
 singlePlayerSettings::~singlePlayerSettings()
 {
-	delete b_2;
-	delete b_3;
-	delete b_4;
-	delete b_toMenu;
 }
 
 gameStateNumber singlePlayerSettings::update(sf::Event event, sf::RenderWindow& window)

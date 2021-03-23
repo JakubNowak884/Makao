@@ -4,24 +4,18 @@ setFigure::setFigure(gameState* _game)
 {
     font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
-    b_five = new button("Piatki", font, 200, 200, 150, 150);
-    b_six= new button("Szostki", font, 200, 200, 650, 150);
-    b_seven = new button("Siodemki", font, 200, 200, 150, 400);
-    b_eight = new button("Osemki", font, 200, 200, 650, 400);
-    b_nine = new button("Dziewiatki", font, 200, 200, 150, 650);
-    b_ten = new button("Dziesiatki", font, 200, 200, 650, 650);
+    b_five = std::make_unique<button>("Piatki", font, 200, 200, 150, 150);
+    b_six = std::make_unique<button>("Szostki", font, 200, 200, 650, 150);
+    b_seven = std::make_unique<button>("Siodemki", font, 200, 200, 150, 400);
+    b_eight = std::make_unique<button>("Osemki", font, 200, 200, 650, 400);
+    b_nine = std::make_unique<button>("Dziewiatki", font, 200, 200, 150, 650);
+    b_ten = std::make_unique<button>("Dziesiatki", font, 200, 200, 650, 650);
 
     game = _game;
 }
 
 setFigure::~setFigure()
 {
-    delete b_five;
-    delete b_six;
-    delete b_seven;
-    delete b_eight;
-    delete b_nine;
-    delete b_ten;
 }
 
 gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)

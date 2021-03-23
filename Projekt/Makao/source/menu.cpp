@@ -4,16 +4,13 @@ menu::menu()
 {
     font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
-    b_singlePlayer = new button("Jeden gracz", font, 600, 200, 400, 150);
-    b_multiPlayer = new button("Wielu graczy", font, 600, 200, 400, 400);
-    b_quit = new button("Wyjdz", font, 600, 200, 400, 650);
+    b_singlePlayer = std::make_unique<button>("Jeden gracz", font, 600, 200, 400, 150);
+    b_multiPlayer = std::make_unique<button>("Wielu graczy", font, 600, 200, 400, 400);
+    b_quit = std::make_unique<button>("Wyjdz", font, 600, 200, 400, 650);
 }
 
 menu::~menu()
 {
-    delete b_singlePlayer;
-    delete b_multiPlayer;
-    delete b_quit;
 }
 
 gameStateNumber menu::update(sf::Event event, sf::RenderWindow& window)

@@ -6,10 +6,10 @@ class setSuit :
     sf::Font font;
     gameState* game;
 
-    button* b_clubs;
-    button* b_diamonds;
-    button* b_hearts;
-    button* b_spades;
+    std::unique_ptr<button> b_clubs;
+    std::unique_ptr<button> b_diamonds;
+    std::unique_ptr<button> b_hearts;
+    std::unique_ptr<button> b_spades;
 
 public:
     setSuit(gameState* _game);

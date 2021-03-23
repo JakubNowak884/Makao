@@ -5,8 +5,8 @@ game::game()
 	textureSuit.loadFromFile("../resources/textures/suit.png");
 	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
-	b_fold = new button("Pas", font, 150, 100, 400, 250);
-	b_draw = new button("Dobierz", font, 350, 100, 400, 550);
+	b_fold = std::make_unique<button>("Pas", font, 150, 100, 400, 250);
+	b_draw = std::make_unique<button>("Dobierz", font, 350, 100, 400, 550);
 
 	wanting.setFont(font);
 	wanting.setCharacterSize(32);
@@ -59,8 +59,6 @@ game::game()
 
 game::~game()
 {
-	delete b_fold;
-	delete b_draw;
 }
 
 void game::setCurrentSuit(suitNumber _suit)

@@ -6,9 +6,9 @@ class menu :
 {
     sf::Font font;
 
-    button* b_singlePlayer;
-    button* b_multiPlayer;
-    button* b_quit;
+    std::unique_ptr<button> b_singlePlayer;
+    std::unique_ptr<button> b_multiPlayer;
+    std::unique_ptr<button> b_quit;
 
 public:
     menu();

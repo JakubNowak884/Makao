@@ -7,10 +7,10 @@ class singlePlayerSettings :
     sf::Font font;
 
     sf::Text settings;
-    button* b_2;
-    button* b_3;
-    button* b_4;
-    button* b_toMenu;
+    std::unique_ptr<button> b_2;
+    std::unique_ptr<button> b_3;
+    std::unique_ptr<button> b_4;
+    std::unique_ptr<button> b_toMenu;
 
 public:
     singlePlayerSettings();

@@ -14,8 +14,8 @@ class game :
     sf::Texture textureSuit;
     sf::Text wanting;
 
-    button* b_fold;
-    button* b_draw;
+    std::unique_ptr<button> b_fold;
+    std::unique_ptr<button> b_draw;
 
     std::vector<card*> hand;
 

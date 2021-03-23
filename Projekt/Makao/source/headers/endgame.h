@@ -11,7 +11,7 @@ class endgame :
     sf::Font font;
 
     sf::Text text;
-    button* b_menu;
+    std::unique_ptr<button> b_menu;
 
     std::map<int, std::string> results;
 
