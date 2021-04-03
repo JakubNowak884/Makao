@@ -1,5 +1,11 @@
 #include "headers\singlePlayer.h"
 
+singlePlayer::singlePlayer()
+{
+	player = std::make_unique<Player>(deck, 1);
+	bot = new AI(deck, font, 2);
+}
+
 singlePlayer::~singlePlayer()
 {
 	delete bot;
@@ -12,9 +18,9 @@ AI* singlePlayer::getAI(int number)
 
 gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (won == 0 || bot->getWon() == 0)
+	if (player->getWon() == 0 || bot->getWon() == 0)
 	{
-		if (won != 0)
+		if (player->getWon() != 0)
 		{
 			bot->setWon(1 + wonCounter);
 			return gameStateNumber::endgame;
@@ -54,11 +60,11 @@ gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 
 		if (bot->getWon() != 0)
 		{
-			won = 1 + wonCounter;
+			player->setWon(1 + wonCounter);
 			return gameStateNumber::endgame;
 		}
 
-		if (won == 0) 
+		if (player->getWon() == 0)
 			return game::update(event, window);
 		turn++;
 

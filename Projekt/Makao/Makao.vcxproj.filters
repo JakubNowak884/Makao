@@ -1,39 +1,81 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="NewFilter1">
-      <UniqueIdentifier>{f7ccc0aa-f167-4405-bf63-c3766cfbb6b5}</UniqueIdentifier>
+    <Filter Include="headers">
+      <UniqueIdentifier>{E12E153C-4D0E-94D7-5626-1FAEC284FA38}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\stateMachine.cpp" />
-    <ClCompile Include="source\object.cpp" />
-    <ClCompile Include="source\button.cpp" />
-    <ClCompile Include="source\gameState.cpp" />
-    <ClCompile Include="source\menu.cpp" />
-    <ClCompile Include="source\singlePlayerSettings.cpp" />
-    <ClCompile Include="source\card.cpp" />
-    <ClCompile Include="source\game.cpp" />
-    <ClCompile Include="source\singlePlayer.cpp" />
-    <ClCompile Include="source\AI.cpp" />
-    <ClCompile Include="source\endgame.cpp" />
-    <ClCompile Include="source\setSuit.cpp" />
-    <ClCompile Include="source\setFigure.cpp" />
+    <ClInclude Include="..\source\headers\AI.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\button.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\card.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\changeName.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\endgame.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\game.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\gameState.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\lobby.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\menu.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\multiPlayer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\multiPlayerSettings.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\object.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\setFigure.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\setSuit.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\singlePlayer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\singlePlayerSettings.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\headers\stateMachine.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\headers\object.h" />
-    <ClInclude Include="source\headers\button.h" />
-    <ClInclude Include="source\headers\stateMachine.h" />
-    <ClInclude Include="source\headers\gameState.h" />
-    <ClInclude Include="source\headers\menu.h" />
-    <ClInclude Include="source\headers\singlePlayerSettings.h" />
-    <ClInclude Include="source\headers\card.h" />
-    <ClInclude Include="source\headers\game.h" />
-    <ClInclude Include="source\headers\singlePlayer.h" />
-    <ClInclude Include="source\headers\AI.h" />
-    <ClInclude Include="source\headers\endgame.h" />
-    <ClInclude Include="source\headers\setSuit.h" />
-    <ClInclude Include="source\headers\setFigure.h" />
+    <ClCompile Include="..\source\AI.cpp" />
+    <ClCompile Include="..\source\button.cpp" />
+    <ClCompile Include="..\source\card.cpp" />
+    <ClCompile Include="..\source\changeName.cpp" />
+    <ClCompile Include="..\source\endgame.cpp" />
+    <ClCompile Include="..\source\game.cpp" />
+    <ClCompile Include="..\source\gameState.cpp" />
+    <ClCompile Include="..\source\lobby.cpp" />
+    <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\menu.cpp" />
+    <ClCompile Include="..\source\multiPlayer.cpp" />
+    <ClCompile Include="..\source\multiPlayerSettings.cpp" />
+    <ClCompile Include="..\source\object.cpp" />
+    <ClCompile Include="..\source\setFigure.cpp" />
+    <ClCompile Include="..\source\setSuit.cpp" />
+    <ClCompile Include="..\source\singlePlayer.cpp" />
+    <ClCompile Include="..\source\singlePlayerSettings.cpp" />
+    <ClCompile Include="..\source\stateMachine.cpp" />
   </ItemGroup>
 </Project>

@@ -27,34 +27,8 @@ game::game()
 	//shuffling
 	std::shuffle(deckToCopy.begin(), deckToCopy.end(), std::mt19937{ std::random_device{}() });
 
-	for (std::vector<card*>::reverse_iterator i = deckToCopy.rbegin(); i != deckToCopy.rbegin() + 5; i++)
-		hand.push_back((*i));
-
-	for (int i = 0; i < 5; i++)
-		deckToCopy.pop_back();
-
 	std::move(deckToCopy.begin(), deckToCopy.end(), std::back_inserter(deck));
 	deckToCopy.clear();
-
-	float addX = 0;
-	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
-	{
-		(*i)->setPosition(sf::Vector2f(72 + addX, 800));
-		addX += 128;
-	}
-
-	turn = 1;
-	won = 0;
-	wonCounter = 0;
-
-	actionCardIsActive = false;
-	addDrawAmount = 1;
-	currentSuit = suitNumber::null;
-	currentFigure = figureNumber::null;
-
-	delay = 0;
-	myDelay = 0;
-	jackID = 0;
 }
 
 game::~game()
@@ -74,33 +48,6 @@ void game::setCurrentFigure(figureNumber _figure)
 AI* game::getAI(int number)
 {
 	return nullptr;
-}
-
-int game::getWon()
-{
-	return won;
-}
-
-card* game::drawACard(int howMany)
-{
-	if (deck.back()->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
-	{
-		deck.push_front(deck.back());
-		deck.pop_back();
-		return deck.front();
-	}
-	else
-	{
-		for (int i = 0; i < howMany; i++)
-		{
-			if (deck.front() == deck.back()) break;
-			float x = hand.back()->getX();
-			hand.push_back(deck.back());
-			deck.pop_back();
-			hand.back()->setPositon(sf::Vector2f(x + 128, 800));
-		}
-		return nullptr;
-	}
 }
 
 gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
@@ -162,43 +109,43 @@ gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
 
 gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (myDelay == 0)
+	if (player->getDelay()== 0)
 	{
 		if (event.type == sf::Event::MouseWheelScrolled)
 		{
-			if (event.mouseWheelScroll.delta > 0 && (*hand.begin())->getX() < 800)
+			if (event.mouseWheelScroll.delta > 0 && (player->hand.front())->getX() < 800)
 			{
-				for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+				for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 				{
 					(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
 				}
 			}
-			else if (event.mouseWheelScroll.delta < 0 && hand.back()->getX() > 0)
+			else if (event.mouseWheelScroll.delta < 0 && player->hand.back()->getX() > 0)
 			{
-				for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+				for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 				{
 					(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
 				}
 			}
 		}
 
-		for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+		for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 		{
 			(*i)->uptade(getMousePos(window));
 			if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
 			{
 				(*i)->setChosen(false);
 				deck.push_front((*i));
-				auto j = hand.erase(i);
-				for (j; j != hand.end(); j++)
+				auto j = player->hand.erase(i);
+				for (j; j != player->hand.end(); j++)
 					(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
 				second = true;
-				if (hand.empty())
+				if (player->hand.empty())
 				{
-					won = 1 + wonCounter;
+					player->setWon(1 + wonCounter);
 					wonCounter++;
 				}
-				return cardDoThings(deck.front(), myDelay, 1);
+				return cardDoThings(deck.front(), player->getDelay(), 1);
 			}
 		}
 
@@ -213,7 +160,7 @@ gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 		{
 			b_draw->setChosen(false);
 			turn++;
-			return cardDoThings(drawACard(addDrawAmount), myDelay, 1);
+			return cardDoThings(player->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), player->getDelay(), 1);
 		}
 
 		deck.front()->setPosition(sf::Vector2f(400, 400));
@@ -229,7 +176,7 @@ gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 	}
 	else
 	{
-		myDelay--;
+		player->decrementDelay();
 		turn++;
 	}
 	return gameStateNumber::def;
@@ -237,15 +184,11 @@ gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 
 void game::draw(sf::RenderWindow& window)
 {
-	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
-	{
-		if ((*i)->getX() > -200 && (*i)->getX() < 1000) 
-			(*i)->draw(window);
-	}
-
 	deck.front()->draw(window);
+
 	b_fold->draw(window);
 	b_draw->draw(window);
+
 	if (currentSuit != suitNumber::null || currentFigure != figureNumber::null)
 	{
 		std::string toText = "Zadanie: ";
@@ -293,5 +236,88 @@ void game::draw(sf::RenderWindow& window)
 			}
 		wanting.setString(toText);
 		window.draw(wanting);
+	}
+
+	player->draw(window);
+}
+
+game::Player::Player(std::list<card*>& deck, int _ID)
+{
+	int j = 0;
+	for (std::list<card*>::iterator i = deck.begin(); i != deck.end(); i++)
+	{
+		if (j == 5) break;
+		hand.push_back((*i));
+		j++;
+	}
+
+	for (int i = 0; i < 5; i++)
+		deck.pop_front();
+
+	float addX = 0;
+	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+	{
+		(*i)->setPosition(sf::Vector2f(72 + addX, 800));
+		addX += 128;
+	}
+
+	ID = _ID;
+	won = 0;
+	delay = 0;
+}
+
+int game::Player::getID()
+{
+	return ID;
+}
+
+int game::Player::getWon()
+{
+	return won;
+}
+
+int& game::Player::getDelay()
+{
+	return delay;
+}
+
+void game::Player::decrementDelay(int value)
+{
+	delay -= value;
+}
+
+void game::Player::setWon(int _won)
+{
+	won = _won;
+}
+
+card* game::Player::drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
+{
+	if (deck.back()->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
+	{
+		deck.push_front(deck.back());
+		deck.pop_back();
+		return deck.front();
+	}
+	else
+	{
+		for (int i = 0; i < howMany; i++)
+		{
+			if (deck.front() == deck.back()) break;
+			float x = hand.back()->getX();
+			hand.push_back(deck.back());
+			deck.pop_back();
+			hand.back()->setPositon(sf::Vector2f(x + 128, 800));
+		}
+		return nullptr;
+	}
+}
+
+void game::Player::draw(sf::RenderWindow& window)
+{
+	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+	{
+		if ((*i)->getX() > -200 && (*i)->getX() < 1000)
+			(*i)->draw(window);
 	}
 }

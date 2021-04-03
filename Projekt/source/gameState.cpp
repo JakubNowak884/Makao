@@ -2,6 +2,8 @@
 
 int gameState::amountOfPlayers = 2;
 
+std::string gameState::playerName = "Gracz";
+
 void gameState::setAmountOfPlayers(int amount)
 {
     amountOfPlayers = 2;
@@ -10,6 +12,16 @@ void gameState::setAmountOfPlayers(int amount)
 int gameState::getAmountOfPlayers()
 {
     return amountOfPlayers;
+}
+
+void gameState::setPlayerName(std::string name)
+{
+    playerName = name;
+}
+
+std::string gameState::getPlayerName()
+{
+    return playerName;
 }
 
 sf::Vector2f gameState::getMousePos(sf::RenderWindow& window)

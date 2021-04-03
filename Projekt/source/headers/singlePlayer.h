@@ -8,10 +8,7 @@ class singlePlayer :
     AI* bot;
 
 public:
-    singlePlayer()
-    {
-        bot = new AI(deck, font, 2);
-    }
+    singlePlayer();
     ~singlePlayer();
     AI* getAI(int number);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
