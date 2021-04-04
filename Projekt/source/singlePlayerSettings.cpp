@@ -34,10 +34,15 @@ gameStateNumber singlePlayerSettings::update(sf::Event event, sf::RenderWindow& 
 		return gameStateNumber::menu;
 	}
 
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+		return gameStateNumber::menu;
+
 	b_2->uptade(getMousePos(window));
 	b_3->uptade(getMousePos(window));
 	b_4->uptade(getMousePos(window));
 	b_toMenu->uptade(getMousePos(window));
+
+	return gameStateNumber::def;
 }
 
 void singlePlayerSettings::draw(sf::RenderWindow& window)

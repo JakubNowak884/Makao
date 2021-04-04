@@ -5,8 +5,10 @@
 
 int main()
 {
-/*
-    sf::IpAddress ip = sf::IpAddress::getLocalAddress();
+    /*
+    sf::IpAddress ip = "185.238.122.73";
+    //std::cout << sf::IpAddress::getLocalAddress();
+    //std::cout << sf::IpAddress::getPublicAddress();
     sf::TcpSocket socket;
     char connectionType;
     char mode = 'd';

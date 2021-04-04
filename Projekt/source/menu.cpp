@@ -26,8 +26,14 @@ gameStateNumber menu::update(sf::Event event, sf::RenderWindow& window)
     {
         return gameStateNumber::singlePlayerSettings;
     }
-    if (b_multiPlayer->clicked(event));
-    if (b_changeName->clicked(event));
+    if (b_multiPlayer->clicked(event))
+    {
+        return gameStateNumber::multiPlayerSettings;
+    }
+    if (b_changeName->clicked(event))
+    {
+        return gameStateNumber::changeName;
+    }
     if (b_quit->clicked(event))
     {
         return gameStateNumber::quit;

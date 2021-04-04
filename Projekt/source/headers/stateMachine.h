@@ -1,8 +1,12 @@
 #pragma once
 
 #include "menu.h"
+#include "changeName.h"
 #include "singlePlayerSettings.h"
 #include "singlePlayer.h"
+#include "multiPlayerSettings.h"
+#include "changeIP.h"
+#include "multiPlayer.h"
 #include "endgame.h"
 #include "setSuit.h"
 #include "setFigure.h"

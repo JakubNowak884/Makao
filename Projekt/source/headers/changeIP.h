@@ -1,16 +1,18 @@
 #pragma once
 #include "gameState.h"
-class changeName :
+class changeIP :
 	public gameState
 {
 	sf::Font font;
 
-	sf::Text currentName;
+	sf::Text currentIP;
 
 	std::unique_ptr<button> b_back;
 
+	gameState* prev = nullptr;
+
 public:
-	changeName();
+	changeIP(gameState* _prev);
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

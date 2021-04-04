@@ -1,5 +1,18 @@
 #include "headers\button.h"
 
+float button::textEndl(const std::string& text)
+{
+	float res = 0;
+
+	for (auto i = text.begin(); i < text.end(); i++)
+	{
+		if ((*i) == '\n')
+			res += 0.5;
+	}
+
+	return res;
+}
+
 bool button::clicked(sf::Event& event)
 {
 	if (isChosen() && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
