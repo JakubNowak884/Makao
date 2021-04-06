@@ -4,16 +4,13 @@
 #include "AI.h"
 #include "card.h"
 
-enum class gameStateNumber { def, quit, menu, changeName, singlePlayerSettings, singlePlayer, mutliPlayer, multiPlayerSettings, changeIP, endgame, setSuit, setFigure, resume };
+enum class gameStateNumber { def, quit, menu, changeName, singlePlayerSettings, singlePlayer, multiPlayer, multiPlayerSettings, changeIP, endgame, setSuit, setFigure, resume };
 
 class gameState
 {
-	static int amountOfPlayers;
 	static std::string playerName;
 
 	public:
-		static void setAmountOfPlayers(int amount);
-		static int getAmountOfPlayers();
 		static void setPlayerName(std::string name);
 		static void setPlayerName(char sign);
 		static std::string getPlayerName();
@@ -22,6 +19,7 @@ class gameState
 		virtual void setIP(char sign) {};
 		virtual std::string getIP() { return "Placeholder"; };
 		virtual bool getHost() { return false; };
+		virtual int getAmountOfPlayers() { return 0; };
 		sf::Vector2f getMousePos(sf::RenderWindow& window);
 		virtual AI* getAI(int number);
 		virtual int getWon();

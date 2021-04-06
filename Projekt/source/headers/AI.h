@@ -8,8 +8,8 @@
 
 class AI
 {
-	object* cardBack;
-	sf::Text amountOfCards;
+	object* cardBack = nullptr;
+	sf::Text info;
 	std::vector<card*> hand;
 
 	int ID;
@@ -17,7 +17,7 @@ class AI
 	int delay;
 
 public:
-	AI(std::list<card*>& deck, sf::Font& font, int _ID);
+	AI(std::list<card*>& deck, sf::Font& font, int _ID, bool onlyOne = false);
 	~AI();
 
 	int getID();

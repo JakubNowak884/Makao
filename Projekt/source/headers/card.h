@@ -10,7 +10,7 @@ enum class suitNumber { null = 0, clubs = 1, diamonds = 2, hearts = 3, spades = 
 enum class figureNumber { null = 0, ace = 1, two = 2, three = 3, four = 4, five = 5, six = 6, seven = 7, eight = 8, nine = 9, ten = 10, jack = 11, queen = 12, king = 13 };
 
 class card :
-    public virtual object
+    public object
 {
     sf::Text name[2];
     sf::Sprite spriteSuit[2];
@@ -63,10 +63,10 @@ public:
     ~card();
     suitNumber getSuit();
     figureNumber getFigure();
-    void setPosition(sf::Vector2f position);
+    void setPosition(sf::Vector2f position) override;
     void frameSetFillColor(sf::Color color);
     bool ableToPlay(card* current, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, bool second = false);
-    void uptade(sf::Vector2f mousePos);
-    void draw(sf::RenderWindow& window);
+    void uptade(sf::Vector2f mousePos) override;
+    void draw(sf::RenderWindow& window) override;
 };
 

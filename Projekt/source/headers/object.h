@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include <vector>
 #include <memory>
+#include <thread>
 
 class object
 {
@@ -32,7 +34,7 @@ public:
 	bool isChosen();
 
 	void setChosen(bool newChosen);
-	void setPositon(sf::Vector2f position);
+	virtual void setPosition(sf::Vector2f position);
 	void setShapeColor(sf::Color color);
 
 	virtual void uptade(sf::Vector2f mousePos);

@@ -25,7 +25,7 @@ void card::uptade(sf::Vector2f mousePos)
 
 void card::setPosition(sf::Vector2f position)
 {
-	object::setPositon(position);
+	object::setPosition(position);
 	name[0].setPosition(getX() - getWidth() / 2 + 3, getY() - getHeight() / 2);
 	name[1].setPosition(getX() + getWidth() / 2 - 3, getY() + getHeight() / 2);
 	spriteSuit[0].setPosition(getX() - getWidth() / 2,  getY() - getHeight() / 2 + textSize);

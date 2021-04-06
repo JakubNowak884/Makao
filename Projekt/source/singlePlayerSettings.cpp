@@ -16,19 +16,28 @@ singlePlayerSettings::singlePlayerSettings()
 	b_toMenu = std::make_unique<button>("Wroc do menu", font, 600, 150, 400, 600);
 }
 
-singlePlayerSettings::~singlePlayerSettings()
+int singlePlayerSettings::getAmountOfPlayers()
 {
+	return amountOfPlayers;
 }
 
 gameStateNumber singlePlayerSettings::update(sf::Event event, sf::RenderWindow& window)
 {
 	if (b_2->clicked(event))
 	{
-		setAmountOfPlayers(2);
+		amountOfPlayers = 2;
 		return gameStateNumber::singlePlayer;
 	}
-	if (b_3->clicked(event));
-	if (b_4->clicked(event));
+	if (b_3->clicked(event))
+	{
+		amountOfPlayers = 3;
+		return gameStateNumber::singlePlayer;
+	}
+	if (b_4->clicked(event))
+	{
+		amountOfPlayers = 4;
+		return gameStateNumber::singlePlayer;
+	}
 	if (b_toMenu->clicked(event))
 	{
 		return gameStateNumber::menu;

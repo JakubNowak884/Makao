@@ -5,8 +5,9 @@ game::game()
 	textureSuit.loadFromFile("../resources/textures/suit.png");
 	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
-	b_fold = std::make_unique<button>("Pas", font, 150, 100, 400, 250);
-	b_draw = std::make_unique<button>("Dobierz", font, 350, 100, 400, 550);
+	b_fold = std::make_unique<button>("Pas", font, 110, 50, 400, 280, 32);
+	b_makao = std::make_unique<button>("Makao", font, 110, 50, 400, 225, 32);
+	b_draw = std::make_unique<button>("Dobierz karte", font, 280, 60, 400, 530, 42);
 
 	wanting.setFont(font);
 	wanting.setCharacterSize(32);
@@ -31,10 +32,6 @@ game::game()
 	deckToCopy.clear();
 }
 
-game::~game()
-{
-}
-
 void game::setCurrentSuit(suitNumber _suit)
 {
 	currentSuit = _suit;
@@ -48,6 +45,23 @@ void game::setCurrentFigure(figureNumber _figure)
 AI* game::getAI(int number)
 {
 	return nullptr;
+}
+
+int game::getAmountOfPlayers()
+{
+	return amountOfPlayers;
+}
+
+int game::getWon()
+{
+	return player->getWon();
+}
+
+void game::bumpTurn()
+{
+	turn++;
+	if (turn > amountOfPlayers)
+		turn = 1;
 }
 
 gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
@@ -109,86 +123,90 @@ gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
 
 gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (player->getDelay()== 0)
+	if (player->getWon() == 0)
 	{
-		if (event.type == sf::Event::MouseWheelScrolled)
+		if (player->getDelay() == 0)
 		{
-			if (event.mouseWheelScroll.delta > 0 && (player->hand.front())->getX() < 800)
+			if (event.type == sf::Event::MouseWheelScrolled)
 			{
-				for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+				if (event.mouseWheelScroll.delta > 0 && (player->hand.front())->getX() < 800)
 				{
-					(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+					for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+					{
+						(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+					}
+				}
+				else if (event.mouseWheelScroll.delta < 0 && player->hand.back()->getX() > 0)
+				{
+					for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+					{
+						(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
+					}
 				}
 			}
-			else if (event.mouseWheelScroll.delta < 0 && player->hand.back()->getX() > 0)
+
+			for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 			{
-				for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+				(*i)->uptade(getMousePos(window));
+				if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
 				{
-					(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
+					(*i)->setChosen(false);
+					deck.push_front((*i));
+					auto j = player->hand.erase(i);
+					for (j; j != player->hand.end(); j++)
+						(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
+					second = true;
+					if (player->hand.empty())
+					{
+						player->setWon(1 + wonCounter);
+						wonCounter++;
+						bumpTurn();
+					}
+					return cardDoThings(deck.front(), player->getDelay(), 1);
 				}
 			}
-		}
 
-		for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
-		{
-			(*i)->uptade(getMousePos(window));
-			if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
+			if (b_fold->clicked(event))
 			{
-				(*i)->setChosen(false);
-				deck.push_front((*i));
-				auto j = player->hand.erase(i);
-				for (j; j != player->hand.end(); j++)
-					(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
-				second = true;
-				if (player->hand.empty())
-				{
-					player->setWon(1 + wonCounter);
-					wonCounter++;
-				}
-				return cardDoThings(deck.front(), player->getDelay(), 1);
+				second = false;
+				b_fold->setChosen(false);
+				turn++;
 			}
-		}
 
-		if (b_fold->clicked(event))
+			if (b_draw->clicked(event))
+			{
+				b_draw->setChosen(false);
+				bumpTurn();
+				return cardDoThings(player->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), player->getDelay(), 1);
+			}
+
+			deck.front()->setPosition(sf::Vector2f(400, 400));
+
+			if (second)
+				b_fold->uptade(getMousePos(window));
+
+			if (!second && deck.front() != deck.back())
+				b_draw->uptade(getMousePos(window));
+
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+				return gameStateNumber::menu;
+		}
+		else
 		{
-			second = false;
-			b_fold->setChosen(false);
-			turn++;
+			player->decrementDelay();
+			bumpTurn();
 		}
-
-		if (b_draw->clicked(event))
-		{
-			b_draw->setChosen(false);
-			turn++;
-			return cardDoThings(player->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), player->getDelay(), 1);
-		}
-
-		deck.front()->setPosition(sf::Vector2f(400, 400));
-
-		if (second)
-			b_fold->uptade(getMousePos(window));
-
-		if (!second && deck.front() != deck.back())
-			b_draw->uptade(getMousePos(window));
-
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-			return gameStateNumber::menu;
 	}
 	else
 	{
-		player->decrementDelay();
-		turn++;
+		bumpTurn();
 	}
+	
 	return gameStateNumber::def;
 }
 
 void game::draw(sf::RenderWindow& window)
 {
-	deck.front()->draw(window);
-
-	b_fold->draw(window);
-	b_draw->draw(window);
-
 	if (currentSuit != suitNumber::null || currentFigure != figureNumber::null)
 	{
 		std::string toText = "Zadanie: ";
@@ -239,10 +257,20 @@ void game::draw(sf::RenderWindow& window)
 	}
 
 	player->draw(window);
+
+	deck.front()->draw(window);
+
+	b_fold->draw(window);
+	b_makao->draw(window);
+	b_draw->draw(window);
 }
 
-game::Player::Player(std::list<card*>& deck, int _ID)
+game::Player::Player(std::list<card*>& deck, sf::Font& font, int _ID)
 {
+	info.setFont(font);
+	info.setCharacterSize(24);
+	info.setPosition(580, 600);
+
 	int j = 0;
 	for (std::list<card*>::iterator i = deck.begin(); i != deck.end(); i++)
 	{
@@ -307,7 +335,7 @@ card* game::Player::drawACard(std::list<card*>& deck, bool actionCardIsActive, s
 			float x = hand.back()->getX();
 			hand.push_back(deck.back());
 			deck.pop_back();
-			hand.back()->setPositon(sf::Vector2f(x + 128, 800));
+			hand.back()->setPosition(sf::Vector2f(x + 128, 800));
 		}
 		return nullptr;
 	}
@@ -315,6 +343,9 @@ card* game::Player::drawACard(std::list<card*>& deck, bool actionCardIsActive, s
 
 void game::Player::draw(sf::RenderWindow& window)
 {
+	info.setString(getPlayerName() + "\nIlosc kart: " + std::to_string(hand.size()) + "\nOpoznienie: " + std::to_string(delay));
+	window.draw(info);
+
 	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
 		if ((*i)->getX() > -200 && (*i)->getX() < 1000)

@@ -30,7 +30,7 @@ void object::setChosen(bool newChosen)
 	chosen = newChosen;
 }
 
-void object::setPositon(sf::Vector2f position)
+void object::setPosition(sf::Vector2f position)
 {
 	x = position.x;
 	y = position.y;

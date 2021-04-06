@@ -24,7 +24,7 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 	case gameStateNumber::singlePlayer:
 		delete prev;
 		prev = current;
-		current = new singlePlayer;
+		current = new singlePlayer(prev);
 		break;
 	case gameStateNumber::multiPlayerSettings:
 		delete prev;
@@ -35,7 +35,8 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 		prev = current;
 		current = new changeIP(prev);
 		break;
-	case gameStateNumber::mutliPlayer:
+	case gameStateNumber::multiPlayer:
+		delete prev;
 		prev = current;
 		current = new multiPlayer(prev);
 		break;

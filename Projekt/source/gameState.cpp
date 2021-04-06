@@ -1,18 +1,6 @@
 #include "headers/gameState.h"
 
-int gameState::amountOfPlayers = 2;
-
 std::string gameState::playerName = "Gracz";
-
-void gameState::setAmountOfPlayers(int amount)
-{
-    amountOfPlayers = 2;
-}
-
-int gameState::getAmountOfPlayers()
-{
-    return amountOfPlayers;
-}
 
 void gameState::setPlayerName(std::string name)
 {

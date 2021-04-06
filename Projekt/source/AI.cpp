@@ -1,12 +1,34 @@
 #include "headers\AI.h"
 
-AI::AI(std::list<card*>& deck, sf::Font& font, int _ID)
+AI::AI(std::list<card*>& deck, sf::Font& font, int _ID, bool onlyOne)
 {
-	amountOfCards.setFont(font);
-	amountOfCards.setCharacterSize(48);
-	amountOfCards.setPosition(480, 80);
+	info.setFont(font);
+	info.setCharacterSize(24);
 
-	cardBack = new object(120, 180, 400, 100, sf::Color::White);
+	if (onlyOne)
+	{
+		info.setPosition(470, 10);
+		cardBack = new object(120, 180, 400, 100, sf::Color::White);
+	}
+	else {
+		switch (_ID)
+		{
+		case 2:		
+			info.setPosition(10, 210);
+			cardBack = new object(120, 180, 70, 400, sf::Color::White);
+			break;
+		case 3:
+			info.setPosition(470, 10);
+			cardBack = new object(120, 180, 400, 100, sf::Color::White);
+			break;
+		case 4:
+			info.setPosition(580, 210);
+			cardBack = new object(120, 180, 640, 400, sf::Color::White);
+			break;
+		default:
+			break;
+		}
+	}
 
 	int j = 0;
 	for (std::list<card*>::iterator i = deck.begin(); i != deck.end(); i++)
@@ -102,8 +124,8 @@ void AI::draw(sf::RenderWindow& window)
 	size_t amount = hand.size();
 	std::string amountText = std::to_string(amount);
 
-	amountOfCards.setString("x" + amountText);
+	info.setString("Komputer " + std::to_string(ID - 1) + "\nIlosc kart: " + std::to_string(hand.size()) + "\nOpoznienie: " + std::to_string(delay));
+	window.draw(info);
 
-	window.draw(amountOfCards);
 	cardBack->draw(window);
 }

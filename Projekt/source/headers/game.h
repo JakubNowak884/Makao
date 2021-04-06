@@ -14,6 +14,8 @@ class game :
 public:
     class Player
     {
+        sf::Text info;
+
         int ID;
         int delay;
         int won;
@@ -21,7 +23,7 @@ public:
     public:
         std::vector<card*> hand;
 
-        Player(std::list<card*>& deck, int _ID);
+        Player(std::list<card*>& deck, sf::Font& font, int _ID);
 
         int getID();
         int getWon();
@@ -39,6 +41,7 @@ private:
     sf::Text wanting;
 
     std::unique_ptr<button> b_fold;
+    std::unique_ptr<button> b_makao;
     std::unique_ptr<button> b_draw;
 
     int delay = 0;
@@ -48,6 +51,8 @@ protected:
     sf::Font font;
 
     std::unique_ptr<Player> player;
+
+    int amountOfPlayers = 0;
 
     std::list<card*> deck;
     bool second = false;
@@ -61,10 +66,12 @@ protected:
 
 public:
     game();
-    ~game();
     void setCurrentSuit(suitNumber _suit) override;
     void setCurrentFigure(figureNumber _figure) override;
     virtual AI* getAI(int number);
+    int getAmountOfPlayers() override;
+    int getWon();
+    void bumpTurn();
     gameStateNumber cardDoThings(card* current, int& _delay, int ID);
     virtual gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     virtual void draw(sf::RenderWindow& window);

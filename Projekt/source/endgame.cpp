@@ -8,23 +8,16 @@ endgame::endgame(gameState* prev)
 	text.setCharacterSize(48);
 	text.setPosition(0, 0);
 	std::string first = "Koniec gry!\nWyniki:\n";
-	results[prev->getAI(0)->getWon()] = typeid(*prev->getAI(0)).name();
-	results[prev->getWon()] = typeid(*prev).name();
+	for (int i = 2; i < prev->getAmountOfPlayers() + 1; i++)
+		results[prev->getAI(i)->getWon()] = "Komputer " + std::to_string(prev->getAI(i)->getID() - 1);
+	results[prev->getWon()] = getPlayerName();
 
-	std::string second;
-	for (int i = 1; i <= getAmountOfPlayers(); i++)
-	{
-		second = std::to_string(i) + ". ";
-		second = second + results[i].erase(0, 6) + "\n";
-		first = first + second;
-	}
+	for (int i = 1; i < prev->getAmountOfPlayers() + 1; i++)
+		first = first + std::to_string(i) + ". " + results[i] + "\n";
+
 	text.setString(first);
 
 	b_menu = std::make_unique<button>("Wroc do menu", font, 600, 100, 400, 700);
-}
-
-endgame::~endgame()
-{
 }
 
 gameStateNumber endgame::update(sf::Event event, sf::RenderWindow& window)

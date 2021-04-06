@@ -5,12 +5,20 @@
 class singlePlayer :
     public game
 {
-    AI* bot;
+    std::vector<std::unique_ptr<AI>> bots;
+
+    bool end = false;
+    long sleepDuration = 1;
+
+    std::thread t;
+
+    bool test = true;
 
 public:
-    singlePlayer();
-    ~singlePlayer();
-    AI* getAI(int number);
+    singlePlayer(gameState* prev);
+    AI* getAI(int ID);
+    bool everyoneElseWon();
+    void botsTakesTurn();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

@@ -13,6 +13,12 @@ float button::textEndl(const std::string& text)
 	return res;
 }
 
+void button::setString(std::string _text)
+{
+	text.setString(_text);
+	text.setOrigin(text.getLocalBounds().width / 2, (textSize * 3 / 4) + textSize * textEndl(_text));
+}
+
 bool button::clicked(sf::Event& event)
 {
 	if (isChosen() && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)

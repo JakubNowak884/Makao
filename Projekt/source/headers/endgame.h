@@ -17,7 +17,6 @@ class endgame :
 
 public:
     endgame(gameState* prev);
-    ~endgame();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

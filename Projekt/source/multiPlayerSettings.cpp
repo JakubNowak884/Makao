@@ -79,13 +79,16 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     if (b_joinLAN->clicked(event))
     {
         host = false;
-        return gameStateNumber::mutliPlayer;
+        b_joinLAN->setString("laczenie...");
+        draw(window);
+        window.display();
+        return gameStateNumber::multiPlayer;
     }
 
     if (b_createLAN->clicked(event))
     {
         host = true;
-        return gameStateNumber::mutliPlayer;
+        return gameStateNumber::multiPlayer;
     }
 
     if (b_joinOnline->clicked(event));
