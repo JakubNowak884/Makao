@@ -93,6 +93,14 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 		b_menu->uptade(getMousePos(window));
 		break;
 	case 1:
+		if (player->getID() == 2)
+		{
+			if (socket.receive(buffer, sizeof(buffer), received) == sf::Socket::Done)
+			{
+				state = 2;
+				socket.send(putDeckToString().c_str(), putDeckToString().length() + 1);
+			}
+		}
 		if (waiting)
 		{
 			if (!threadRunning)
@@ -118,7 +126,9 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 		}
 		if (b_start->clicked(event))
 		{
-			
+			socket.send("2", 2);
+			socket.receive(buffer, sizeof(buffer), received);
+			loadDeckFromBuffer();
 			state = 2;
 		}
 		if (b_menu->clicked(event))
