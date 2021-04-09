@@ -25,6 +25,11 @@ bool object::isChosen()
 	return chosen;
 }
 
+sf::RectangleShape& object::getShape()
+{
+	return shape;
+}
+
 void object::setChosen(bool newChosen)
 {
 	chosen = newChosen;

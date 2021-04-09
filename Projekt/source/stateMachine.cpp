@@ -55,6 +55,11 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 		prev = current;
 		current = new changeName;
 		break;
+	case gameStateNumber::instruction:
+		delete prev;
+		prev = current;
+		current = new instruction;
+		break;
 	case gameStateNumber::quit:
 		return false;
 		break;

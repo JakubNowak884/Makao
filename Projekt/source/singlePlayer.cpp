@@ -14,8 +14,6 @@ singlePlayer::singlePlayer(gameState* prev)
 
 	for (int i = 2; i < amountOfPlayers + 1; i++)
 		bots.push_back(std::make_unique<AI>(deck, font, i, oneBot));
-
-	//t = std::thread(&singlePlayer::botsTakesTurn, this);
 }
 
 AI* singlePlayer::getAI(int ID)
@@ -44,79 +42,81 @@ bool singlePlayer::everyoneElseWon()
 
 void singlePlayer::botsTakesTurn()
 {
-	//while (true)
-	//{
-		for (auto bot = bots.begin(); bot < bots.end(); bot++)
+	for (auto bot = bots.begin(); bot < bots.end(); bot++)
+	{
+		if (turn == (*bot)->getID())
 		{
-			if (turn == (*bot)->getID())
+			(*bot)->setTextColor(sf::Color::Green);
+			if ((*bot)->getWon() == 0)
 			{
-				if ((*bot)->getWon() == 0)
+				if (everyoneElseWon())
 				{
-					if (everyoneElseWon())
-					{
-						(*bot)->setWon(1 + wonCounter);
-						end = true;
-					}
+					(*bot)->setWon(1 + wonCounter);
+					end = true;
+				}
 
-					if ((*bot)->getDelay() == 0)
+				if ((*bot)->getDelay() == 0)
+				{
+					if ((*bot)->hasACardAbleToPlay(deck, actionCardIsActive, currentSuit, currentFigure))
 					{
-						if ((*bot)->hasACardAbleToPlay(deck, actionCardIsActive, currentSuit, currentFigure))
+						cardDoThings((*bot)->playACard(deck, actionCardIsActive, currentSuit, currentFigure), (*bot)->getDelay(), (*bot)->getID(), true);
+						if ((*bot)->handEmpty())
 						{
-							cardDoThings((*bot)->playACard(deck, actionCardIsActive, currentSuit, currentFigure), (*bot)->getDelay(), (*bot)->getID());
-							if ((*bot)->handEmpty())
-							{
-								(*bot)->setWon(1 + wonCounter);
-								wonCounter++;
-							}
+							(*bot)->setWon(1 + wonCounter);
+							wonCounter++;
 						}
-						else
-						{
-							if (deck.front() != deck.back())
-								cardDoThings((*bot)->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), (*bot)->getDelay(), (*bot)->getID());
-						}
-						std::this_thread::sleep_for(std::chrono::seconds(sleepDuration));
 					}
 					else
-						(*bot)->getDelay()--;
+					{
+						if (deck.front() != deck.back() && !four)
+							cardDoThings((*bot)->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), (*bot)->getDelay(), (*bot)->getID(), true);
+						else if (four)
+						{
+							(*bot)->setDelay(delay);
+							delay = 0;
+							four = false;
+							actionCardIsActive = false;
+						}
+					}
+					std::this_thread::sleep_for(std::chrono::seconds(sleepDuration));
 				}
-				bumpTurn();
+				else
+					(*bot)->getDelay()--;
 			}
-		}
-
-		if (player->getWon() != 0)
-		{
-			sleepDuration = 0;
+			(*bot)->setTextColor(sf::Color::White);
 			bumpTurn();
 		}
+	}
 
-		test = true;
-	//}
+	if (player->getWon() != 0)
+	{
+		sleepDuration = 0;
+		bumpTurn();
+	}
+
+	threadRunning = false;
 }
 
 gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (turn == player->getID())
-	{
-		if (everyoneElseWon())
-		{
-			player->setWon(1 + wonCounter);
-			return gameStateNumber::endgame;
-		}
-
-		return game::update(event, window);	
-	}
-
 	if (end)
 		return gameStateNumber::endgame;
 
-	return gameStateNumber::def;
+	
+	if (everyoneElseWon())
+	{
+		player->setWon(1 + wonCounter);
+		return gameStateNumber::endgame;
+	}
+
+	return game::update(event, window);	
 }
 
 void singlePlayer::draw(sf::RenderWindow& window)
 {
-	if (turn != 1 && test == true)
+	if (turn != 1 && threadRunning == false)
 	{
-		test = false;
+		threadRunning = true;
 		std::thread t1(&singlePlayer::botsTakesTurn, this);
 		t1.detach();
 	}

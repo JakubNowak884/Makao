@@ -6,6 +6,8 @@ class setSuit :
     sf::Font font;
     gameState* game;
 
+    sf::Text text;
+
     std::unique_ptr<button> b_clubs;
     std::unique_ptr<button> b_diamonds;
     std::unique_ptr<button> b_hearts;
@@ -13,7 +15,6 @@ class setSuit :
 
 public:
     setSuit(gameState* _game);
-    ~setSuit();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

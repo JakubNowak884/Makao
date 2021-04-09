@@ -4,7 +4,7 @@
 #include "AI.h"
 #include "card.h"
 
-enum class gameStateNumber { def, quit, menu, changeName, singlePlayerSettings, singlePlayer, multiPlayer, multiPlayerSettings, changeIP, endgame, setSuit, setFigure, resume };
+enum class gameStateNumber { def, quit, menu, instruction, changeName, singlePlayerSettings, singlePlayer, multiPlayer, multiPlayerSettings, changeIP, endgame, setSuit, setFigure, resume };
 
 class gameState
 {
@@ -22,6 +22,7 @@ class gameState
 		virtual int getAmountOfPlayers() { return 0; };
 		sf::Vector2f getMousePos(sf::RenderWindow& window);
 		virtual AI* getAI(int number);
+		virtual std::vector<card*>& getHand() { std::vector<card*> placeholder; return placeholder; };
 		virtual int getWon();
 		virtual gameStateNumber update(sf::Event event, sf::RenderWindow& Window) = 0;
 		virtual void draw(sf::RenderWindow& window) = 0;

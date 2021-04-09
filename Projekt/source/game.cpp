@@ -2,7 +2,8 @@
 
 game::game()
 {
-	textureSuit.loadFromFile("../resources/textures/suit.png");
+	textureSuit = std::make_unique<sf::Texture>();
+	textureSuit->loadFromFile("../resources/textures/deck.png");
 	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
 	b_fold = std::make_unique<button>("Pas", font, 110, 50, 400, 280, 32);
@@ -20,7 +21,7 @@ game::game()
 	{
 		for (int figure = 1; figure < 14; figure++)
 		{
-			card* newCard = new card(figureNumber(figure), suitNumber(suit), font, textureSuit, 120, 180, 400, 400, sf::Color::White);
+			card* newCard = new card(figureNumber(figure), suitNumber(suit), font, textureSuit.get(), 120, 180, 400, 400, sf::Color::White);
 			deckToCopy.push_back(newCard);
 		}
 	}
@@ -47,6 +48,11 @@ AI* game::getAI(int number)
 	return nullptr;
 }
 
+std::vector<card*>& game::getHand()
+{
+	return player->hand;
+}
+
 int game::getAmountOfPlayers()
 {
 	return amountOfPlayers;
@@ -64,15 +70,15 @@ void game::bumpTurn()
 		turn = 1;
 }
 
-gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
+gameStateNumber game::cardDoThings(card* current, int& _delay, int ID, bool bot)
 {
 	if (current == nullptr)
 	{
-		_delay = delay;
-		delay = 0;
 		actionCardIsActive = false;
 		addDrawAmount = 1;
 		currentSuit = suitNumber::null;
+		if (jackID != 0 && ID != jackID)
+			actionCardIsActive = true;
 		if (ID == jackID)
 			currentFigure = figureNumber::null;
 	}
@@ -101,6 +107,7 @@ gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
 	{
 		delay++;
 		actionCardIsActive = true;
+		four = true;
 	}
 	else if (current->getFigure() == figureNumber::jack)
 	{
@@ -108,98 +115,150 @@ gameStateNumber game::cardDoThings(card* current, int& _delay, int ID)
 		jackID = ID;
 		return gameStateNumber::setFigure;
 	}
+	else if (current->getFigure() == figureNumber::king)
+	{
+		if (current->getSuit() == suitNumber::hearts)
+		{
+			addDrawAmount += 4;
+			actionCardIsActive = true;
+		}
+		else if ((current->getSuit() == suitNumber::spades))
+		{
+			addDrawAmount += 4;
+			actionCardIsActive = true;
+			if (!bot)
+			{
+				turn -= 1;
+				if (turn < 1)
+				{
+					turn = amountOfPlayers;
+				}
+			}
+			else
+			{
+				turn -= 2;
+				while (turn < 1)
+				{
+					turn = amountOfPlayers + turn;
+				}
+			}
+
+		}
+		else
+		{
+			actionCardIsActive = false;
+			addDrawAmount = 1;
+			currentSuit = suitNumber::null;
+			currentFigure = figureNumber::null;
+			jackID = 0;
+		}
+	}
 	else
 	{
-		_delay = delay;
-		delay = 0;
 		actionCardIsActive = false;
 		addDrawAmount = 1;
 		currentSuit = suitNumber::null;
-		if (ID == jackID)
-			currentFigure = figureNumber::null;
+		currentFigure = figureNumber::null;
+		jackID = 0;
 	}
 	return gameStateNumber::def;
 }
 
 gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (player->getWon() == 0)
+	if (event.type == sf::Event::MouseWheelScrolled)
 	{
-		if (player->getDelay() == 0)
+		if (event.mouseWheelScroll.delta > 0 && (player->hand.front())->getX() < 800)
 		{
-			if (event.type == sf::Event::MouseWheelScrolled)
-			{
-				if (event.mouseWheelScroll.delta > 0 && (player->hand.front())->getX() < 800)
-				{
-					for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
-					{
-						(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
-					}
-				}
-				else if (event.mouseWheelScroll.delta < 0 && player->hand.back()->getX() > 0)
-				{
-					for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
-					{
-						(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
-					}
-				}
-			}
-
 			for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 			{
-				(*i)->uptade(getMousePos(window));
-				if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
+				(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+			}
+		}
+		else if (event.mouseWheelScroll.delta < 0 && player->hand.back()->getX() > 0)
+		{
+			for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+			{
+				(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
+			}
+		}
+	}
+
+	if (turn == player->getID())
+	{
+		player->setTextColor(sf::Color::Green);
+		if (player->getWon() == 0)
+		{
+			if (player->getDelay() == 0)
+			{
+				for (std::vector<card*>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 				{
-					(*i)->setChosen(false);
-					deck.push_front((*i));
-					auto j = player->hand.erase(i);
-					for (j; j != player->hand.end(); j++)
-						(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
-					second = true;
-					if (player->hand.empty())
+					(*i)->uptade(getMousePos(window));
+					if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
 					{
-						player->setWon(1 + wonCounter);
-						wonCounter++;
-						bumpTurn();
+						(*i)->setChosen(false);
+						deck.push_front((*i));
+						auto j = player->hand.erase(i);
+						for (j; j != player->hand.end(); j++)
+							(*j)->setPosition(sf::Vector2f((*j)->getX() - 128, 800));
+						second = true;
+						if (player->hand.empty())
+						{
+							player->setWon(1 + wonCounter);
+							wonCounter++;
+							player->setTextColor(sf::Color::White);
+							bumpTurn();
+						}
+						return cardDoThings(deck.front(), player->getDelay(), 1);
 					}
-					return cardDoThings(deck.front(), player->getDelay(), 1);
 				}
-			}
 
-			if (b_fold->clicked(event))
-			{
-				second = false;
-				b_fold->setChosen(false);
-				turn++;
-			}
+				if (b_fold->clicked(event))
+				{
+					b_fold->setChosen(false);
+					player->setTextColor(sf::Color::White);
+					bumpTurn();
+					if (four && !second)
+					{
+						player->setDelay(delay);
+						delay = 0;
+						four = false;
+						actionCardIsActive = false;
+					}
+					second = false;
+				}
 
-			if (b_draw->clicked(event))
+				if (b_draw->clicked(event))
+				{
+					b_draw->setChosen(false);
+					player->setTextColor(sf::Color::White);
+					bumpTurn();
+					return cardDoThings(player->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), player->getDelay(), 1);
+				}
+
+				deck.front()->setPosition(sf::Vector2f(400, 400));
+
+				if (second || four)
+					b_fold->uptade(getMousePos(window));
+
+				if (!second && deck.front() != deck.back() && !four)
+					b_draw->uptade(getMousePos(window));
+
+				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+					return gameStateNumber::menu;
+			}
+			else
 			{
-				b_draw->setChosen(false);
+				player->decrementDelay();
+				player->setTextColor(sf::Color::White);
 				bumpTurn();
-				return cardDoThings(player->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), player->getDelay(), 1);
 			}
-
-			deck.front()->setPosition(sf::Vector2f(400, 400));
-
-			if (second)
-				b_fold->uptade(getMousePos(window));
-
-			if (!second && deck.front() != deck.back())
-				b_draw->uptade(getMousePos(window));
-
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-				return gameStateNumber::menu;
 		}
 		else
 		{
-			player->decrementDelay();
+			player->setTextColor(sf::Color::White);
 			bumpTurn();
 		}
-	}
-	else
-	{
-		bumpTurn();
 	}
 	
 	return gameStateNumber::def;
@@ -317,6 +376,16 @@ void game::Player::decrementDelay(int value)
 void game::Player::setWon(int _won)
 {
 	won = _won;
+}
+
+void game::Player::setDelay(int _delay)
+{
+	delay = _delay;
+}
+
+void game::Player::setTextColor(sf::Color color)
+{
+	info.setFillColor(color);
 }
 
 card* game::Player::drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)

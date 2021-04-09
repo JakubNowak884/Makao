@@ -2,6 +2,7 @@
 
 #include "menu.h"
 #include "changeName.h"
+#include "instruction.h"
 #include "singlePlayerSettings.h"
 #include "singlePlayer.h"
 #include "multiPlayerSettings.h"

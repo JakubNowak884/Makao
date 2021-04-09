@@ -41,17 +41,23 @@ void card::frameSetFillColor(sf::Color color)
 bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, bool second)
 {
 	bool suitMatches;
-	if (current->getSuit() == suit) suitMatches = true; else suitMatches = false;
+	if (current->getSuit() == getSuit()) 
+		suitMatches = true; 
+	else 
+		suitMatches = false;
 
 	bool figureMatches;
-	if (current->getFigure() == figure) figureMatches = true; else figureMatches = false;
+	if (current->getFigure() == getFigure()) 
+		figureMatches = true;
+	else 
+		figureMatches = false;
 
 	if (actionCardIsActive)
 	{
 		switch (current->getFigure())
 		{
 		case figureNumber::ace:
-			if (figureMatches || (suit == currentSuit && !second))
+			if (figureMatches || (getSuit() == currentSuit && !second))
 			{
 				frame.setFillColor(sf::Color::Green);
 				return true;
@@ -63,7 +69,7 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 			}
 			break;
 		case figureNumber::two:
-			if (figureMatches || (current->getFigure() == figureNumber::three && suitMatches))
+			if (figureMatches || (getFigure() == figureNumber::three && suitMatches))
 			{
 				frame.setFillColor(sf::Color::Green);
 				return true;
@@ -75,7 +81,7 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 			}
 			break;
 		case figureNumber::three:
-			if (figureMatches || (current->getFigure() == figureNumber::two && suitMatches))
+			if (figureMatches || (getFigure() == figureNumber::two && suitMatches))
 			{
 				frame.setFillColor(sf::Color::Green);
 				return true;
@@ -99,7 +105,7 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 			}
 			break;
 		case figureNumber::jack:
-			if (figureMatches || (figure == currentFigure && !second))
+			if (figureMatches || (getFigure() == currentFigure && !second))
 			{
 				frame.setFillColor(sf::Color::Green);
 				return true;
@@ -111,7 +117,7 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 			}
 			break;
 		case figureNumber::king:
-			if (figureMatches && (current->getSuit() == suitNumber::hearts || current->getSuit() == suitNumber::spades))
+			if (figureMatches && (getSuit() == suitNumber::hearts || getSuit() == suitNumber::spades))
 			{
 				frame.setFillColor(sf::Color::Green);
 				return true;
@@ -127,14 +133,14 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 			break;
 		}
 	}
-	else if ((current->getFigure() == figureNumber::queen || figure == figureNumber::queen) && !second) 
+	else if ((current->getFigure() == figureNumber::queen || getFigure() == figureNumber::queen) && !second) 
 	{
 		frame.setFillColor(sf::Color::Green);
 		return true;
 	}
 	else if (!second)
 	{
-		if (getSuit() == current->getSuit() || getFigure() == current->getFigure())
+		if (suitMatches || figureMatches)
 		{
 			frame.setFillColor(sf::Color::Green);
 			return true;
@@ -147,7 +153,7 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 	}
 	else
 	{
-		if (getFigure() == current->getFigure())
+		if (figureMatches)
 		{
 			frame.setFillColor(sf::Color::Green);
 			return true;
@@ -168,7 +174,7 @@ void card::draw(sf::RenderWindow& window)
 	object::draw(window);
 	for (int i = 0; i < 2; i++)
 	{
-		window.draw(name[i]);
-		window.draw(spriteSuit[i]);
+		//window.draw(name[i]);
+		//window.draw(spriteSuit[i]);
 	}
 }

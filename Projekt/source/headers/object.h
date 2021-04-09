@@ -24,7 +24,7 @@ public:
 		shape.setSize(sf::Vector2f(_width, _height));
 		shape.setOrigin(sf::Vector2f(_width/2, _height/2));
 		shape.setPosition(sf::Vector2f(_x, _y));
-		shape.setFillColor(color);
+		//shape.setFillColor(color);
 	}
 
 	float getX();
@@ -32,6 +32,8 @@ public:
 	float getWidth();
 	float getHeight();
 	bool isChosen();
+
+	sf::RectangleShape& getShape();
 
 	void setChosen(bool newChosen);
 	virtual void setPosition(sf::Vector2f position);

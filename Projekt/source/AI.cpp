@@ -76,6 +76,16 @@ void AI::setWon(int _won)
 	won = _won;
 }
 
+void AI::setDelay(int _delay)
+{
+	delay = _delay;
+}
+
+void AI::setTextColor(sf::Color color)
+{
+	info.setFillColor(color);
+}
+
 bool AI::hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
 	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)

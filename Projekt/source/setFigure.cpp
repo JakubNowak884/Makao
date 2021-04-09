@@ -4,22 +4,41 @@ setFigure::setFigure(gameState* _game)
 {
     font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
-    b_five = std::make_unique<button>("Piatki", font, 200, 200, 150, 150);
-    b_six = std::make_unique<button>("Szostki", font, 200, 200, 650, 150);
-    b_seven = std::make_unique<button>("Siodemki", font, 200, 200, 150, 400);
-    b_eight = std::make_unique<button>("Osemki", font, 200, 200, 650, 400);
-    b_nine = std::make_unique<button>("Dziewiatki", font, 200, 200, 150, 650);
-    b_ten = std::make_unique<button>("Dziesiatki", font, 200, 200, 650, 650);
+    text.setFont(font);
+    text.setCharacterSize(48);
+    text.setPosition(0, 0);
+    text.setString("Wybierz zadana figure: ");
+
+    b_five = std::make_unique<button>("Piatki", font, 200, 100, 200, 150, 32);
+    b_six = std::make_unique<button>("Szostki", font, 200, 100, 600, 150, 32);
+    b_seven = std::make_unique<button>("Siodemki", font, 200, 100, 200, 260, 32);
+    b_eight = std::make_unique<button>("Osemki", font, 200, 100, 600, 260, 32);
+    b_nine = std::make_unique<button>("Dziewiatki", font, 200, 100, 200, 370, 32);
+    b_ten = std::make_unique<button>("Dziesiatki", font, 200, 100, 600, 370, 32);
 
     game = _game;
 }
 
-setFigure::~setFigure()
-{
-}
-
 gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)
 {
+    if(event.type == sf::Event::MouseWheelScrolled)
+    {
+        if (event.mouseWheelScroll.delta > 0 && (game->getHand().front())->getX() < 800)
+        {
+            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            {
+                (*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
+            }
+        }
+        else if (event.mouseWheelScroll.delta < 0 && game->getHand().back()->getX() > 0)
+        {
+            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            {
+                (*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
+            }
+        }
+    }
+
     if (b_five->clicked(event))
     {
         game->setCurrentFigure(figureNumber::five);
@@ -62,6 +81,14 @@ gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)
 
 void setFigure::draw(sf::RenderWindow& window)
 {
+    for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+    {
+        if ((*i)->getX() > -200 && (*i)->getX() < 1000)
+            (*i)->draw(window);
+    }
+
+    window.draw(text);
+
     b_five->draw(window);
     b_six->draw(window);
     b_seven->draw(window);

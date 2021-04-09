@@ -6,6 +6,8 @@ class setFigure :
     sf::Font font;
     gameState* game;
     
+    sf::Text text;
+
     std::unique_ptr<button> b_five;
     std::unique_ptr<button> b_six;
     std::unique_ptr<button> b_seven;
@@ -15,7 +17,6 @@ class setFigure :
 
 public:
     setFigure(gameState* _game);
-    ~setFigure();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

@@ -26,6 +26,8 @@ public:
 	bool handEmpty();
 
 	void setWon(int _won);
+	void setDelay(int _delay);
+	void setTextColor(sf::Color color);
 
 	bool hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
 	card* playACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);

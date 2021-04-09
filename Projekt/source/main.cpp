@@ -70,11 +70,16 @@ int main()
     system("pause");
     */
     
-    sf::RenderWindow window(sf::VideoMode(800, 800, 32), "Makao");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Makao");
     sf::FloatRect area(0, 0, 800, 800);
     window.setView(sf::View(area));
     window.setFramerateLimit(30);
     stateMachine* game = new stateMachine;
+
+    
+    sf::Texture texture;
+    texture.loadFromFile("../resources/textures/background.png");
+    sf::Sprite background(texture);
 
     while (window.isOpen())
     {
@@ -86,6 +91,7 @@ int main()
             if (event.type == sf::Event::Closed) window.close();
         }
         window.clear(sf::Color::Color(0, 0, 128));
+        window.draw(background);
         game->draw(window);
         window.display();
     }

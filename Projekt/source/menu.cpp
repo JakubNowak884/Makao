@@ -10,18 +10,19 @@ menu::menu()
     currentPlayer.setPosition(0, 0);
     currentPlayer.setString("Aktualnie gra: " + getPlayerName());
 
+    b_changeName = std::make_unique<button>("Zmien", font, 150, 40, currentPlayer.getLocalBounds().width + 30, 25, 36);
     b_singlePlayer = std::make_unique<button>("Jeden gracz", font, 600, 150, 400, 150);
-    b_multiPlayer = std::make_unique<button>("Wielu graczy", font, 600, 150, 400, 310);
-    b_changeName = std::make_unique<button>("Zmien nazwe", font, 600, 150, 400, 510);
-    b_quit = std::make_unique<button>("Wyjdz", font, 600, 150, 400, 700);
-}
-
-menu::~menu()
-{
+    b_multiPlayer = std::make_unique<button>("Wielu graczy", font, 600, 150, 400, 325);
+    b_instruction = std::make_unique<button>("Instrukcja", font, 600, 150, 400, 500);
+    b_quit = std::make_unique<button>("Wyjdz", font, 600, 150, 400, 675);
 }
 
 gameStateNumber menu::update(sf::Event event, sf::RenderWindow& window)
 {
+    if (b_changeName->clicked(event))
+    {
+        return gameStateNumber::changeName;
+    }
     if (b_singlePlayer->clicked(event))
     {
         return gameStateNumber::singlePlayerSettings;
@@ -30,18 +31,19 @@ gameStateNumber menu::update(sf::Event event, sf::RenderWindow& window)
     {
         return gameStateNumber::multiPlayerSettings;
     }
-    if (b_changeName->clicked(event))
+    if (b_instruction->clicked(event))
     {
-        return gameStateNumber::changeName;
+        return gameStateNumber::instruction;
     }
     if (b_quit->clicked(event))
     {
         return gameStateNumber::quit;
     }
 
+    b_changeName->uptade(getMousePos(window));
     b_singlePlayer->uptade(getMousePos(window));
     b_multiPlayer->uptade(getMousePos(window));
-    b_changeName->uptade(getMousePos(window));
+    b_instruction->uptade(getMousePos(window));
     b_quit->uptade(getMousePos(window));
 
     return gameStateNumber::def;
@@ -52,9 +54,11 @@ void menu::draw(sf::RenderWindow& window)
     currentPlayer.setString("Aktualnie gra: " + getPlayerName());
     window.draw(currentPlayer);
 
+    b_changeName->setPosition(sf::Vector2f(currentPlayer.getLocalBounds().width + 100, 25));
+    b_changeName->draw(window);
     b_singlePlayer->draw(window);
     b_multiPlayer->draw(window);
-    b_changeName->draw(window);
+    b_instruction->draw(window);
     b_quit->draw(window);
 }
 

@@ -15,6 +15,9 @@
     <ClInclude Include="..\source\headers\card.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\headers\changeIP.h">
+      <Filter>headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\headers\changeName.h">
       <Filter>headers</Filter>
     </ClInclude>
@@ -27,7 +30,7 @@
     <ClInclude Include="..\source\headers\gameState.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\headers\changeIP.h">
+    <ClInclude Include="..\source\headers\instruction.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="..\source\headers\menu.h">
@@ -62,11 +65,12 @@
     <ClCompile Include="..\source\AI.cpp" />
     <ClCompile Include="..\source\button.cpp" />
     <ClCompile Include="..\source\card.cpp" />
+    <ClCompile Include="..\source\changeIP.cpp" />
     <ClCompile Include="..\source\changeName.cpp" />
     <ClCompile Include="..\source\endgame.cpp" />
     <ClCompile Include="..\source\game.cpp" />
     <ClCompile Include="..\source\gameState.cpp" />
-    <ClCompile Include="..\source\changeIP.cpp" />
+    <ClCompile Include="..\source\instruction.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\menu.cpp" />
     <ClCompile Include="..\source\multiPlayer.cpp" />

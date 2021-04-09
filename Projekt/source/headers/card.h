@@ -12,6 +12,8 @@ enum class figureNumber { null = 0, ace = 1, two = 2, three = 3, four = 4, five 
 class card :
     public object
 {
+    std::unique_ptr<sf::Texture> texture;
+
     sf::Text name[2];
     sf::Sprite spriteSuit[2];
     suitNumber suit;
@@ -20,13 +22,19 @@ class card :
     float textSize;
 
 public:
-    card(figureNumber _figure, suitNumber _suit, sf::Font& font, sf::Texture& textureSuit, float _width, float _height, float _x, float _y, sf::Color color)
+    card(figureNumber _figure, suitNumber _suit, sf::Font& font, sf::Texture* textureSuit, float _width, float _height, float _x, float _y, sf::Color color)
         : figure(_figure), suit(_suit), object(_width, _height, _x, _y, sf::Color::White)
     {
+        //texture = std::make_unique<sf::Texture>();
+        //texture->loadFromFile("../resources/textures/deck.png");
+        getShape().setTexture(textureSuit);
+        getShape().setTextureRect(sf::IntRect((int(_figure) - 1) * 148, (int(_suit) - 1) * 230, 145, 230));
+
         frame.setSize(sf::Vector2f(_width + 20, _height + 20));
         frame.setOrigin(sf::Vector2f((_width + 20) / 2, (_height + 20) / 2));
         frame.setPosition(sf::Vector2f(_x, _y));
         frame.setFillColor(sf::Color::Green);
+        //getShape().setFillColor(color);
         textSize = 32;
         
         for (int i = 0; i < 2; i++)
@@ -48,7 +56,7 @@ public:
             }
             name[i].setString(toText);
 
-            spriteSuit[i].setTexture(textureSuit);
+            //spriteSuit[i].setTexture(textureSuit);
             spriteSuit[i].scale(0.4f, 0.4f);
             spriteSuit[i].setTextureRect(sf::IntRect(64 * (int(_suit) - 1), 0, 64, 64));
         }

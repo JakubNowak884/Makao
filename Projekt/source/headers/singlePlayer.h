@@ -12,7 +12,7 @@ class singlePlayer :
 
     std::thread t;
 
-    bool test = true;
+    bool threadRunning = false;
 
 public:
     singlePlayer(gameState* prev);

@@ -31,23 +31,24 @@ public:
 
         void decrementDelay(int value = 1);
         void setWon(int _won);
+        void setDelay(int _delay);
+        void setTextColor(sf::Color color);
 
         card* drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
         void draw(sf::RenderWindow& window);
     };
 
 private:
-    sf::Texture textureSuit;
     sf::Text wanting;
 
     std::unique_ptr<button> b_fold;
     std::unique_ptr<button> b_makao;
     std::unique_ptr<button> b_draw;
 
-    int delay = 0;
     int jackID = 0;
 
 protected:
+    std::unique_ptr<sf::Texture> textureSuit;
     sf::Font font;
 
     std::unique_ptr<Player> player;
@@ -61,6 +62,8 @@ protected:
 
     bool actionCardIsActive = false;
     int addDrawAmount = 1;
+    bool four = false;
+    int delay = 0;
     suitNumber currentSuit = suitNumber::null;
     figureNumber currentFigure = figureNumber::null;
 
@@ -69,10 +72,11 @@ public:
     void setCurrentSuit(suitNumber _suit) override;
     void setCurrentFigure(figureNumber _figure) override;
     virtual AI* getAI(int number);
+    std::vector<card*>& getHand() override;
     int getAmountOfPlayers() override;
     int getWon();
     void bumpTurn();
-    gameStateNumber cardDoThings(card* current, int& _delay, int ID);
+    gameStateNumber cardDoThings(card* current, int& _delay, int ID, bool bot = false);
     virtual gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     virtual void draw(sf::RenderWindow& window);
 };

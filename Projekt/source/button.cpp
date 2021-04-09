@@ -19,6 +19,12 @@ void button::setString(std::string _text)
 	text.setOrigin(text.getLocalBounds().width / 2, (textSize * 3 / 4) + textSize * textEndl(_text));
 }
 
+void button::setPosition(sf::Vector2f position)
+{
+	object::setPosition(position);
+	text.setPosition(position);
+}
+
 bool button::clicked(sf::Event& event)
 {
 	if (isChosen() && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
@@ -30,9 +36,9 @@ bool button::clicked(sf::Event& event)
 void button::draw(sf::RenderWindow& window)
 {
 	if (isChosen() == true)
-		setShapeColor(sf::Color::Color(0, 128, 0));
+		getShape().setTextureRect(sf::IntRect(641, 0, 640, 211));
 	else
-		setShapeColor(sf::Color::Color(0, 0, 0));
+		getShape().setTextureRect(sf::IntRect(0, 0, 640, 211));
 
 	object::draw(window);
 	window.draw(text);
