@@ -7,7 +7,7 @@ class multiPlayerSettings :
 
 	sf::Text text;
 
-	std::string IP_LAN = "10.10.10.10";
+	std::string IP_LAN = "192.168.100.53";
 	std::string IP_Online = "100.100.100.100";
 
 	std::unique_ptr<button> b_changeName;

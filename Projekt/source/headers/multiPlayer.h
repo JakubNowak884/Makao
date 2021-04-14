@@ -10,7 +10,10 @@ class multiPlayer :
 	sf::Font font;
 	sf::Text text;
 
-	sf::TcpSocket socket;
+	sf::TcpSocket guest1;
+	sf::TcpSocket guest2;
+	sf::TcpSocket guest3;
+
 	sf::TcpListener listener;
 	char buffer[2000];
 	std::size_t received;
@@ -24,14 +27,20 @@ class multiPlayer :
 	int maxID = 1;
 	bool waiting = false;
 	bool threadRunning = false;
+	bool myTurn = true;
+	bool host = true;
 
 	std::thread t;
 
 public:
 	multiPlayer(gameState* _prev);
-	void listen();
+	void listen(sf::TcpSocket& guest);
+	void waitForStart();
+	void waitForData(sf::TcpSocket& guest);
 	std::string putDeckToString();
 	void loadDeckFromBuffer();
+	std::string putDataToString();
+	void loadDataFromBuffer();
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

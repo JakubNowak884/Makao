@@ -45,8 +45,6 @@ private:
     std::unique_ptr<button> b_makao;
     std::unique_ptr<button> b_draw;
 
-    int jackID = 0;
-
 protected:
     std::unique_ptr<sf::Texture> textureSuit;
     sf::Font font;
@@ -57,12 +55,14 @@ protected:
 
     std::list<card*> deck;
     bool second = false;
+
     int turn = 1;
     int wonCounter = 0;
 
     bool actionCardIsActive = false;
     int addDrawAmount = 1;
     bool four = false;
+    int jackID = 0;
     int delay = 0;
     suitNumber currentSuit = suitNumber::null;
     figureNumber currentFigure = figureNumber::null;
