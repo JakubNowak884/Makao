@@ -10,14 +10,14 @@ class AI
 {
 	object* cardBack = nullptr;
 	sf::Text info;
-	std::vector<card*> hand;
+	std::vector<std::shared_ptr<card>> hand;
 
 	int ID;
 	int won;
 	int delay;
 
 public:
-	AI(std::list<card*>& deck, sf::Font& font, int _ID, bool onlyOne = false);
+	AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* texture, int _ID, bool onlyOne = false);
 	~AI();
 
 	int getID();
@@ -29,9 +29,9 @@ public:
 	void setDelay(int _delay);
 	void setTextColor(sf::Color color);
 
-	bool hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
-	card* playACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
-	card* drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
+	bool hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	card* playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	card* drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
 	void draw(sf::RenderWindow& window);
 };
 

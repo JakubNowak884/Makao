@@ -18,6 +18,7 @@ public:
     {
         texture = std::make_unique<sf::Texture>();
         texture->loadFromFile("../resources/textures/button.png");
+        texture->setSmooth(true);
         getShape().setTexture(texture.get());
         //getShape().setTextureRect(sf::IntRect(0, 0, 0, 0));
         //setShapeColor(sf::Color::Color(0, 0, 0, 256));

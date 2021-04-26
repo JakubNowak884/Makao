@@ -7,16 +7,22 @@ class singlePlayerSettings :
     sf::Font font;
 
     sf::Text settings;
-    std::unique_ptr<button> b_2;
-    std::unique_ptr<button> b_3;
-    std::unique_ptr<button> b_4;
+    std::unique_ptr<button> b_addAmountOfPlayers;
+    std::unique_ptr<button> b_reduceAmountOfPlayers;
+    std::unique_ptr<button> b_addBotSpeed;
+    std::unique_ptr<button> b_reduceBotSpeed;
+    std::unique_ptr<button> b_onlyQueens;
+    std::unique_ptr<button> b_start;
     std::unique_ptr<button> b_toMenu;
 
-    int amountOfPlayers = 0;
+    int amountOfPlayers = 2;
+    int botSpeed = 500;
+    bool onlyQueens = false;
 
 public:
     singlePlayerSettings();
-    int getAmountOfPlayers() override;
+    int getAmountOfPlayers();
+    bool getOnlyQueens();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

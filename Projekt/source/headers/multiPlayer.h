@@ -1,11 +1,12 @@
 #pragma once
 
 #include "game.h"
+#include "multiPlayerSettings.h"
 
 class multiPlayer :
 	public game
 {
-	gameState* prev;
+	multiPlayerSettings* prev;
 
 	sf::Font font;
 	sf::Text text;
@@ -14,9 +15,14 @@ class multiPlayer :
 	sf::TcpSocket guest2;
 	sf::TcpSocket guest3;
 
+	std::vector<std::unique_ptr<object>> cardback;
+	std::vector<sf::Text> infoPlayer;
+	std::string podium;
+
 	sf::TcpListener listener;
-	char buffer[2000];
+	char buffer[600];
 	std::size_t received;
+	char data[600];
 
 	std::unique_ptr<button> b_addSlot;
 	std::unique_ptr<button> b_deleteSlot;
@@ -33,14 +39,15 @@ class multiPlayer :
 	std::thread t;
 
 public:
-	multiPlayer(gameState* _prev);
+	multiPlayer(multiPlayerSettings* _prev);
+	~multiPlayer();
 	void listen(sf::TcpSocket& guest);
 	void waitForStart();
 	void waitForData(sf::TcpSocket& guest);
-	std::string putDeckToString();
-	void loadDeckFromBuffer();
-	std::string putDataToString();
-	void loadDataFromBuffer();
+	void putDataToSend();
+	bool loadDataFromBuffer(bool onlyDeck = false);
+	void initializeInfo();
+	std::string getPodium();
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

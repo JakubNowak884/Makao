@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <iterator>
+#include <iostream>
 
 #include "gameState.h"
 
@@ -21,9 +22,9 @@ public:
         int won;
 
     public:
-        std::vector<card*> hand;
+        std::vector<std::shared_ptr<card>> hand;
 
-        Player(std::list<card*>& deck, sf::Font& font, int _ID);
+        Player(std::list<std::shared_ptr<card>>& deck, sf::Font& font, int _ID);
 
         int getID();
         int getWon();
@@ -34,7 +35,7 @@ public:
         void setDelay(int _delay);
         void setTextColor(sf::Color color);
 
-        card* drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
+        card* drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
         void draw(sf::RenderWindow& window);
     };
 
@@ -53,7 +54,7 @@ protected:
 
     int amountOfPlayers = 0;
 
-    std::list<card*> deck;
+    std::list<std::shared_ptr<card>> deck;
     bool second = false;
 
     int turn = 1;
@@ -69,11 +70,12 @@ protected:
 
 public:
     game();
-    void setCurrentSuit(suitNumber _suit) override;
-    void setCurrentFigure(figureNumber _figure) override;
+    virtual ~game() {};
+    void setCurrentSuit(suitNumber _suit);
+    void setCurrentFigure(figureNumber _figure);
     virtual AI* getAI(int number);
-    std::vector<card*>& getHand() override;
-    int getAmountOfPlayers() override;
+    std::vector<std::shared_ptr<card>>& getHand();
+    int getAmountOfPlayers();
     int getWon();
     void bumpTurn();
     gameStateNumber cardDoThings(card* current, int& _delay, int ID, bool bot = false);

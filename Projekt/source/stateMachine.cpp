@@ -24,7 +24,7 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 	case gameStateNumber::singlePlayer:
 		delete prev;
 		prev = current;
-		current = new singlePlayer(prev);
+		current = new singlePlayer(dynamic_cast<singlePlayerSettings*>(prev));
 		break;
 	case gameStateNumber::multiPlayerSettings:
 		delete prev;
@@ -33,17 +33,20 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 		break;
 	case gameStateNumber::changeIP:
 		prev = current;
-		current = new changeIP(prev);
+		current = new changeIP(dynamic_cast<multiPlayerSettings*>(prev));
 		break;
 	case gameStateNumber::multiPlayer:
 		delete prev;
 		prev = current;
-		current = new multiPlayer(prev);
+		current = new multiPlayer(dynamic_cast<multiPlayerSettings*>(prev));
 		break;
 	case gameStateNumber::endgame:
 		delete prev;
 		prev = current;
-		current = new endgame(prev);
+		if (dynamic_cast<multiPlayer*>(prev) == nullptr)
+			current = new endgame(dynamic_cast<singlePlayer*>(prev));
+		else
+			current = new endgame(dynamic_cast<multiPlayer*>(prev));
 		break;
 	case gameStateNumber::menu:
 		delete prev;
@@ -65,11 +68,11 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 		break;
 	case gameStateNumber::setSuit:
 		prev = current;
-		current = new setSuit(prev);
+		current = new setSuit(dynamic_cast<game*>(prev));
 		break;
 	case gameStateNumber::setFigure:
 		prev = current;
-		current = new setFigure(prev);
+		current = new setFigure(dynamic_cast<game*>(prev));
 		break;
 	case gameStateNumber::resume:
 		delete current;

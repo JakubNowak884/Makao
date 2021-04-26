@@ -1,6 +1,6 @@
 #include "headers\AI.h"
 
-AI::AI(std::list<card*>& deck, sf::Font& font, int _ID, bool onlyOne)
+AI::AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* texture, int _ID, bool onlyOne)
 {
 	info.setFont(font);
 	info.setCharacterSize(24);
@@ -30,8 +30,11 @@ AI::AI(std::list<card*>& deck, sf::Font& font, int _ID, bool onlyOne)
 		}
 	}
 
+	cardBack->getShape().setTexture(texture);
+	cardBack->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
+
 	int j = 0;
-	for (std::list<card*>::iterator i = deck.begin(); i != deck.end(); i++)
+	for (std::list<std::shared_ptr<card>>::iterator i = deck.begin(); i != deck.end(); ++i)
 	{
 		if (j == 5) break;
 		hand.push_back((*i));
@@ -86,36 +89,36 @@ void AI::setTextColor(sf::Color color)
 	info.setFillColor(color);
 }
 
-bool AI::hasACardAbleToPlay(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
+bool AI::hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
-	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
+		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
 			return true;
 	}
 	return false;
 }
 
-card* AI::playACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
+card* AI::playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
-	for (std::vector<card*>::iterator i = hand.begin(); i != hand.end(); i++)
+	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
+		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
 		{
 			deck.push_front((*i));
-			i = hand.erase(i);
-			return deck.front();
+			hand.erase(i);
+			return deck.front().get();
 		}
 	}
 }
 
-card* AI::drawACard(std::list<card*>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
+card* AI::drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
-	if (deck.back()->ableToPlay(deck.front(), actionCardIsActive, currentSuit, currentFigure))
+	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
 	{
 		deck.push_front(deck.back());
 		deck.pop_back();
-		return deck.front();
+		return deck.front().get();
 	}
 	else
 	{

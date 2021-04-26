@@ -1,6 +1,6 @@
 #include "headers\endgame.h"
 
-endgame::endgame(gameState* prev)
+endgame::endgame(singlePlayer* prev)
 {
 	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
@@ -16,6 +16,19 @@ endgame::endgame(gameState* prev)
 		first = first + std::to_string(i) + ". " + results[i] + "\n";
 
 	text.setString(first);
+
+	b_menu = std::make_unique<button>("Wroc do menu", font, 600, 100, 400, 700);
+}
+
+endgame::endgame(multiPlayer* prev)
+{
+	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+
+	text.setFont(font);
+	text.setCharacterSize(48);
+	text.setPosition(0, 0);
+
+	text.setString("Koniec gry!\nWyniki:\n" + prev->getPodium());
 
 	b_menu = std::make_unique<button>("Wroc do menu", font, 600, 100, 400, 700);
 }

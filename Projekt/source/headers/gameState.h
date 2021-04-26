@@ -11,19 +11,16 @@ class gameState
 	static std::string playerName;
 
 	public:
-		static void setPlayerName(std::string name);
+		virtual ~gameState() {};
+		//static
 		static void setPlayerName(char sign);
 		static std::string getPlayerName();
-		virtual void setCurrentSuit(suitNumber _suit) {};
-		virtual void setCurrentFigure(figureNumber _figure) {};
-		virtual void setIP(char sign) {};
-		virtual std::string getIP() { return "Placeholder"; };
-		virtual bool getHost() { return false; };
-		virtual int getAmountOfPlayers() { return 0; };
-		sf::Vector2f getMousePos(sf::RenderWindow& window);
+		//endgame
+		virtual int getAmountOfPlayers();
 		virtual AI* getAI(int number);
-		virtual std::vector<card*>& getHand() { std::vector<card*> placeholder; return placeholder; };
 		virtual int getWon();
+		//
+		sf::Vector2f getMousePos(sf::RenderWindow& window);
 		virtual gameStateNumber update(sf::Event event, sf::RenderWindow& Window) = 0;
 		virtual void draw(sf::RenderWindow& window) = 0;
 };

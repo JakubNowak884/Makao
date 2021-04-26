@@ -24,9 +24,10 @@ class multiPlayerSettings :
 
 public:
 	multiPlayerSettings();
-	void setIP(char sign) override;
-	std::string getIP() override;
-	bool getHost() override;
+	void setIP(char sign);
+	bool getLAN();
+	std::string getIP();
+	bool getHost();
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

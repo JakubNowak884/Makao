@@ -1,10 +1,10 @@
 #pragma once
-#include "gameState.h"
+#include "game.h"
 class setFigure :
     public gameState
 {
     sf::Font font;
-    gameState* game;
+    game* prev;
     
     sf::Text text;
 
@@ -16,7 +16,7 @@ class setFigure :
     std::unique_ptr<button> b_ten;
 
 public:
-    setFigure(gameState* _game);
+    setFigure(game* _game);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

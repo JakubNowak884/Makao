@@ -1,6 +1,6 @@
 #include "headers/changeIP.h"
 
-changeIP::changeIP(gameState* _prev)
+changeIP::changeIP(multiPlayerSettings* _prev)
 {
     prev = _prev;
 

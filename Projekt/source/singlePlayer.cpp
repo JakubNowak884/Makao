@@ -1,7 +1,20 @@
 #include "headers\singlePlayer.h"
 
-singlePlayer::singlePlayer(gameState* prev)
+singlePlayer::singlePlayer(singlePlayerSettings* prev)
 {
+	if (prev->getOnlyQueens())
+	{
+		deck.clear();
+
+		for (int suit = 1; suit < 5; suit++)
+		{
+			for (int figure = 1; figure < 14; figure++)
+			{
+				deck.push_back(std::make_shared<card>(figureNumber(12), suitNumber(suit), font, textureSuit.get(), 120, 180, 400, 400, sf::Color::White));
+			}
+		}
+	}
+
 	amountOfPlayers = prev->getAmountOfPlayers();
 
 	player = std::make_unique<Player>(deck, font, 1);
@@ -13,7 +26,7 @@ singlePlayer::singlePlayer(gameState* prev)
 		oneBot = false;
 
 	for (int i = 2; i < amountOfPlayers + 1; i++)
-		bots.push_back(std::make_unique<AI>(deck, font, i, oneBot));
+		bots.push_back(std::make_unique<AI>(deck, font, textureSuit.get(), i, oneBot));
 }
 
 AI* singlePlayer::getAI(int ID)
@@ -54,8 +67,7 @@ void singlePlayer::botsTakesTurn()
 					(*bot)->setWon(1 + wonCounter);
 					end = true;
 				}
-
-				if ((*bot)->getDelay() == 0)
+				else if ((*bot)->getDelay() == 0)
 				{
 					if ((*bot)->hasACardAbleToPlay(deck, actionCardIsActive, currentSuit, currentFigure))
 					{
@@ -99,7 +111,7 @@ void singlePlayer::botsTakesTurn()
 
 gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (end)
+	if (end && threadRunning == false)
 		return gameStateNumber::endgame;
 
 	

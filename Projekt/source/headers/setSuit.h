@@ -1,10 +1,10 @@
 #pragma once
-#include "gameState.h"
+#include "game.h"
 class setSuit :
     public gameState
 {
     sf::Font font;
-    gameState* game;
+    game* prev;
 
     sf::Text text;
 
@@ -14,7 +14,7 @@ class setSuit :
     std::unique_ptr<button> b_spades;
 
 public:
-    setSuit(gameState* _game);
+    setSuit(game* _game);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

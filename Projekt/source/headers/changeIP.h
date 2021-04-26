@@ -1,5 +1,5 @@
 #pragma once
-#include "gameState.h"
+#include "multiPlayerSettings.h"
 class changeIP :
 	public gameState
 {
@@ -9,10 +9,10 @@ class changeIP :
 
 	std::unique_ptr<button> b_back;
 
-	gameState* prev = nullptr;
+	multiPlayerSettings* prev = nullptr;
 
 public:
-	changeIP(gameState* _prev);
+	changeIP(multiPlayerSettings* _prev);
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

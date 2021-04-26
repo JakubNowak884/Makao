@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game.h"
+#include "singlePlayerSettings.h"
 
 class singlePlayer :
     public game
@@ -15,7 +16,7 @@ class singlePlayer :
     bool threadRunning = false;
 
 public:
-    singlePlayer(gameState* prev);
+    singlePlayer(singlePlayerSettings* prev);
     AI* getAI(int ID);
     bool everyoneElseWon();
     void botsTakesTurn();

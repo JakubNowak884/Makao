@@ -26,7 +26,11 @@ gameStateNumber changeName::update(sf::Event event, sf::RenderWindow& window)
         return gameStateNumber::resume;
     }
 
-    b_back->uptade(getMousePos(window));
+    if (getPlayerName().length() - 1 != 0)
+        b_back->uptade(getMousePos(window));
+
+    if (getPlayerName().length() - 1 <= 0)
+        b_back->setChosen(false);
 }
 
 void changeName::draw(sf::RenderWindow& window)

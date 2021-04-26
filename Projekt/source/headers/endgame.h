@@ -3,7 +3,8 @@
 #include <string>
 #include <map>
 
-#include "gameState.h"
+#include "singlePlayer.h"
+#include "multiPlayer.h"
 
 class endgame :
     public gameState
@@ -16,7 +17,8 @@ class endgame :
     std::map<int, std::string> results;
 
 public:
-    endgame(gameState* prev);
+    endgame(singlePlayer* prev);
+    endgame(multiPlayer* prev);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

@@ -1,6 +1,6 @@
 #include "headers\setFigure.h"
 
-setFigure::setFigure(gameState* _game)
+setFigure::setFigure(game* _game)
 {
     font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
@@ -16,23 +16,23 @@ setFigure::setFigure(gameState* _game)
     b_nine = std::make_unique<button>("Dziewiatki", font, 200, 100, 200, 370, 32);
     b_ten = std::make_unique<button>("Dziesiatki", font, 200, 100, 600, 370, 32);
 
-    game = _game;
+    prev = _game;
 }
 
 gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)
 {
     if(event.type == sf::Event::MouseWheelScrolled)
     {
-        if (event.mouseWheelScroll.delta > 0 && (game->getHand().front())->getX() < 800)
+        if (event.mouseWheelScroll.delta > 0 && (prev->getHand().front())->getX() < 800)
         {
-            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
             }
         }
-        else if (event.mouseWheelScroll.delta < 0 && game->getHand().back()->getX() > 0)
+        else if (event.mouseWheelScroll.delta < 0 && prev->getHand().back()->getX() > 0)
         {
-            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
             }
@@ -41,32 +41,32 @@ gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)
 
     if (b_five->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::five);
+        prev->setCurrentFigure(figureNumber::five);
         return gameStateNumber::resume;
     }
     if (b_six->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::six);
+        prev->setCurrentFigure(figureNumber::six);
         return gameStateNumber::resume;
     }
     if (b_seven->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::seven);
+        prev->setCurrentFigure(figureNumber::seven);
         return gameStateNumber::resume;
     }
     if (b_eight->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::eight);
+        prev->setCurrentFigure(figureNumber::eight);
         return gameStateNumber::resume;
     }
     if (b_nine->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::nine);
+        prev->setCurrentFigure(figureNumber::nine);
         return gameStateNumber::resume;
     }
     if (b_ten->clicked(event))
     {
-        game->setCurrentFigure(figureNumber::ten);
+        prev->setCurrentFigure(figureNumber::ten);
         return gameStateNumber::resume;
     }
 
@@ -81,7 +81,7 @@ gameStateNumber setFigure::update(sf::Event event, sf::RenderWindow& window)
 
 void setFigure::draw(sf::RenderWindow& window)
 {
-    for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+    for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
     {
         if ((*i)->getX() > -200 && (*i)->getX() < 1000)
             (*i)->draw(window);

@@ -1,6 +1,6 @@
 #include "headers\setSuit.h"
 
-setSuit::setSuit(gameState* _game)
+setSuit::setSuit(game* _game)
 {
     font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
 
@@ -14,23 +14,23 @@ setSuit::setSuit(gameState* _game)
     b_hearts = std::make_unique<button>("Serce", font, 200, 100, 600, 150, 32);
     b_spades = std::make_unique<button>("Pik", font, 200, 100, 600, 260, 32);
 
-    game = _game;
+    prev = _game;
 }
 
 gameStateNumber setSuit::update(sf::Event event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        if (event.mouseWheelScroll.delta > 0 && (game->getHand().front())->getX() < 800)
+        if (event.mouseWheelScroll.delta > 0 && (prev->getHand().front())->getX() < 800)
         {
-            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
             }
         }
-        else if (event.mouseWheelScroll.delta < 0 && game->getHand().back()->getX() > 0)
+        else if (event.mouseWheelScroll.delta < 0 && prev->getHand().back()->getX() > 0)
         {
-            for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
             }
@@ -39,22 +39,22 @@ gameStateNumber setSuit::update(sf::Event event, sf::RenderWindow& window)
 
     if (b_clubs->clicked(event))
     {
-        game->setCurrentSuit(suitNumber::clubs);
+        prev->setCurrentSuit(suitNumber::clubs);
         return gameStateNumber::resume;
     }
     if (b_diamonds->clicked(event))
     {
-        game->setCurrentSuit(suitNumber::diamonds);
+        prev->setCurrentSuit(suitNumber::diamonds);
         return gameStateNumber::resume;
     }
     if (b_hearts->clicked(event))
     {
-        game->setCurrentSuit(suitNumber::hearts);
+        prev->setCurrentSuit(suitNumber::hearts);
         return gameStateNumber::resume;
     }
     if (b_spades->clicked(event))
     {
-        game->setCurrentSuit(suitNumber::spades);
+        prev->setCurrentSuit(suitNumber::spades);
         return gameStateNumber::resume;
     }
 
@@ -68,7 +68,7 @@ gameStateNumber setSuit::update(sf::Event event, sf::RenderWindow& window)
 
 void setSuit::draw(sf::RenderWindow& window)
 {
-    for (std::vector<card*>::iterator i = game->getHand().begin(); i != game->getHand().end(); i++)
+    for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
     {
         if ((*i)->getX() > -200 && (*i)->getX() < 1000)
             (*i)->draw(window);

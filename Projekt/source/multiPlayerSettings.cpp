@@ -28,7 +28,7 @@ void multiPlayerSettings::setIP(char sign)
     else
         text = &IP_Online;
 
-    if (((47 < sign && sign < 58) || sign == 46) && (*text).length() < 15)
+    if (((47 < sign && sign < 58) || sign == 46) && (*text).length() < 20)
     {
         if ((*text).front() == 32)
             (*text).front() = sign;
@@ -42,6 +42,11 @@ void multiPlayerSettings::setIP(char sign)
         else
             (*text).pop_back();
     }
+}
+
+bool multiPlayerSettings::getLAN()
+{
+    return settingIP_LAN;
 }
 
 std::string multiPlayerSettings::getIP()
@@ -79,6 +84,7 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     if (b_joinLAN->clicked(event))
     {
         host = false;
+        settingIP_LAN = true;
         b_joinLAN->setString("laczenie...");
         draw(window);
         window.display();
@@ -88,12 +94,26 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     if (b_createLAN->clicked(event))
     {
         host = true;
+        settingIP_LAN = true;
         return gameStateNumber::multiPlayer;
     }
 
-    if (b_joinOnline->clicked(event));
+    if (b_joinOnline->clicked(event))
+    {
+        host = false;
+        settingIP_LAN = false;
+        b_joinOnline->setString("laczenie...");
+        draw(window);
+        window.display();
+        return gameStateNumber::multiPlayer;
+    }
 
-    if (b_createOnline->clicked(event));
+    if (b_createOnline->clicked(event))
+    {
+        host = true;
+        settingIP_LAN = false;
+        return gameStateNumber::multiPlayer;
+    }
 
     if (event.type == sf::Event::TextEntered)
     {
