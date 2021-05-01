@@ -1,85 +1,21 @@
 #include "headers\stateMachine.h"
+#include "headers\Resources.h"
 
 #include <iostream>
 #include <conio.h>
 
 int main()
 {
-    /*
-    sf::IpAddress ip = "185.238.122.73";
-    //std::cout << sf::IpAddress::getLocalAddress();
-    //std::cout << sf::IpAddress::getPublicAddress();
-    sf::TcpSocket socket;
-    char connectionType;
-    char mode = 'd';
-    char buffer[2000];
-    std::size_t received;
-    std::string text = "Connected to: ";
-
-    std::cout << "s for server c for client" << std::endl;
-    std::cin >> connectionType;
-
-    if (connectionType == 's')
-    {
-        sf::TcpListener listener;
-        listener.listen(2000);
-        listener.accept(socket);
-        text += "Server";
-        mode = 's';
-    }
-    else if (connectionType == 'c')
-    {
-        socket.connect(ip, 2000);
-        text += "Client";
-        mode = 'r';
-    }
-
-    socket.send(text.c_str(), text.length() + 1);
-
-    socket.receive(buffer, sizeof(buffer), received);
-
-    std::cout << buffer << std::endl;
-
-    std::string currentText = "test";
-
-    unsigned char znak = 0;
-
-    while (true)
-    {
-        if (kbhit())
-            znak = getch();
-        switch (znak)
-        {
-        case 97:
-            text = "test a";
-            break;
-        case 98:
-            text = "test b";
-            break;
-        default:
-            text = "test def";
-            break;
-        }
-        socket.send(text.c_str(), text.length() + 1);
-        socket.receive(buffer, sizeof(buffer), received);
-        currentText = buffer;
-        std::cout << "Current text: " << currentText << std::endl;
-        system("cls");
-    }
-
-    system("pause");
-    */
-    
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Makao");
-    sf::FloatRect area(0, 0, 800, 800);
-    window.setView(sf::View(area));
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Makao");
+    sf::View area(sf::FloatRect(0, 0, 800, 800));
+    window.setView(area);
     window.setFramerateLimit(30);
-    stateMachine* game = new stateMachine;
-
-    
-    sf::Texture texture;
-    texture.loadFromFile("../resources/textures/background.png");
-    sf::Sprite background(texture);
+    std::unique_ptr<Resources> resources = std::make_unique<Resources>();
+    resources->loadResources();
+    std::unique_ptr<stateMachine> game = std::make_unique<stateMachine>(resources.get());
+    std::unique_ptr<sf::Sprite> background = std::make_unique<sf::Sprite>(resources->getTexture("background"));
+    background->setPosition(-480, 0);
+    bool fullScreen = false;
 
     while (window.isOpen())
     {
@@ -88,10 +24,44 @@ int main()
         {
             if (!game->update(event, window)) window.close();
 
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F11)
+            {
+                if (fullScreen)
+                {
+                    window.create(sf::VideoMode(800, 800), "Makao");
+                    sf::View area2(sf::FloatRect(0, 0, 800, 800));
+                    window.setView(area2);
+                    window.setFramerateLimit(30);
+                    fullScreen = false;
+                }
+                else
+                {
+                    window.create(sf::VideoMode::getDesktopMode(), "Makao", sf::Style::Fullscreen);
+                    sf::View area2(sf::FloatRect(-460, 0, 1720, 800));
+                    window.setView(area2);
+                    window.setFramerateLimit(30);
+                    fullScreen = true;
+                }
+
+            }
+
+            if (event.type == sf::Event::Resized)
+            {
+                if ((event.size.width) >= 800 && (event.size.height) >= 800)
+                {
+                    sf::View area2(sf::FloatRect(-float((event.size.width * 0.9f - 800)/2), 0, event.size.width * 0.9f, 800));
+                    window.setView(sf::View(area2));
+                }
+                else
+                {
+                    sf::View area2(sf::FloatRect(0, 0, 800, 800));
+                    window.setView(sf::View(area2));
+                }
+            }
+
             if (event.type == sf::Event::Closed) window.close();
         }
-        window.clear(sf::Color::Color(0, 0, 128));
-        window.draw(background);
+        window.draw(*background.get());
         game->draw(window);
         window.display();
     }

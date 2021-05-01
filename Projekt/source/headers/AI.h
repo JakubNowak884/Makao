@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "card.h"
+#include "GUI\card.h"
 
 class AI
 {
@@ -15,6 +15,7 @@ class AI
 	int ID;
 	int won;
 	int delay;
+	bool second = false;
 
 public:
 	AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* texture, int _ID, bool onlyOne = false);
@@ -29,6 +30,8 @@ public:
 	void setDelay(int _delay);
 	void setTextColor(sf::Color color);
 
+	suitNumber wantSuit();
+	figureNumber wantFigure();
 	bool hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
 	card* playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
 	card* drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);

@@ -1,0 +1,4 @@
+../resources/fonts/Aleo-Regular.otf
+../resources/textures/button.png
+../resources/textures/deck.png
+../resources/textures/background.png

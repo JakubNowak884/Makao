@@ -1,0 +1,13 @@
+#changeIP
+#changeName
+#endgame
+#game
+#gameState
+#instruction
+#menu
+#multiPlayer
+#multiPlayerSettings
+#setFigure
+#setSuit
+#singlePlayer
+#singlePlayerSettings

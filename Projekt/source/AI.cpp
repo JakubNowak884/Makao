@@ -8,29 +8,28 @@ AI::AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* text
 	if (onlyOne)
 	{
 		info.setPosition(470, 10);
-		cardBack = new object(120, 180, 400, 100, sf::Color::White);
+		cardBack = new object(120, 180, 400, 100, texture, sf::Color::White);
 	}
 	else {
 		switch (_ID)
 		{
 		case 2:		
 			info.setPosition(10, 210);
-			cardBack = new object(120, 180, 70, 400, sf::Color::White);
+			cardBack = new object(120, 180, 70, 400, texture, sf::Color::White);
 			break;
 		case 3:
 			info.setPosition(470, 10);
-			cardBack = new object(120, 180, 400, 100, sf::Color::White);
+			cardBack = new object(120, 180, 400, 100, texture, sf::Color::White);
 			break;
 		case 4:
 			info.setPosition(580, 210);
-			cardBack = new object(120, 180, 640, 400, sf::Color::White);
+			cardBack = new object(120, 180, 640, 400, texture, sf::Color::White);
 			break;
 		default:
 			break;
 		}
 	}
 
-	cardBack->getShape().setTexture(texture);
 	cardBack->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 
 	int j = 0;
@@ -89,13 +88,54 @@ void AI::setTextColor(sf::Color color)
 	info.setFillColor(color);
 }
 
+suitNumber AI::wantSuit()
+{
+	if (hand.size() > 0)
+		return hand.front()->getSuit();
+	else
+		return suitNumber::clubs;
+}
+
+figureNumber AI::wantFigure()
+{
+	if (hand.size() > 0)
+	{
+		for (auto i = hand.begin(); i != hand.end(); ++i)
+		{
+			switch ((*i)->getFigure())
+			{
+			case figureNumber::five:
+				return figureNumber::five;
+				break;
+			case figureNumber::six:
+				return figureNumber::six;
+				break;
+			case figureNumber::seven:
+				return figureNumber::seven;
+				break;
+			case figureNumber::eight:
+				return figureNumber::eight;
+				break;
+			case figureNumber::nine:
+				return figureNumber::nine;
+				break;
+			case figureNumber::ten:
+				return figureNumber::ten;
+				break;
+			}
+		}
+	}
+	return figureNumber::five;
+}
+
 bool AI::hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
 	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
+		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 			return true;
 	}
+	second = false;
 	return false;
 }
 
@@ -103,18 +143,20 @@ card* AI::playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsAct
 {
 	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
-		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
+		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 		{
 			deck.push_front((*i));
 			hand.erase(i);
+			second = true;
 			return deck.front().get();
 		}
 	}
+	return nullptr;
 }
 
 card* AI::drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
-	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
+	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 	{
 		deck.push_front(deck.back());
 		deck.pop_back();

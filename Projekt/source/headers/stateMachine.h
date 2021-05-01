@@ -1,24 +1,25 @@
 #pragma once
 
-#include "menu.h"
-#include "changeName.h"
-#include "instruction.h"
-#include "singlePlayerSettings.h"
-#include "singlePlayer.h"
-#include "multiPlayerSettings.h"
-#include "changeIP.h"
-#include "multiPlayer.h"
-#include "endgame.h"
-#include "setSuit.h"
-#include "setFigure.h"
+#include "GameStates/menu.h"
+#include "GameStates/changeName.h"
+#include "GameStates/instruction.h"
+#include "GameStates/singlePlayerSettings.h"
+#include "GameStates/singlePlayer.h"
+#include "GameStates/multiPlayerSettings.h"
+#include "GameStates/changeIP.h"
+#include "GameStates/multiPlayer.h"
+#include "GameStates/endgame.h"
+#include "GameStates/setSuit.h"
+#include "GameStates/setFigure.h"
 
 class stateMachine
 {
     gameState* current;
     gameState* prev;
+    Resources* resources;
 
 public:
-    stateMachine();
+    stateMachine(Resources* _resources);
     ~stateMachine();
 
     bool update(sf::Event event, sf::RenderWindow& window);

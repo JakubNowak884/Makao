@@ -1,8 +1,9 @@
 #include "headers\stateMachine.h"
 
-stateMachine::stateMachine()
+stateMachine::stateMachine(Resources* _resources)
+	: resources(_resources)
 {
-	current = new menu;
+	current = new menu(resources);
 	prev = nullptr;
 }
 
@@ -19,60 +20,60 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 	case gameStateNumber::singlePlayerSettings:
 		delete prev;
 		prev = current;
-		current = new singlePlayerSettings;
+		current = new singlePlayerSettings(resources);
 		break;
 	case gameStateNumber::singlePlayer:
 		delete prev;
 		prev = current;
-		current = new singlePlayer(dynamic_cast<singlePlayerSettings*>(prev));
+		current = new singlePlayer(dynamic_cast<singlePlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::multiPlayerSettings:
 		delete prev;
 		prev = current;
-		current = new multiPlayerSettings;
+		current = new multiPlayerSettings(resources);
 		break;
 	case gameStateNumber::changeIP:
 		prev = current;
-		current = new changeIP(dynamic_cast<multiPlayerSettings*>(prev));
+		current = new changeIP(dynamic_cast<multiPlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::multiPlayer:
 		delete prev;
 		prev = current;
-		current = new multiPlayer(dynamic_cast<multiPlayerSettings*>(prev));
+		current = new multiPlayer(dynamic_cast<multiPlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::endgame:
 		delete prev;
 		prev = current;
 		if (dynamic_cast<multiPlayer*>(prev) == nullptr)
-			current = new endgame(dynamic_cast<singlePlayer*>(prev));
+			current = new endgame(dynamic_cast<singlePlayer*>(prev), resources);
 		else
-			current = new endgame(dynamic_cast<multiPlayer*>(prev));
+			current = new endgame(dynamic_cast<multiPlayer*>(prev), resources);
 		break;
 	case gameStateNumber::menu:
 		delete prev;
 		prev = current;
-		current = new menu;
+		current = new menu(resources);
 		break;
 	case gameStateNumber::changeName:
 		delete prev;
 		prev = current;
-		current = new changeName;
+		current = new changeName(resources);
 		break;
 	case gameStateNumber::instruction:
 		delete prev;
 		prev = current;
-		current = new instruction;
+		current = new instruction(resources);
 		break;
 	case gameStateNumber::quit:
 		return false;
 		break;
 	case gameStateNumber::setSuit:
 		prev = current;
-		current = new setSuit(dynamic_cast<game*>(prev));
+		current = new setSuit(dynamic_cast<game*>(prev), resources);
 		break;
 	case gameStateNumber::setFigure:
 		prev = current;
-		current = new setFigure(dynamic_cast<game*>(prev));
+		current = new setFigure(dynamic_cast<game*>(prev), resources);
 		break;
 	case gameStateNumber::resume:
 		delete current;
