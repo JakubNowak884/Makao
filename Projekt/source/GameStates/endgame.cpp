@@ -1,42 +1,35 @@
 #include "..\headers\GameStates\endgame.h"
+#include "..\headers\Resources.h"
 
-endgame::endgame(singlePlayer* prev, Resources* _resources)
-	: gameState(_resources)
+Endgame::Endgame(SinglePlayer* prev, Resources* _resources)
+	: GameState(_resources)
 {
-	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+	initText(text, 0, 0, 48);
 
-	text.setFont(resources->getFont());
-	text.setCharacterSize(48);
-	text.setPosition(0, 0);
-	std::string first = "Koniec gry!\nWyniki:\n";
+	std::string first = sf::String(resources->getText(int(gameStateNumber::endgame), 1));
 	for (int i = 2; i < prev->getAmountOfPlayers() + 1; i++)
-		results[prev->getAI(i)->getWon()] = "Komputer " + std::to_string(prev->getAI(i)->getID() - 1);
+		results[prev->getAI(i)->getWon()] = sf::String(resources->getText(int(gameStateNumber::endgame), 2)) + std::to_string(prev->getAI(i)->getID() - 1);
 	std::cout << prev->getWon() << std::endl;
-	results[prev->getWon()] = getPlayerName();
+	results[prev->getWon()] = sf::String(getPlayerName());
 
 	for (int i = 1; i < prev->getAmountOfPlayers() + 1; i++)
 		first = first + std::to_string(i) + ". " + results[i] + "\n";
 
 	text.setString(first);
 
-	b_menu = std::make_unique<button>(L"Wroc do menu", resources->getFont(), 600, 100, 400, 700, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::endgame), 3), resources->getFont(), 600, 100, 400, 700, resources->getTexturePtr("button"));
 }
 
-endgame::endgame(multiPlayer* prev, Resources* _resources)
-	: gameState(_resources)
+Endgame::Endgame(MultiPlayer* prev, Resources* _resources)
+	: GameState(_resources)
 {
-	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+	initText(text, 0, 0, 48);
+	text.setString(resources->getText(int(gameStateNumber::endgame), 1) + sf::String(prev->getPodium()));
 
-	text.setFont(resources->getFont());
-	text.setCharacterSize(48);
-	text.setPosition(0, 0);
-
-	text.setString("Koniec gry!\nWyniki:\n" + prev->getPodium());
-
-	b_menu = std::make_unique<button>(L"Wroc do menu", resources->getFont(), 600, 100, 400, 700, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::endgame), 3), resources->getFont(), 600, 100, 400, 700, resources->getTexturePtr("button"));
 }
 
-gameStateNumber endgame::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber Endgame::update(sf::Event event, sf::RenderWindow& window)
 {
 	if (b_menu->clicked(event))
 		return gameStateNumber::menu;
@@ -45,7 +38,7 @@ gameStateNumber endgame::update(sf::Event event, sf::RenderWindow& window)
 	return gameStateNumber::def;
 }
 
-void endgame::draw(sf::RenderWindow& window)
+void Endgame::draw(sf::RenderWindow& window)
 {
 	window.draw(text);
 	b_menu->draw(window);

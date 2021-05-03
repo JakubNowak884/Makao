@@ -1,8 +1,8 @@
 #pragma once
-#include "object.h"
+#include "Object.h"
 
-class button :
-    public object
+class Button :
+    public Object
 {
     sf::Text text;
 
@@ -12,8 +12,8 @@ class button :
     float textEndl(const std::wstring& text);
 
 public:
-    button(const std::string& textToBeShowed, sf::Font& font, float _width, float _height, float _x, float _y, sf::Texture* texture, int _textSize = 86);
-    button(const std::wstring& textToBeShowed, sf::Font& font, float _width, float _height, float _x, float _y, sf::Texture* texture, int _textSize = 86);
+    Button(const std::string& textToBeShowed, sf::Font& font, float _width, float _height, float _x, float _y, sf::Texture* texture, int _textSize = 86);
+    Button(const std::wstring& textToBeShowed, sf::Font& font, float _width, float _height, float _x, float _y, sf::Texture* texture, int _textSize = 86);
     void setString(std::string _text);
     void setString(std::wstring _text);
     void setPosition(sf::Vector2f position) override;

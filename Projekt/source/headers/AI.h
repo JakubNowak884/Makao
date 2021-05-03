@@ -4,13 +4,43 @@
 #include <list>
 #include <string>
 
-#include "GUI\card.h"
+#include "GUI\Card.h"
 
+class Resources;
 class AI
 {
-	object* cardBack = nullptr;
+	struct howManyCards
+	{
+		howManyCards(suitNumber _suit)
+			: suit(_suit), figure(figureNumber::null), howMany(0) {}
+		howManyCards(figureNumber _figure)
+			: figure(_figure), suit(suitNumber::null), howMany(0) {}
+
+		suitNumber suit;
+		figureNumber figure;
+		int howMany;
+		bool operator <(const howManyCards& obj)
+		{
+			if (howMany < obj.howMany)
+				return true;
+			else
+				return false;
+		}
+	};
+
+	struct cardPlayed
+	{
+		cardPlayed(suitNumber _suit, figureNumber _figure)
+			: suit(_suit), figure(_figure) {}
+		suitNumber suit;
+		figureNumber figure;
+	};
+	Resources* resources;
+
+	Object* cardBack = nullptr;
 	sf::Text info;
-	std::vector<std::shared_ptr<card>> hand;
+	std::vector<std::shared_ptr<Card>> hand;
+	std::list<std::unique_ptr<cardPlayed>> cardsPlayed;
 
 	int ID;
 	int won;
@@ -18,7 +48,7 @@ class AI
 	bool second = false;
 
 public:
-	AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* texture, int _ID, bool onlyOne = false);
+	AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, bool onlyOne = false);
 	~AI();
 
 	int getID();
@@ -32,9 +62,10 @@ public:
 
 	suitNumber wantSuit();
 	figureNumber wantFigure();
-	bool hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
-	card* playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
-	card* drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
+	void rememberCard(suitNumber suit, figureNumber figure);
+	bool hasACardAbleToPlay(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	Card* playACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure);
+	Card* drawACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
 	void draw(sf::RenderWindow& window);
 };
 

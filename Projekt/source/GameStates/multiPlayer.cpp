@@ -1,25 +1,23 @@
 #include "..\headers\GameStates\multiPlayer.h"
+#include "..\headers\Resources.h"
 #include "windows.h"
 
-multiPlayer::multiPlayer(multiPlayerSettings* _prev, Resources* _resources)
-	: game(_resources, _prev->getOnlyQueens())
+MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
+	: Game(_resources, _prev->getOnlyQueens())
 {
 	prev = _prev;
 
-	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+	initText(text, 0, 0, 36);
+	if (prev->getLAN())
+		text.setString(resources->getText(int(gameStateNumber::multiPlayer), 1));
+	else
+		text.setString(resources->getText(int(gameStateNumber::multiPlayer), 2));
+	
 
-	text.setCharacterSize(36);
-	text.setFillColor(sf::Color::White);
-	text.setFont(resources->getFont());
-	text.setPosition(0, 0);
-	text.setString("Rodzaj gry: LAN\nIP sesji: ");
-
-	b_addSlot = std::make_unique<button>(" Dodaj\nmiejsce", resources->getFont(), 250, 100, 405, 200, resources->getTexturePtr("button"), 38);
-	b_deleteSlot = std::make_unique<button>(" Usun\nmiejsce", resources->getFont(), 250, 100, 665, 200, resources->getTexturePtr("button"), 38);
-	b_addBot = std::make_unique<button>("    Dodaj\nkomputer", resources->getFont(), 250, 100, 405, 310, resources->getTexturePtr("button"), 38);
-	b_deleteBot = std::make_unique<button>("    Usun\nkomputer", resources->getFont(), 250, 100, 665, 310, resources->getTexturePtr("button"), 38);
-	b_start = std::make_unique<button>("Rozpocznij", resources->getFont(), 600, 150, 400, 540, resources->getTexturePtr("button"));
-	b_menu = std::make_unique<button>("Wroc do menu", resources->getFont(), 600, 150, 400, 700, resources->getTexturePtr("button"));
+	b_addSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 3), resources->getFont(), 250, 100, 405, 200, resources->getTexturePtr("button"), 38);
+	b_deleteSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 4), resources->getFont(), 250, 100, 665, 200, resources->getTexturePtr("button"), 38);
+	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 5), resources->getFont(), 600, 150, 400, 540, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600, 150, 400, 700, resources->getTexturePtr("button"));
 
 	if (prev->getHost())
 	{
@@ -33,11 +31,11 @@ multiPlayer::multiPlayer(multiPlayerSettings* _prev, Resources* _resources)
 		text.setString(text.getString() + temp);
 
 		if (prev->getOnlyQueens())
-			text.setString(text.getString() + "\nSame krolowe wlaczone"+ "\nUczestnicy:\n" "1." + getPlayerName());
+			text.setString(text.getString() + resources->getText(int(gameStateNumber::multiPlayer), 7) + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
 		else 
-			text.setString(text.getString() + "\n\nUczestnicy:\n" "1." + getPlayerName());
+			text.setString(text.getString() + L"\n" + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
 
-		player = std::make_unique<Player>(deck, resources->getFont(), maxID);
+		player = std::make_unique<Player>(deck, resources, maxID);
 	}
 	else
 	{
@@ -46,13 +44,15 @@ multiPlayer::multiPlayer(multiPlayerSettings* _prev, Resources* _resources)
 		else
 		{
 			guest1.receive(buffer, sizeof(buffer), received);
-			text.setString(buffer + getPlayerName());
-			guest1.send(getPlayerName().c_str(), getPlayerName().length() + 1);
+			sf::String str = getPlayerName();
+			text.setString(buffer + str);
+			std::string str2 = str;
+			guest1.send(str2.c_str(), str2.length() + 1);
 			guest1.receive(buffer, sizeof(buffer), received);
 			maxID = buffer[0];
 			guest1.receive(buffer, sizeof(buffer), received);
 			loadDataFromBuffer(true);
-			player = std::make_unique<Player>(deck, resources->getFont(), maxID);
+			player = std::make_unique<Player>(deck, resources, maxID);
 			putDataToSend();
 			guest1.send(data, 600);
 			myTurn = false;
@@ -61,7 +61,7 @@ multiPlayer::multiPlayer(multiPlayerSettings* _prev, Resources* _resources)
 	}
 }
 
-multiPlayer::~multiPlayer()
+MultiPlayer::~MultiPlayer()
 {
 	guest3.disconnect();
 	guest2.disconnect();
@@ -69,7 +69,7 @@ multiPlayer::~multiPlayer()
 	listener.close();
 }
 
-void multiPlayer::listen(sf::TcpSocket& guest)
+void MultiPlayer::listen(sf::TcpSocket& guest)
 {
 	listener.listen(50002);
 	if (listener.accept(guest) == sf::Socket::Done)
@@ -107,7 +107,7 @@ void multiPlayer::listen(sf::TcpSocket& guest)
 	threadRunning = false;
 }
 
-void multiPlayer::waitForStart()
+void MultiPlayer::waitForStart()
 {
 	if (guest1.receive(buffer, sizeof(buffer), received) == sf::Socket::Done)
 	{
@@ -126,7 +126,7 @@ void multiPlayer::waitForStart()
 			amountOfPlayers = buffer[0];
 			initializeInfo();
 			putDataToSend();
-			if (guest1.send(data, 600));
+			guest1.send(data, 600);
 			if (guest1.receive(buffer, sizeof(buffer), received) != sf::Socket::Done)
 			{
 				state = 0;
@@ -139,7 +139,7 @@ void multiPlayer::waitForStart()
 	threadRunning = false;
 }
 
-void multiPlayer::waitForData(sf::TcpSocket& guest)
+void MultiPlayer::waitForData(sf::TcpSocket& guest)
 {
 	if (guest.receive(buffer, sizeof(buffer), received) == sf::Socket::Done)
 	{
@@ -192,13 +192,14 @@ void multiPlayer::waitForData(sf::TcpSocket& guest)
 	threadRunning = false;
 }
 
-void multiPlayer::putDataToSend()
+void MultiPlayer::putDataToSend()
 {
 	int ID = player->getID();
 
 	if (host)
 	{
-		std::string temp = getPlayerName() + "\nIlosc kart : " + std::to_string(player->hand.size()) + "\nOpoznienie : " + std::to_string(player->getDelay());
+		sf::String str = getPlayerName() + resources->getText(int(gameStateNumber::multiPlayer), 9) + std::to_wstring(player->hand.size()) + resources->getText(int(gameStateNumber::multiPlayer), 10) + std::to_wstring(player->getDelay());
+		std::string temp = str;
 		data[200] = int(temp.length());
 		temp.copy(&data[200 + 1], 100);
 
@@ -214,7 +215,8 @@ void multiPlayer::putDataToSend()
 	else
 	{
 		data[200] = ID;
-		std::string temp = getPlayerName() + "\nIlosc kart : " + std::to_string(player->hand.size()) + "\nOpoznienie : " + std::to_string(player->getDelay());
+		sf::String str = getPlayerName() + resources->getText(int(gameStateNumber::multiPlayer), 9) + std::to_wstring(player->hand.size()) + resources->getText(int(gameStateNumber::multiPlayer), 10) + std::to_wstring(player->getDelay());
+		std::string temp = str;
 		data[201] = int(temp.length());
 		temp.copy(&data[202], 100);
 	}
@@ -241,7 +243,7 @@ void multiPlayer::putDataToSend()
 	data[j] = 'e';
 }
 
-bool multiPlayer::loadDataFromBuffer(bool onlyDeck)
+bool MultiPlayer::loadDataFromBuffer(bool onlyDeck)
 {
 	turn = buffer[0];
 	wonCounter = buffer[1];
@@ -258,7 +260,7 @@ bool multiPlayer::loadDataFromBuffer(bool onlyDeck)
 
 	while (buffer[i] != 'e')
 	{
-		deck.push_back(std::make_shared<card>(figureNumber(buffer[i]), suitNumber(buffer[i + 1]), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
+		deck.push_back(std::make_shared<Card>(figureNumber(buffer[i]), suitNumber(buffer[i + 1]), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
 		i += 2;
 	}
 
@@ -268,7 +270,7 @@ bool multiPlayer::loadDataFromBuffer(bool onlyDeck)
 		{
 			int ID = int(buffer[200]);
 			if (ID < 0 && ID > 3)
-				infoPlayer[0].setString("Blad polaczenia");
+				infoPlayer[0].setString(resources->getText(int(gameStateNumber::multiPlayer), 11));
 			else
 				infoPlayer[size_t(ID - 2)].setString(std::string(&buffer[202], buffer[201]) + buffer[9]);
 		}
@@ -287,7 +289,7 @@ bool multiPlayer::loadDataFromBuffer(bool onlyDeck)
 	return true;
 }
 
-void multiPlayer::initializeInfo()
+void MultiPlayer::initializeInfo()
 {
 	sf::Text infoPlayer1;
 	infoPlayer1.setFont(resources->getFont());
@@ -299,8 +301,8 @@ void multiPlayer::initializeInfo()
 		infoPlayer1.setPosition(470, 10);
 		infoPlayer.push_back(infoPlayer1);
 
-		cardback.push_back(std::make_unique<object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
 	case 3:
@@ -310,11 +312,11 @@ void multiPlayer::initializeInfo()
 		infoPlayer1.setPosition(470, 10);
 		infoPlayer.push_back(infoPlayer1);
 
-		cardback.push_back(std::make_unique<object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
-		cardback.push_back(std::make_unique<object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[1]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[1]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[1]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
 	case 4:
@@ -327,25 +329,25 @@ void multiPlayer::initializeInfo()
 		infoPlayer1.setPosition(580, 210);
 		infoPlayer.push_back(infoPlayer1);
 
-		cardback.push_back(std::make_unique<object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
-		cardback.push_back(std::make_unique<object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[1]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[1]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[1]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
-		cardback.push_back(std::make_unique<object>(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[2]->getShape().setTexture(textureSuit.get());
+		cardback.push_back(std::make_unique<Object>(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White));
+		cardback[2]->getShape().setTexture(resources->getTexturePtr("deck"));
 		cardback[2]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
 	}
 }
 
-std::string multiPlayer::getPodium()
+std::string MultiPlayer::getPodium()
 {
 	return podium;
 }
 
-gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 {
 	switch (state)
 	{
@@ -362,7 +364,7 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 			if (!threadRunning)
 			{
 				threadRunning = true;
-				t = std::thread(&multiPlayer::waitForStart, this);
+				t = std::thread(&MultiPlayer::waitForStart, this);
 				t.detach();
 			}
 		}
@@ -374,13 +376,13 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				switch (maxID)
 				{
 				case 2:
-					t = std::thread(&multiPlayer::listen, this, std::ref(guest1));
+					t = std::thread(&MultiPlayer::listen, this, std::ref(guest1));
 					break;
 				case 3:
-					t = std::thread(&multiPlayer::listen, this, std::ref(guest2));
+					t = std::thread(&MultiPlayer::listen, this, std::ref(guest2));
 					break;
 				case 4:
-					t = std::thread(&multiPlayer::listen, this, std::ref(guest3));
+					t = std::thread(&MultiPlayer::listen, this, std::ref(guest3));
 					break;
 				}
 				t.detach();
@@ -529,17 +531,17 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 					{
 					case 2:
 						threadRunning = true;
-						t = std::thread(&multiPlayer::waitForData, this, std::ref(guest1));
+						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
 						t.detach();
 						break;
 					case 3:
 						threadRunning = true;
-						t = std::thread(&multiPlayer::waitForData, this, std::ref(guest2));
+						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest2));
 						t.detach();
 						break;
 					case 4:
 						threadRunning = true;
-						t = std::thread(&multiPlayer::waitForData, this, std::ref(guest3));
+						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest3));
 						t.detach();
 						break;
 					}
@@ -547,7 +549,7 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				else
 				{
 					threadRunning = true;
-					t = std::thread(&multiPlayer::waitForData, this, std::ref(guest1));
+					t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
 					t.detach();
 				}
 			}
@@ -570,7 +572,9 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				}
 				if (player->getWon() == 0)
 					player->setWon(amountOfPlayers);
-				results[player->getWon()] = getPlayerName();
+				sf::String str = getPlayerName();
+				std::string tmp = str;
+				results[player->getWon()] = tmp;
 				for (int i = 1; i < amountOfPlayers + 1; i++)
 					podium = podium + std::to_string(i) + ". " + results[i] + "\n";
 
@@ -599,7 +603,7 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 
 			return gameStateNumber::endgame;
 		}
-		return game::update(event, window);
+		return Game::update(event, window);
 		break;
 	default:
 		break;
@@ -608,25 +612,23 @@ gameStateNumber multiPlayer::update(sf::Event event, sf::RenderWindow& window)
 	return gameStateNumber::def;
 }
 
-void multiPlayer::draw(sf::RenderWindow& window)
+void MultiPlayer::draw(sf::RenderWindow& window)
 {
 	switch (state)
 	{
 	case 0:
-		text.setString("Nie udalo sie dolaczyc do gry o podanym IP");
+		text.setString(resources->getText(int(gameStateNumber::multiPlayer), 12));
 		window.draw(text);
 		b_menu->draw(window);
 		break;
 	case 1:
 		if (waiting)
-			b_addSlot->setString("Oczekiwanie\nna gracza...");
+			b_addSlot->setString(resources->getText(int(gameStateNumber::multiPlayer), 13));
 		else
-			b_addSlot->setString(" Dodaj\nmiejsce");
+			b_addSlot->setString(resources->getText(int(gameStateNumber::multiPlayer), 14));
 		window.draw(text);
 		b_addSlot->draw(window);
 		b_deleteSlot->draw(window);
-		b_addBot->draw(window);
-		b_deleteBot->draw(window);
 		b_start->draw(window);
 		b_menu->draw(window);
 		break;
@@ -676,7 +678,7 @@ void multiPlayer::draw(sf::RenderWindow& window)
 		for (auto i = cardback.begin(); i != cardback.end(); i++)
 			i->get()->draw(window);
 
-		game::draw(window);
+		Game::draw(window);
 		break;
 	default:
 		break;

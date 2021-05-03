@@ -6,7 +6,7 @@
 #include <memory>
 #include <thread>
 
-class object
+class Object
 {
 	sf::RectangleShape shape;
 	float x;
@@ -16,9 +16,9 @@ class object
 	bool chosen;
 
 public:
-	object()
+	Object()
 		: x(0), y(0), width(0), height(0), chosen(false) {}
-	object(float _width, float _height, float _x, float _y, sf::Texture* texture, sf::Color color = sf::Color::Black)
+	Object(float _width, float _height, float _x, float _y, sf::Texture* texture, sf::Color color = sf::Color::Black)
 		: x(_x), y(_y), width(_width), height(_height), chosen(false)
 	{
 		shape.setSize(sf::Vector2f(_width, _height));

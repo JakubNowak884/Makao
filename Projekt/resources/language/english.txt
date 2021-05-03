@@ -1,0 +1,159 @@
+#menu
+Change;
+Singleplayer;
+Multiplayer;
+Instruction;
+Quit;
+English language;
+Currently playing: ;
+#instruction
+Rules:
+
+At the beginning of the game, each player put 5 cards into the hand of 52
+cards. The first card from the deck is placed in the center of the table.
+The object of the game is to get rid of all cards in your hand by playing
+them on a stealth card if you both have a matching color or face shape.
+
+Individual cards have the following effects:
+Ace: The player requests a color for the next player
+Deuces / Threes: The next player draws two / three cards
+Fours: The next player takes 1 turn
+Jacks: The player demands a piece for the entire turn
+Queens: The Queen can be played on any non-functional card that
+                 any card can be played on the queen
+Hearts / Spades King: The next / previous player draws 5 cards
+
+You can only defend yourself from the function cards by playing
+the card with the same function .;
+Controls:
+
+Left mouse button:
+Play a card / press a button
+
+Left / right arrows or mouse wheel down / up:
+Moving cards in hand left / right
+
+F11:
+Full screen / window
+
+Escape:
+Exit to the menu;
+Author:
+	Jakub Nowak
+
+Acknowledgments:
+	Background texture: Image by Danny Santamaria Osorio from Pixabay
+	Button texture: Image by 1117826 from Pixabay
+	Card texture: Image by OpenClipart - Vectors from Pixabay
+	All textures are based on Pixabay License .;
+Page;
+Return to menu;
+#changeName
+Current player name: ;
+Go back;
+#singlePlayerSettings
+Number of players: ;
+The interval between computer 
+players turns: ;
+Only queens:;
+Start;
+Back to menu;
+On;
+Off;
+#singlePlayer
+#multiPlayer
+Game type: LAN
+Party IP:;
+Game type: ONLINE
+Party IP:;
+Add
+      Slot;
+Delete
+  Slot;
+Start;
+Back to  menu;
+
+Only the queens included;
+
+Participants:
+
+;
+
+Number of cards: ;
+
+Delay: ;
+Connection error;
+Could not join the game with the given IP;
+Waiting
+on the player ...;
+Add
+Slot;
+#multiPlayerSettings
+Player's name: ;
+LAN Game IP:;
+ONLINE game IP:;
+
+Only queens (after creating the game):;
+Change;
+join to
+LAN party;
+Create
+LAN party;
+join to 
+ONLINE party;
+Create
+ONLINE party;
+Off;
+connection...;
+On;
+#changeIP
+Current IP:;
+Go back;
+#endgame
+End of the game!
+Results:
+;
+Computer;
+Back to menu;
+#setSuit
+Choose the color you want:;
+Clubs;
+Diamonds;
+Hearts;
+Spades;
+#setFigure
+Choose the figure you want::;
+Five;
+Six;
+Seven;
+Eight;
+Nine;
+Ten;
+#game
+Pass;
+Macao;
+Draw a card;
+Request:;
+clubs;
+diamonds;
+hearts;
+spades;
+five;
+six;
+seven;
+eight;
+nine;
+ten;
+Next player
+will draw: ;
+
+Number of cards: ;
+
+Delay: ;
+#AI
+Computer ;
+
+Amount of cards: ;
+
+Delay: ;
+#

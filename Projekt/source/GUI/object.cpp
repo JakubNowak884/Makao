@@ -1,53 +1,53 @@
-#include "..\headers\GUI\object.h"
+#include "..\headers\GUI\Object.h"
 
-float object::getX()
+float Object::getX()
 {
 	return x;
 }
 
-float object::getY()
+float Object::getY()
 {
 	return y;
 }
 
-float object::getWidth()
+float Object::getWidth()
 {
 	return width;
 }
 
-float object::getHeight()
+float Object::getHeight()
 {
 	return height;
 }
 
-bool object::isChosen()
+bool Object::isChosen()
 {
 	return chosen;
 }
 
-sf::RectangleShape& object::getShape()
+sf::RectangleShape& Object::getShape()
 {
 	return shape;
 }
 
-void object::setChosen(bool newChosen)
+void Object::setChosen(bool newChosen)
 {
 	chosen = newChosen;
 }
 
-void object::setPosition(sf::Vector2f position)
+void Object::setPosition(sf::Vector2f position)
 {
 	x = position.x;
 	y = position.y;
 	shape.setPosition(position);
 }
 
-void object::setShapeColor(sf::Color color)
+void Object::setShapeColor(sf::Color color)
 {
 	shape.setFillColor(color);
 }
 
-void object::uptade(sf::Vector2f mousePos)
+void Object::uptade(sf::Vector2f mousePos)
 {
 	if (mousePos.x > getX() - getWidth() / 2 && mousePos.x < getX() + getWidth() / 2 && mousePos.y > getY() - getHeight() / 2 && mousePos.y < getY() + getHeight() / 2)
 		chosen = true;
@@ -55,7 +55,7 @@ void object::uptade(sf::Vector2f mousePos)
 		chosen = false;
 }
 
-void object::draw(sf::RenderWindow& window)
+void Object::draw(sf::RenderWindow& window)
 {
 	window.draw(shape);
 }

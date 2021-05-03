@@ -1,22 +1,17 @@
 #include "..\headers\GameStates\game.h"
+#include "..\headers\Resources.h"
 
-game::game(Resources* _resources, bool onlyQueens)
-	: gameState(_resources)
+Game::Game(Resources* _resources, bool onlyQueens)
+	: GameState(_resources)
 {
-	textureSuit = std::make_unique<sf::Texture>();
-	textureSuit->loadFromFile("../resources/textures/deck.png");
-	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+	b_fold = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 1), resources->getFont(), 110, 50, 400, 280, resources->getTexturePtr("button"), 32);
+	b_makao = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 2), resources->getFont(), 110, 50, 400, 225, resources->getTexturePtr("button"), 32);
+	b_draw = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 3), resources->getFont(), 280, 60, 400, 530, resources->getTexturePtr("button"), 42);
 
-	b_fold = std::make_unique<button>("Pas", resources->getFont(), 110, 50, 400, 280, resources->getTexturePtr("button"), 32);
-	b_makao = std::make_unique<button>("Makao", resources->getFont(), 110, 50, 400, 225, resources->getTexturePtr("button"), 32);
-	b_draw = std::make_unique<button>("Dobierz karte", resources->getFont(), 280, 60, 400, 530, resources->getTexturePtr("button"), 42);
+	initText(wanting, 250, 575, 32);
+	initText(addDraw, 0, 0, 32);
 
-	wanting.setFont(resources->getFont());
-	wanting.setCharacterSize(32);
-	wanting.setFillColor(sf::Color::White);
-	wanting.setPosition(225, 600);
-
-	std::vector<std::shared_ptr<card>> deckToCopy;
+	std::vector<std::shared_ptr<Card>> deckToCopy;
 
 	if (onlyQueens)
 	{
@@ -24,7 +19,7 @@ game::game(Resources* _resources, bool onlyQueens)
 		{
 			for (int figure = 1; figure < 14; figure++)
 			{
-				deckToCopy.push_back(std::make_shared<card>(figureNumber(12), suitNumber(suit), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
+				deckToCopy.push_back(std::make_shared<Card>(figureNumber(12), suitNumber(suit), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
 			}
 		}
 	}
@@ -34,7 +29,7 @@ game::game(Resources* _resources, bool onlyQueens)
 		{
 			for (int figure = 1; figure < 14; figure++)
 			{
-				deckToCopy.push_back(std::make_shared<card>(figureNumber(figure), suitNumber(suit), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
+				deckToCopy.push_back(std::make_shared<Card>(figureNumber(figure), suitNumber(suit), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
 			}
 		}
 
@@ -46,44 +41,44 @@ game::game(Resources* _resources, bool onlyQueens)
 	deckToCopy.clear();
 }
 
-void game::setCurrentSuit(suitNumber _suit)
+void Game::setCurrentSuit(suitNumber _suit)
 {
 	currentSuit = _suit;
 }
 
-void game::setCurrentFigure(figureNumber _figure)
+void Game::setCurrentFigure(figureNumber _figure)
 {
 	currentFigure = _figure;
 }
 
-AI* game::getAI(int number)
+AI* Game::getAI(int number)
 {
 	return nullptr;
 }
 
-std::vector<std::shared_ptr<card>>& game::getHand()
+std::vector<std::shared_ptr<Card>>& Game::getHand()
 {
 	return player->hand;
 }
 
-int game::getAmountOfPlayers()
+int Game::getAmountOfPlayers()
 {
 	return amountOfPlayers;
 }
 
-int game::getWon()
+int Game::getWon()
 {
 	return player->getWon();
 }
 
-void game::bumpTurn()
+void Game::bumpTurn()
 {
 	turn++;
 	if (turn > amountOfPlayers)
 		turn = 1;
 }
 
-gameStateNumber game::cardDoThings(card* current, int& _delay, int ID, bool bot)
+gameStateNumber Game::cardDoThings(Card* current, int& _delay, int ID, bool bot)
 {
 	if (current == nullptr)
 	{
@@ -176,20 +171,20 @@ gameStateNumber game::cardDoThings(card* current, int& _delay, int ID, bool bot)
 	return gameStateNumber::def;
 }
 
-gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber Game::update(sf::Event event, sf::RenderWindow& window)
 {
 	if (event.type == sf::Event::MouseWheelScrolled || event.type == sf::Event::KeyPressed)
 	{
 		if ((event.mouseWheelScroll.delta > 0 || event.key.code == sf::Keyboard::Right) && (player->hand.front())->getX() < 800)
 		{
-			for (std::vector<std::shared_ptr<card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+			for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 			{
 				(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
 			}
 		}
 		else if ((event.mouseWheelScroll.delta < 0 || event.key.code == sf::Keyboard::Left) && player->hand.back()->getX() > 0)
 		{
-			for (std::vector<std::shared_ptr<card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+			for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 			{
 				(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
 			}
@@ -206,7 +201,7 @@ gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 		{
 			if (player->getDelay() == 0)
 			{
-				for (std::vector<std::shared_ptr<card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+				for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
 				{
 					(*i)->uptade(getMousePos(window));
 					if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())
@@ -298,25 +293,25 @@ gameStateNumber game::update(sf::Event event, sf::RenderWindow& window)
 	return gameStateNumber::def;
 }
 
-void game::draw(sf::RenderWindow& window)
+void Game::draw(sf::RenderWindow& window)
 {
 	if (currentSuit != suitNumber::null || currentFigure != figureNumber::null)
 	{
-		std::string toText = "Zadanie: ";
+		std::wstring toText = resources->getText(int(gameStateNumber::game), 4);
 		if (currentSuit != suitNumber::null)
 			switch (currentSuit)
 			{
 			case suitNumber::clubs:
-				toText += "trefl";
+				toText += resources->getText(int(gameStateNumber::game), 5);
 				break;
 			case suitNumber::diamonds:
-				toText += "karo";
+				toText += resources->getText(int(gameStateNumber::game), 6);
 				break;
 			case suitNumber::hearts:
-				toText += "serc";
+				toText += resources->getText(int(gameStateNumber::game), 7);
 				break;
 			case suitNumber::spades:
-				toText += "pik";
+				toText += resources->getText(int(gameStateNumber::game), 8);
 				break;
 			default:
 				break;
@@ -325,22 +320,22 @@ void game::draw(sf::RenderWindow& window)
 			switch (currentFigure)
 			{
 			case figureNumber::five:
-				toText += "piatek";
+				toText += resources->getText(int(gameStateNumber::game), 9);
 				break;
 			case figureNumber::six:
-				toText += "szostek";
+				toText += resources->getText(int(gameStateNumber::game), 10);
 				break;
 			case figureNumber::seven:
-				toText += "siodemek";
+				toText += resources->getText(int(gameStateNumber::game), 11);
 				break;
 			case figureNumber::eight:
-				toText += "osemek";
+				toText += resources->getText(int(gameStateNumber::game), 12);
 				break;
 			case figureNumber::nine:
-				toText += "dziewiatek";
+				toText += resources->getText(int(gameStateNumber::game), 13);
 				break;
 			case figureNumber::ten:
-				toText += "dziesiatek";
+				toText += resources->getText(int(gameStateNumber::game), 14);
 				break;
 			default:
 				break;
@@ -348,6 +343,8 @@ void game::draw(sf::RenderWindow& window)
 		wanting.setString(toText);
 		window.draw(wanting);
 	}
+	addDraw.setString(resources->getText(int(gameStateNumber::game), 15) + std::to_wstring(addDrawAmount));
+	window.draw(addDraw);
 
 	player->draw(window);
 
@@ -359,14 +356,15 @@ void game::draw(sf::RenderWindow& window)
 	b_draw->draw(window);
 }
 
-game::Player::Player(std::list<std::shared_ptr<card>>& deck, sf::Font& font, int _ID)
+Game::Player::Player(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID)
+	: resources(_resources)
 {
-	info.setFont(font);
+	info.setFont(resources->getFont());
 	info.setCharacterSize(24);
 	info.setPosition(580, 600);
 
 	int j = 0;
-	for (std::list<std::shared_ptr<card>>::iterator i = deck.begin(); i != deck.end(); i++)
+	for (std::list<std::shared_ptr<Card>>::iterator i = deck.begin(); i != deck.end(); i++)
 	{
 		if (j == 5) break;
 		hand.push_back((*i));
@@ -377,7 +375,7 @@ game::Player::Player(std::list<std::shared_ptr<card>>& deck, sf::Font& font, int
 		deck.pop_front();
 
 	float addX = 0;
-	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
+	for (std::vector<std::shared_ptr<Card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
 		(*i)->setPosition(sf::Vector2f(72 + addX, 800));
 		addX += 128;
@@ -388,42 +386,42 @@ game::Player::Player(std::list<std::shared_ptr<card>>& deck, sf::Font& font, int
 	delay = 0;
 }
 
-int game::Player::getID()
+int Game::Player::getID()
 {
 	return ID;
 }
 
-int game::Player::getWon()
+int Game::Player::getWon()
 {
 	return won;
 }
 
-int& game::Player::getDelay()
+int& Game::Player::getDelay()
 {
 	return delay;
 }
 
-void game::Player::decrementDelay(int value)
+void Game::Player::decrementDelay(int value)
 {
 	delay -= value;
 }
 
-void game::Player::setWon(int _won)
+void Game::Player::setWon(int _won)
 {
 	won = _won;
 }
 
-void game::Player::setDelay(int _delay)
+void Game::Player::setDelay(int _delay)
 {
 	delay = _delay;
 }
 
-void game::Player::setTextColor(sf::Color color)
+void Game::Player::setTextColor(sf::Color color)
 {
 	info.setFillColor(color);
 }
 
-card* game::Player::drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
+Card* Game::Player::drawACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
 	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure))
 	{
@@ -445,12 +443,12 @@ card* game::Player::drawACard(std::list<std::shared_ptr<card>>& deck, bool actio
 	}
 }
 
-void game::Player::draw(sf::RenderWindow& window)
+void Game::Player::draw(sf::RenderWindow& window)
 {
-	info.setString(getPlayerName() + "\nIlosc kart: " + std::to_string(hand.size()) + "\nOpoznienie: " + std::to_string(delay));
+	info.setString(getPlayerName() + resources->getText(int(gameStateNumber::game), 16) + std::to_wstring(hand.size()) + resources->getText(int(gameStateNumber::game), 17) + std::to_wstring(delay));
 	window.draw(info);
 
-	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
+	for (std::vector<std::shared_ptr<Card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
 		if ((*i)->getX() > -200 && (*i)->getX() < 1000)
 			(*i)->draw(window);

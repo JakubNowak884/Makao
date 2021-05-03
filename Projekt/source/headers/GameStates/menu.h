@@ -1,21 +1,22 @@
 #pragma once
-#include "gameState.h"
+#include "GameState.h"
 
-class menu :
-    public gameState
+class Menu :
+    public GameState
 {
-    sf::Font font;
+    static int languageVersion;
 
     sf::Text currentPlayer;
 
-    std::unique_ptr<button> b_changeName;
-    std::unique_ptr<button> b_singlePlayer;
-    std::unique_ptr<button> b_multiPlayer;
-    std::unique_ptr<button> b_instruction;
-    std::unique_ptr<button> b_quit;
+    std::unique_ptr<Button> b_changeName;
+    std::unique_ptr<Button> b_singlePlayer;
+    std::unique_ptr<Button> b_multiPlayer;
+    std::unique_ptr<Button> b_instruction;
+    std::unique_ptr<Button> b_quit;
+    std::unique_ptr<Button> b_language;
 
 public:
-    menu(Resources* _resources);
+    Menu(Resources* _resources);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

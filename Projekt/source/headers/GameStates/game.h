@@ -7,14 +7,15 @@
 #include <iterator>
 #include <iostream>
 
-#include "gameState.h"
+#include "GameState.h"
 
-class game :
-    public gameState
+class Game :
+    public GameState
 {
 public:
     class Player
     {
+        Resources* resources;
         sf::Text info;
 
         int ID;
@@ -22,9 +23,9 @@ public:
         int won;
 
     public:
-        std::vector<std::shared_ptr<card>> hand;
+        std::vector<std::shared_ptr<Card>> hand;
 
-        Player(std::list<std::shared_ptr<card>>& deck, sf::Font& font, int _ID);
+        Player(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID);
 
         int getID();
         int getWon();
@@ -35,26 +36,27 @@ public:
         void setDelay(int _delay);
         void setTextColor(sf::Color color);
 
-        card* drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
+        Card* drawACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany = 1);
         void draw(sf::RenderWindow& window);
     };
 
 private:
     sf::Text wanting;
+    sf::Text addDraw;
 
-    std::unique_ptr<button> b_fold;
-    std::unique_ptr<button> b_makao;
-    std::unique_ptr<button> b_draw;
+    std::unique_ptr<Button> b_fold;
+    std::unique_ptr<Button> b_makao;
+    std::unique_ptr<Button> b_draw;
 
 protected:
-    std::unique_ptr<sf::Texture> textureSuit;
-    sf::Font font;
-
     std::unique_ptr<Player> player;
+    std::vector<std::unique_ptr<AI>> bots;
+    bool end = false;
+    long sleepDuration = 1;
 
     int amountOfPlayers = 0;
 
-    std::list<std::shared_ptr<card>> deck;
+    std::list<std::shared_ptr<Card>> deck;
     bool second = false;
 
     int turn = 1;
@@ -69,16 +71,17 @@ protected:
     figureNumber currentFigure = figureNumber::null;
 
 public:
-    game(Resources* _resources, bool onlyQueens = false);
-    virtual ~game() {};
+    Game(Resources* _resources, bool onlyQueens = false);
+    virtual ~Game() {};
     void setCurrentSuit(suitNumber _suit);
     void setCurrentFigure(figureNumber _figure);
     virtual AI* getAI(int number);
-    std::vector<std::shared_ptr<card>>& getHand();
+    std::vector<std::shared_ptr<Card>>& getHand();
     int getAmountOfPlayers();
     int getWon();
     void bumpTurn();
-    gameStateNumber cardDoThings(card* current, int& _delay, int ID, bool bot = false);
+    void botsTakesTurn(bool withThread = true);
+    gameStateNumber cardDoThings(Card* current, int& _delay, int ID, bool bot = false);
     virtual gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     virtual void draw(sf::RenderWindow& window);
 };

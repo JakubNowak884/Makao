@@ -1,8 +1,9 @@
-#include "headers\stateMachine.h"
+#include "headers\StateMachine.h"
 #include "headers\Resources.h"
 
 #include <iostream>
 #include <conio.h>
+
 
 int main()
 {
@@ -10,9 +11,21 @@ int main()
     sf::View area(sf::FloatRect(0, 0, 800, 800));
     window.setView(area);
     window.setFramerateLimit(30);
-    std::unique_ptr<Resources> resources = std::make_unique<Resources>();
-    resources->loadResources();
-    std::unique_ptr<stateMachine> game = std::make_unique<stateMachine>(resources.get());
+    std::shared_ptr<Resources> resources = std::make_shared<Resources>();
+    try
+    {
+        resources->loadResources();
+        resources->loadLanguage("polish");
+    }
+    catch (const char* error)
+    {
+        std::ofstream file;
+        file.open("error.txt");
+        file << error;
+        file.close();
+        return 0;
+    }
+    std::unique_ptr<StateMachine> game = std::make_unique<StateMachine>(resources.get());
     std::unique_ptr<sf::Sprite> background = std::make_unique<sf::Sprite>(resources->getTexture("background"));
     background->setPosition(-480, 0);
     bool fullScreen = false;

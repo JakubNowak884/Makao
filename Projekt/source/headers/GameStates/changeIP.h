@@ -1,18 +1,16 @@
 #pragma once
-#include "multiPlayerSettings.h"
-class changeIP :
-	public gameState
+#include "MultiPlayerSettings.h"
+class ChangeIP :
+	public GameState
 {
-	sf::Font font;
-
 	sf::Text currentIP;
 
-	std::unique_ptr<button> b_back;
+	std::unique_ptr<Button> b_back;
 
-	multiPlayerSettings* prev = nullptr;
+	MultiPlayerSettings* prev = nullptr;
 
 public:
-	changeIP(multiPlayerSettings* _prev, Resources* _resources);
+	ChangeIP(MultiPlayerSettings* _prev, Resources* _resources);
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

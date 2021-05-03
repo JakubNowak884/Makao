@@ -1,79 +1,79 @@
-#include "headers\stateMachine.h"
+#include "headers\StateMachine.h"
 
-stateMachine::stateMachine(Resources* _resources)
+StateMachine::StateMachine(Resources* _resources)
 	: resources(_resources)
 {
-	current = new menu(resources);
+	current = new Menu(resources);
 	prev = nullptr;
 }
 
-stateMachine::~stateMachine()
+StateMachine::~StateMachine()
 {
 	delete current;
 	delete prev;
 }
 
-bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
+bool StateMachine::update(sf::Event event, sf::RenderWindow& window)
 {
 	switch (current->update(event, window))
 	{
 	case gameStateNumber::singlePlayerSettings:
 		delete prev;
 		prev = current;
-		current = new singlePlayerSettings(resources);
+		current = new SinglePlayerSettings(resources);
 		break;
 	case gameStateNumber::singlePlayer:
 		delete prev;
 		prev = current;
-		current = new singlePlayer(dynamic_cast<singlePlayerSettings*>(prev), resources);
+		current = new SinglePlayer(dynamic_cast<SinglePlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::multiPlayerSettings:
 		delete prev;
 		prev = current;
-		current = new multiPlayerSettings(resources);
+		current = new MultiPlayerSettings(resources);
 		break;
 	case gameStateNumber::changeIP:
 		prev = current;
-		current = new changeIP(dynamic_cast<multiPlayerSettings*>(prev), resources);
+		current = new ChangeIP(dynamic_cast<MultiPlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::multiPlayer:
 		delete prev;
 		prev = current;
-		current = new multiPlayer(dynamic_cast<multiPlayerSettings*>(prev), resources);
+		current = new MultiPlayer(dynamic_cast<MultiPlayerSettings*>(prev), resources);
 		break;
 	case gameStateNumber::endgame:
 		delete prev;
 		prev = current;
-		if (dynamic_cast<multiPlayer*>(prev) == nullptr)
-			current = new endgame(dynamic_cast<singlePlayer*>(prev), resources);
+		if (dynamic_cast<MultiPlayer*>(prev) == nullptr)
+			current = new Endgame(dynamic_cast<SinglePlayer*>(prev), resources);
 		else
-			current = new endgame(dynamic_cast<multiPlayer*>(prev), resources);
+			current = new Endgame(dynamic_cast<MultiPlayer*>(prev), resources);
 		break;
 	case gameStateNumber::menu:
 		delete prev;
 		prev = current;
-		current = new menu(resources);
+		current = new Menu(resources);
 		break;
 	case gameStateNumber::changeName:
 		delete prev;
 		prev = current;
-		current = new changeName(resources);
+		current = new ChangeName(resources);
 		break;
 	case gameStateNumber::instruction:
 		delete prev;
 		prev = current;
-		current = new instruction(resources);
+		current = new Instruction(resources);
 		break;
 	case gameStateNumber::quit:
 		return false;
 		break;
 	case gameStateNumber::setSuit:
 		prev = current;
-		current = new setSuit(dynamic_cast<game*>(prev), resources);
+		current = new SetSuit(dynamic_cast<Game*>(prev), resources);
 		break;
 	case gameStateNumber::setFigure:
 		prev = current;
-		current = new setFigure(dynamic_cast<game*>(prev), resources);
+		current = new SetFigure(dynamic_cast<Game*>(prev), resources);
 		break;
 	case gameStateNumber::resume:
 		delete current;
@@ -86,7 +86,7 @@ bool stateMachine::update(sf::Event event, sf::RenderWindow& window)
 	return true;
 }
 
-void stateMachine::draw(sf::RenderWindow& window)
+void StateMachine::draw(sf::RenderWindow& window)
 {
 	current->draw(window);
 }

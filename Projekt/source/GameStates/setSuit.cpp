@@ -1,37 +1,34 @@
 #include "..\headers\GameStates\setSuit.h"
+#include "..\headers\Resources.h"
 
-setSuit::setSuit(game* _game, Resources* _resources)
-    : gameState(_resources)
+SetSuit::SetSuit(Game* _game, Resources* _resources)
+    : GameState(_resources)
 {
-    font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+    initText(text, 0, 0, 48);
+    text.setString(resources->getText(int(gameStateNumber::setSuit), 1));
 
-    text.setFont(resources->getFont());
-    text.setCharacterSize(48);
-    text.setPosition(0, 0);
-    text.setString("Wybierz zadany kolor: ");
-
-    b_clubs = std::make_unique<button>("Trefl", resources->getFont(), 200, 100, 200, 150, resources->getTexturePtr("button"), 32);
-    b_diamonds = std::make_unique<button>("Karo", resources->getFont(), 200, 100, 200, 260, resources->getTexturePtr("button"), 32);
-    b_hearts = std::make_unique<button>("Serce", resources->getFont(), 200, 100, 600, 150, resources->getTexturePtr("button"), 32);
-    b_spades = std::make_unique<button>("Pik", resources->getFont(), 200, 100, 600, 260, resources->getTexturePtr("button"), 32);
+    b_clubs = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 2), resources->getFont(), 200, 100, 200, 150, resources->getTexturePtr("button"), 32);
+    b_diamonds = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 3), resources->getFont(), 200, 100, 200, 260, resources->getTexturePtr("button"), 32);
+    b_hearts = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 4), resources->getFont(), 200, 100, 600, 150, resources->getTexturePtr("button"), 32);
+    b_spades = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 5), resources->getFont(), 200, 100, 600, 260, resources->getTexturePtr("button"), 32);
 
     prev = _game;
 }
 
-gameStateNumber setSuit::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber SetSuit::update(sf::Event event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
         if (event.mouseWheelScroll.delta > 0 && (prev->getHand().front())->getX() < 800)
         {
-            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
             }
         }
         else if (event.mouseWheelScroll.delta < 0 && prev->getHand().back()->getX() > 0)
         {
-            for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
+            for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
             }
@@ -67,9 +64,9 @@ gameStateNumber setSuit::update(sf::Event event, sf::RenderWindow& window)
     return gameStateNumber::def;
 }
 
-void setSuit::draw(sf::RenderWindow& window)
+void SetSuit::draw(sf::RenderWindow& window)
 {
-    for (std::vector<std::shared_ptr<card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
+    for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
     {
         if ((*i)->getX() > -200 && (*i)->getX() < 1000)
             (*i)->draw(window);

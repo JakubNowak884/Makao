@@ -1,40 +1,40 @@
 #include "..\headers\GUI\card.h"
 
-card::~card()
+Card::~Card()
 {
 }
 
-suitNumber card::getSuit()
+suitNumber Card::getSuit()
 {
 	return suit;
 }
 
-figureNumber card::getFigure()
+figureNumber Card::getFigure()
 {
 	return figure;
 }
 
-void card::uptade(sf::Vector2f mousePos)
+void Card::uptade(sf::Vector2f mousePos)
 {
-	object::uptade(mousePos);
+	Object::uptade(mousePos);
 	if (isChosen() == true)
 		setPosition(sf::Vector2f(getX(), 700));
 	else 
 		setPosition(sf::Vector2f(getX(), 800));
 }
 
-void card::setPosition(sf::Vector2f position)
+void Card::setPosition(sf::Vector2f position)
 {
-	object::setPosition(position);
+	Object::setPosition(position);
 	frame.setPosition(position);
 }
 
-void card::frameSetFillColor(sf::Color color)
+void Card::frameSetFillColor(sf::Color color)
 {
 	frame.setFillColor(color);
 }
 
-bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, bool second)
+bool Card::ableToPlay(Card* current, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, bool second)
 {
 	bool suitMatches;
 	if (current->getSuit() == getSuit()) 
@@ -162,10 +162,10 @@ bool card::ableToPlay(card* current, bool actionCardIsActive, suitNumber current
 	}
 }
 
-void card::draw(sf::RenderWindow& window)
+void Card::draw(sf::RenderWindow& window)
 {
 	if (isChosen() == true)
 		window.draw(frame);
 
-	object::draw(window);
+	Object::draw(window);
 }

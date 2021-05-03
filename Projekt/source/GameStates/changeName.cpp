@@ -1,20 +1,16 @@
 #include "..\headers\GameStates\changeName.h"
+#include "..\headers\Resources.h"
 
-changeName::changeName(Resources* _resources)
-    : gameState(_resources)
+ChangeName::ChangeName(Resources* _resources)
+    : GameState(_resources)
 {
-    font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+    initText(currentName, 0, 200, 36);
+    currentName.setString(resources->getText(int(gameStateNumber::changeName), 1) + getPlayerName());
 
-    currentName.setCharacterSize(36);
-    currentName.setFillColor(sf::Color::White);
-    currentName.setFont(resources->getFont());
-    currentName.setPosition(0, 200);
-    currentName.setString("Aktualna nazwa gracza: " + getPlayerName());
-
-    b_back = std::make_unique<button>(L"Wroc", resources->getFont(), 600, 150, 400, 600, resources->getTexturePtr("button"));
+    b_back = std::make_unique<Button>(resources->getText(int(gameStateNumber::changeName), 2), resources->getFont(), 600, 150, 400, 600, resources->getTexturePtr("button"));
 }
 
-gameStateNumber changeName::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber ChangeName::update(sf::Event event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::TextEntered)
     {
@@ -36,9 +32,9 @@ gameStateNumber changeName::update(sf::Event event, sf::RenderWindow& window)
     return gameStateNumber::def;
 }
 
-void changeName::draw(sf::RenderWindow& window)
+void ChangeName::draw(sf::RenderWindow& window)
 {
-    currentName.setString("Aktualna nazwa gracza: " + getPlayerName());
+    currentName.setString(resources->getText(int(gameStateNumber::changeName), 1) + getPlayerName());
     window.draw(currentName);
 
     b_back->draw(window);

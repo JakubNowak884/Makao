@@ -1,22 +1,18 @@
 #include "..\headers\GameStates\changeIP.h"
+#include "..\headers\Resources.h"
 
-changeIP::changeIP(multiPlayerSettings* _prev, Resources* _resources)
-    : gameState(_resources)
+ChangeIP::ChangeIP(MultiPlayerSettings* _prev, Resources* _resources)
+    : GameState(_resources)
 {
     prev = _prev;
 
-    font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+    initText(currentIP, 0, 200, 36);
+    currentIP.setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 1) + sf::String(prev->getIP()));
 
-    currentIP.setCharacterSize(36);
-    currentIP.setFillColor(sf::Color::White);
-    currentIP.setFont(font);
-    currentIP.setPosition(0, 200);
-    currentIP.setString("Aktualne IP: " + prev->getIP());
-
-    b_back = std::make_unique<button>(L"Wroc", font, 600, 150, 400, 600, resources->getTexturePtr("button"));
+    b_back = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 2), resources->getFont(), 600, 150, 400, 600, resources->getTexturePtr("button"));
 }
 
-gameStateNumber changeIP::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber ChangeIP::update(sf::Event event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::TextEntered)
     {
@@ -34,9 +30,9 @@ gameStateNumber changeIP::update(sf::Event event, sf::RenderWindow& window)
     return gameStateNumber::def;
 }
 
-void changeIP::draw(sf::RenderWindow& window)
+void ChangeIP::draw(sf::RenderWindow& window)
 {
-    currentIP.setString("Aktualne IP: " + prev->getIP());
+    currentIP.setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 1) + sf::String(prev->getIP()));
     window.draw(currentIP);
 
     b_back->draw(window);

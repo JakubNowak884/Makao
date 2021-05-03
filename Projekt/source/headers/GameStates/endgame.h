@@ -3,22 +3,20 @@
 #include <string>
 #include <map>
 
-#include "singlePlayer.h"
-#include "multiPlayer.h"
+#include "SinglePlayer.h"
+#include "MultiPlayer.h"
 
-class endgame :
-    public gameState
+class Endgame :
+    public GameState
 {
-    sf::Font font;
-
     sf::Text text;
-    std::unique_ptr<button> b_menu;
+    std::unique_ptr<Button> b_menu;
 
     std::map<int, std::string> results;
 
 public:
-    endgame(singlePlayer* prev, Resources* _resources);
-    endgame(multiPlayer* prev, Resources* _resources);
+    Endgame(SinglePlayer* prev, Resources* _resources);
+    Endgame(MultiPlayer* prev, Resources* _resources);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

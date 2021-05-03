@@ -1,29 +1,31 @@
 #include "headers\AI.h"
+#include "headers\Resources.h"
 
-AI::AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* texture, int _ID, bool onlyOne)
+AI::AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, bool onlyOne)
+	: resources(_resources)
 {
-	info.setFont(font);
+	info.setFont(resources->getFont());
 	info.setCharacterSize(24);
 
 	if (onlyOne)
 	{
 		info.setPosition(470, 10);
-		cardBack = new object(120, 180, 400, 100, texture, sf::Color::White);
+		cardBack = new Object(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
 	}
 	else {
 		switch (_ID)
 		{
 		case 2:		
 			info.setPosition(10, 210);
-			cardBack = new object(120, 180, 70, 400, texture, sf::Color::White);
+			cardBack = new Object(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		case 3:
 			info.setPosition(470, 10);
-			cardBack = new object(120, 180, 400, 100, texture, sf::Color::White);
+			cardBack = new Object(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		case 4:
 			info.setPosition(580, 210);
-			cardBack = new object(120, 180, 640, 400, texture, sf::Color::White);
+			cardBack = new Object(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		default:
 			break;
@@ -33,7 +35,7 @@ AI::AI(std::list<std::shared_ptr<card>>& deck, sf::Font& font, sf::Texture* text
 	cardBack->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 
 	int j = 0;
-	for (std::list<std::shared_ptr<card>>::iterator i = deck.begin(); i != deck.end(); ++i)
+	for (std::list<std::shared_ptr<Card>>::iterator i = deck.begin(); i != deck.end(); ++i)
 	{
 		if (j == 5) break;
 		hand.push_back((*i));
@@ -93,7 +95,25 @@ suitNumber AI::wantSuit()
 	if (hand.size() > 0)
 		return hand.front()->getSuit();
 	else
-		return suitNumber::clubs;
+	{
+		std::vector<howManyCards> vec;
+		for (int i = 1; i < 4; i++)
+		{
+			suitNumber suit = suitNumber(i);
+			howManyCards temp(suit);
+			vec.push_back(temp);
+		}
+		for (auto i = cardsPlayed.begin(); i != cardsPlayed.end(); i++)
+		{
+			for (auto j = vec.begin(); j != vec.end(); j++)
+			{
+				if ((*i)->suit == j->suit)
+					j->howMany++;
+			}
+		}
+		auto max = max_element(std::begin(vec), std::end(vec));
+		return max->suit;
+	}
 }
 
 figureNumber AI::wantFigure()
@@ -125,12 +145,35 @@ figureNumber AI::wantFigure()
 			}
 		}
 	}
-	return figureNumber::five;
+	std::vector<howManyCards> vec;
+	for (int i = 5; i < 11; i++)
+	{
+		figureNumber figure = figureNumber(i);
+		howManyCards temp(figure);
+		vec.push_back(temp);
+	}
+	for (auto i = cardsPlayed.begin(); i != cardsPlayed.end(); i++)
+	{
+		for (auto j = vec.begin(); j != vec.end(); j++)
+		{
+			if ((*i)->figure == j->figure)
+				j->howMany++;
+		}
+	}
+	auto max = max_element(std::begin(vec), std::end(vec));
+	return max->figure;
 }
 
-bool AI::hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
+void AI::rememberCard(suitNumber suit, figureNumber figure)
 {
-	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
+	cardsPlayed.push_back(std::make_unique<cardPlayed>(suit, figure));
+	if (cardsPlayed.size() > 52)
+		cardsPlayed.pop_front();
+}
+
+bool AI::hasACardAbleToPlay(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
+{
+	for (std::vector<std::shared_ptr<Card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
 		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 			return true;
@@ -139,22 +182,37 @@ bool AI::hasACardAbleToPlay(std::list<std::shared_ptr<card>>& deck, bool actionC
 	return false;
 }
 
-card* AI::playACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
+Card* AI::playACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure)
 {
-	for (std::vector<std::shared_ptr<card>>::iterator i = hand.begin(); i != hand.end(); i++)
+	bool queen = false;
+	std::vector<std::shared_ptr<Card>>::iterator temp = hand.begin();
+	for (std::vector<std::shared_ptr<Card>>::iterator i = hand.begin(); i != hand.end(); i++)
 	{
 		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 		{
+			if ((*i)->getFigure() == figureNumber::queen)
+			{
+				queen = true;
+				temp = i;
+				continue;
+			}
 			deck.push_front((*i));
 			hand.erase(i);
 			second = true;
 			return deck.front().get();
 		}
 	}
+	if (queen)
+	{
+		deck.push_front((*temp));
+		hand.erase(temp);
+		second = true;
+		return deck.front().get();
+	}
 	return nullptr;
 }
 
-card* AI::drawACard(std::list<std::shared_ptr<card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
+Card* AI::drawACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
 	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 	{
@@ -179,7 +237,7 @@ void AI::draw(sf::RenderWindow& window)
 	size_t amount = hand.size();
 	std::string amountText = std::to_string(amount);
 
-	info.setString("Komputer " + std::to_string(ID - 1) + "\nIlosc kart: " + std::to_string(hand.size()) + "\nOpoznienie: " + std::to_string(delay));
+	info.setString(resources->getText(14,1) + std::to_wstring(ID - 1) + resources->getText(14, 2) + std::to_wstring(hand.size()) + resources->getText(14, 3) + std::to_wstring(delay));
 	window.draw(info);
 
 	cardBack->draw(window);

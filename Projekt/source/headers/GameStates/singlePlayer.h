@@ -1,10 +1,10 @@
 #pragma once
 
-#include "game.h"
-#include "singlePlayerSettings.h"
+#include "Game.h"
+#include "SinglePlayerSettings.h"
 
-class singlePlayer :
-    public game
+class SinglePlayer :
+    public Game
 {
     std::vector<std::unique_ptr<AI>> bots;
 
@@ -16,7 +16,7 @@ class singlePlayer :
     bool threadRunning = false;
 
 public:
-    singlePlayer(singlePlayerSettings* prev, Resources* _resources);
+    SinglePlayer(SinglePlayerSettings* prev, Resources* _resources);
     AI* getAI(int ID);
     void botsTakesTurn();
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);

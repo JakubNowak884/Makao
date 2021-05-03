@@ -1,8 +1,9 @@
 #include "..\headers\GameStates\gameState.h"
+#include "..\headers\Resources.h"
 
-std::string gameState::playerName = "Gracz";
+std::wstring GameState::playerName = L"Gracz";
 
-void gameState::setPlayerName(char sign)
+void GameState::setPlayerName(char sign)
 {
     if (((64 < sign && sign < 91) || (96 < sign && sign < 123)) && playerName.length() < 10)
     {
@@ -20,15 +21,23 @@ void gameState::setPlayerName(char sign)
     }
 }
 
-std::string gameState::getPlayerName()
+std::wstring GameState::getPlayerName()
 {
     return playerName;
 }
 
-sf::Vector2f gameState::getMousePos(sf::RenderWindow& window)
+sf::Vector2f GameState::getMousePos(sf::RenderWindow& window)
 {
     sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
     sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePixelPos);
 
     return mouseWorldPos;
+}
+
+void GameState::initText(sf::Text& text, float posX, float posY, int size, sf::Color color)
+{
+    text.setFont(resources->getFont());
+    text.setPosition(posX, posY);
+    text.setCharacterSize(size);
+    text.setFillColor(color);
 }

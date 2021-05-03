@@ -1,43 +1,39 @@
 #include "..\headers\GameStates\singlePlayerSettings.h"
+#include "..\headers\Resources.h"
 
-singlePlayerSettings::singlePlayerSettings(Resources* _resources)
-	: gameState(_resources)
+SinglePlayerSettings::SinglePlayerSettings(Resources* _resources)
+	: GameState(_resources)
 {
-	font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+	initText(settings, 0, 0, 42);
+	settings.setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 1) + std::to_wstring(amountOfPlayers) + L"\n\n" +
+		resources->getText(int(gameStateNumber::singlePlayerSettings), 2) + std::to_wstring(botSpeed) + L" ms\n\n" +
+		resources->getText(int(gameStateNumber::singlePlayerSettings), 3));
 
-	settings.setCharacterSize(42);
-	settings.setFillColor(sf::Color::White);
-	settings.setFont(resources->getFont());
-	settings.setPosition(0, 0);
-	settings.setString("Ilosc graczy: " + std::to_string(amountOfPlayers) + "\n\n" +
-	"Odstep miedzy turami graczy komputerowych: " + std::to_string(botSpeed) + " ms\n\n" +
-	"Same krolowe: ");
-
-	b_addAmountOfPlayers = std::make_unique<button>("+", resources->getFont(), 50, 50, 720, 35, resources->getTexturePtr("button"), 58);
-	b_reduceAmountOfPlayers = std::make_unique<button>("-", resources->getFont(), 50, 50, 655, 35, resources->getTexturePtr("button"), 58);
-	b_addBotSpeed = std::make_unique<button>("+", resources->getFont(), 50, 50, 720, 175, resources->getTexturePtr("button"), 58);
-	b_reduceBotSpeed = std::make_unique<button>("-", resources->getFont(), 50, 50, 655, 175, resources->getTexturePtr("button"), 58);
-	b_onlyQueens = std::make_unique<button>("Wylaczone", resources->getFont(), 200, 50, 400, 285, resources->getTexturePtr("button"), 38);
-	b_start = std::make_unique<button>("Start", resources->getFont(), 600, 150, 400, 500, resources->getTexturePtr("button"));
-	b_toMenu = std::make_unique<button>("Wroc do menu", resources->getFont(), 600, 150, 400, 675, resources->getTexturePtr("button"));
+	b_addAmountOfPlayers = std::make_unique<Button>("+", resources->getFont(), 50, 50, 720, 35, resources->getTexturePtr("button"), 58);
+	b_reduceAmountOfPlayers = std::make_unique<Button>("-", resources->getFont(), 50, 50, 655, 35, resources->getTexturePtr("button"), 58);
+	b_addBotSpeed = std::make_unique<Button>("+", resources->getFont(), 50, 50, 720, 175, resources->getTexturePtr("button"), 58);
+	b_reduceBotSpeed = std::make_unique<Button>("-", resources->getFont(), 50, 50, 655, 175, resources->getTexturePtr("button"), 58);
+	b_onlyQueens = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 7), resources->getFont(), 200, 50, 400, 285, resources->getTexturePtr("button"), 38);
+	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 4), resources->getFont(), 600, 150, 400, 500, resources->getTexturePtr("button"));
+	b_toMenu = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 5), resources->getFont(), 600, 150, 400, 675, resources->getTexturePtr("button"));
 }
 
-int singlePlayerSettings::getAmountOfPlayers()
+int SinglePlayerSettings::getAmountOfPlayers()
 {
 	return amountOfPlayers;
 }
 
-bool singlePlayerSettings::getOnlyQueens()
+bool SinglePlayerSettings::getOnlyQueens()
 {
 	return onlyQueens;
 }
 
-int singlePlayerSettings::getBotSpeed()
+int SinglePlayerSettings::getBotSpeed()
 {
 	return botSpeed;
 }
 
-gameStateNumber singlePlayerSettings::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber SinglePlayerSettings::update(sf::Event event, sf::RenderWindow& window)
 {
 	if (b_addAmountOfPlayers->clicked(event))
 	{
@@ -90,20 +86,20 @@ gameStateNumber singlePlayerSettings::update(sf::Event event, sf::RenderWindow& 
 	return gameStateNumber::def;
 }
 
-void singlePlayerSettings::draw(sf::RenderWindow& window)
+void SinglePlayerSettings::draw(sf::RenderWindow& window)
 {
-	settings.setString("Ilosc graczy: " + std::to_string(amountOfPlayers) + "\n\n" +
-		"Odstep miedzy turami\ngraczy komputerowych: " + std::to_string(botSpeed) + " ms\n\n" +
-		"Same krolowe: ");
+	settings.setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 1) + std::to_wstring(amountOfPlayers) + L"\n\n" +
+		resources->getText(int(gameStateNumber::singlePlayerSettings), 2) + std::to_wstring(botSpeed) + L" ms\n\n" +
+		resources->getText(int(gameStateNumber::singlePlayerSettings), 3));
 	window.draw(settings);
 	b_addAmountOfPlayers->draw(window);
 	b_reduceAmountOfPlayers->draw(window);
 	b_addBotSpeed->draw(window);
 	b_reduceBotSpeed->draw(window);
 	if (onlyQueens)
-		b_onlyQueens->setString("Wlaczone");
+		b_onlyQueens->setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 6));
 	else
-		b_onlyQueens->setString("Wylaczone");
+		b_onlyQueens->setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 7));
 	b_onlyQueens->draw(window);
 	b_start->draw(window);
 	b_toMenu->draw(window);

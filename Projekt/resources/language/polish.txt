@@ -1,13 +1,159 @@
-#changeIP
-#changeName
-#endgame
-#game
-#gameState
-#instruction
 #menu
-#multiPlayer
-#multiPlayerSettings
-#setFigure
-#setSuit
-#singlePlayer
+Zmień;
+Jeden gracz;
+Wielu graczy;
+Instrukcja;
+Wyjdź;
+Język polski;
+Aktualnie gra: ;
+#instruction
+Zasady:
+
+Na początku gry każdy z graczy dostaje do ręki 5 kart z talli 52 kart.
+Pierwsza karta z talli polożona jest na środku stołu.
+Celem gry jest pozbycie się wszystkich kart z ręki poprzez zagrywanie
+ich na kartę na stole, jeśli obie mają pasujący kolor lub figurę.
+
+Poszczególne karty mają następujące efekty:
+As: Gracz żąda koloru dla nastepnęgo gracza
+Dwójki/trójki: Następny gracz dobiera dwie/trzy karty
+Czwórki: Następny gracz czeka 1 kolejkę
+Walety: Gracz żąda figury dla calej kolejki
+Królowe: Królową można zagrać na dowolną kartę niefunkcyjną,
+                na królową można zagrać dowolną kartę
+Król Serce/Pik: Następny/poprzedni gracz dobiera 5 kart
+
+Przed kartami funkcyjnymi można bronić się tylko zagrywając kartę o
+tej samej funkcji.;
+Sterowanie:
+
+Lewy przycisk myszy:
+Zagranie karty/nacisnięcie przycisku
+
+Strzałki w lewo/prawo lub kółko myszy w dół/górę:
+Przesuwanie kart w recę w lewo/prawo
+
+F11:
+Pełny ekran/okienko
+
+Escape:
+Wyjście do menu;
+Autor:
+	Jakub Nowak
+
+Podziekowania:
+	Tekstura tła: Image by Danny Santamaria Osorio from Pixabay
+	Tekstura przycisku: Image by 1117826 from Pixabay
+	Tekstura kart: Image by OpenClipart - Vectors from Pixabay
+	Wszystkie tesktury zostały oparte na licencji Pixabay License.;
+Strona ;
+Wróć do menu;
+#changeName
+Aktualna nazwa gracza: ;
+Wróć;
 #singlePlayerSettings
+Ilość graczy: ;
+Odstęp miedzy turami graczy 
+komputerowych: ;
+Same królowe: ;
+Start;
+Wróc do menu;
+Włączone;
+Wyłączone;
+#singlePlayer
+#multiPlayer
+Rodzaj gry: LAN
+IP sesji: ;
+Rodzaj gry: ONLINE
+IP sesji: ;
+ Dodaj
+miejsce;
+ Usuń
+miejsce;
+Rozpocznij;
+Wróć do menu;
+
+Same królowe włączone;
+
+Uczestnicy:
+
+;
+
+Ilość kart : ;
+
+Opóźnienie : ;
+Błąd połączenia;
+Nie udalo sie dołączyć do gry o podanym IP;
+Oczekiwanie
+na gracza...;
+ Dodaj
+miejsce;
+#multiPlayerSettings
+Nazwa gracza: ;
+IP gry LAN: ;
+IP gry ONLINE: ;
+
+Same królowe (po stworzeniu gry):;
+Zmień;
+Dołącz do
+sesji LAN;
+Stwórz
+sesje LAN;
+Dołącz do
+sesji ONLINE;
+Stwórz
+sesje ONLINE;
+Wyłączone;
+łączenie...;
+Włączone;
+#changeIP
+Aktualne IP: ;
+Wróć;
+#endgame
+Koniec gry!
+Wyniki:
+;
+Komputer ;
+Wróć do menu;
+#setSuit
+Wybierz żądany kolor: ;
+Trefl;
+Karo;
+Serce;
+Pik;
+#setFigure
+Wybierz żądaną figurę: ;
+Piątki;
+Szóstki;
+Siódemki;
+Ósemki;
+Dziewiątki;
+Dziesiątki;
+#game
+Pas;
+Makao;
+Dobierz karte;
+Żądanie: ;
+trefl;
+karo;
+serc;
+pik;
+piątek;
+szóstek;
+siódemek;
+ósemek;
+dziewiątek;
+dziesiątek;
+Następny gracz
+dobierze: ;
+
+Ilość kart: ;
+
+Opóźnienie: ;
+#AI
+Komputer ;
+
+Ilość kart: ;
+
+Opóźnienie: ;
+#

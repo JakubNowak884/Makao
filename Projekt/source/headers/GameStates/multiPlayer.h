@@ -1,15 +1,14 @@
 #pragma once
 
-#include "game.h"
-#include "multiPlayerSettings.h"
+#include "Game.h"
+#include "MultiPlayerSettings.h"
 #include "../AI.h"
 
-class multiPlayer :
-	public game
+class MultiPlayer :
+	public Game
 {
-	multiPlayerSettings* prev;
+	MultiPlayerSettings* prev;
 
-	sf::Font font;
 	sf::Text text;
 
 	sf::TcpSocket guest1;
@@ -17,7 +16,7 @@ class multiPlayer :
 	sf::TcpSocket guest3;
 	std::vector<std::unique_ptr<AI>> bots;
 
-	std::vector<std::unique_ptr<object>> cardback;
+	std::vector<std::unique_ptr<Object>> cardback;
 	std::vector<sf::Text> infoPlayer;
 	std::string podium;
 
@@ -26,12 +25,10 @@ class multiPlayer :
 	std::size_t received;
 	char data[600];
 
-	std::unique_ptr<button> b_addSlot;
-	std::unique_ptr<button> b_deleteSlot;
-	std::unique_ptr<button> b_addBot;
-	std::unique_ptr<button> b_deleteBot;
-	std::unique_ptr<button> b_start;
-	std::unique_ptr<button> b_menu;
+	std::unique_ptr<Button> b_addSlot;
+	std::unique_ptr<Button> b_deleteSlot;
+	std::unique_ptr<Button> b_start;
+	std::unique_ptr<Button> b_menu;
 
 	int state = 1;
 	int maxID = 1;
@@ -43,8 +40,8 @@ class multiPlayer :
 	std::thread t;
 
 public:
-	multiPlayer(multiPlayerSettings* _prev, Resources* _resources);
-	~multiPlayer();
+	MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources);
+	~MultiPlayer();
 	void listen(sf::TcpSocket& guest);
 	void waitForStart();
 	void waitForData(sf::TcpSocket& guest);

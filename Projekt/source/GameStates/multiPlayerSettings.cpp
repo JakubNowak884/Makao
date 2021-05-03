@@ -1,28 +1,24 @@
 #include "..\headers\GameStates\multiPlayerSettings.h"
+#include "..\headers\Resources.h"
 
-multiPlayerSettings::multiPlayerSettings(Resources* _resources)
-    : gameState(_resources)
+MultiPlayerSettings::MultiPlayerSettings(Resources* _resources)
+    : GameState(_resources)
 {
-    font.loadFromFile("../resources/fonts/OpenSans-Regular.ttf");
+    initText(text, 0, 0, 36);
+    text.setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 1) + getPlayerName() + L"\n" + resources->getText(int(gameStateNumber::multiPlayerSettings), 2) + sf::String(IP_LAN) + L"\n" + resources->getText(int(gameStateNumber::multiPlayerSettings), 3) + IP_Online + resources->getText(int(gameStateNumber::multiPlayerSettings), 4));
 
-    text.setCharacterSize(36);
-    text.setFillColor(sf::Color::White);
-    text.setFont(resources->getFont());
-    text.setPosition(0, 0);
-    text.setString("Nazwa gracza: " + getPlayerName() + '\n' + "IP gry LAN: " + IP_LAN + '\n' + "IP gry ONLINE: " + IP_Online + "\nSame krolowe (po stworzeniu gry):");
+    b_changeName = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 5), resources->getFont(), 150, 40, 715, 25, resources->getTexturePtr("button"), 36);
+    b_changeIP_LAN = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 5), resources->getFont(), 150, 40, 715, 75, resources->getTexturePtr("button"), 36);
+    b_changeIP_Online = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 5), resources->getFont(), 150, 40, 715, 125, resources->getTexturePtr("button"), 36);
 
-    b_changeName = std::make_unique<button>("Zmien", resources->getFont(), 150, 40, 715, 25, resources->getTexturePtr("button"), 36);
-    b_changeIP_LAN = std::make_unique<button>("Zmien", resources->getFont(), 150, 40, 715, 75, resources->getTexturePtr("button"), 36);
-    b_changeIP_Online = std::make_unique<button>("Zmien", resources->getFont(), 150, 40, 715, 125, resources->getTexturePtr("button"), 36);
-
-    b_joinLAN= std::make_unique<button>("Dolacz do\nsesji LAN", resources->getFont(), 380, 180, 200, 500, resources->getTexturePtr("button"), 56);
-    b_createLAN = std::make_unique<button>("Stworz\nsesje LAN", resources->getFont(), 380, 180, 200, 700, resources->getTexturePtr("button"), 56);
-    b_joinOnline = std::make_unique<button>("Dolacz do\nsesji ONLINE", resources->getFont(), 380, 180, 600, 500, resources->getTexturePtr("button"), 56);
-    b_createOnline = std::make_unique<button>("Stworz\nsesje ONLINE", resources->getFont(), 380, 180, 600, 700, resources->getTexturePtr("button"), 56);
-    b_onlyQueens = std::make_unique<button>("Wylaczone", resources->getFont(), 150, 40, 715, 175, resources->getTexturePtr("button"), 28);
+    b_joinLAN= std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 6), resources->getFont(), 380, 180, 200, 500, resources->getTexturePtr("button"), 56);
+    b_createLAN = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 7), resources->getFont(), 380, 180, 200, 700, resources->getTexturePtr("button"), 56);
+    b_joinOnline = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 8), resources->getFont(), 380, 180, 600, 500, resources->getTexturePtr("button"), 56);
+    b_createOnline = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 9), resources->getFont(), 380, 180, 600, 700, resources->getTexturePtr("button"), 56);
+    b_onlyQueens = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayerSettings), 10), resources->getFont(), 150, 40, 715, 175, resources->getTexturePtr("button"), 28);
 }
 
-void multiPlayerSettings::setIP(char sign)
+void MultiPlayerSettings::setIP(char sign)
 {
     std::string* text;
     if (settingIP_LAN)
@@ -46,12 +42,12 @@ void multiPlayerSettings::setIP(char sign)
     }
 }
 
-bool multiPlayerSettings::getLAN()
+bool MultiPlayerSettings::getLAN()
 {
     return settingIP_LAN;
 }
 
-std::string multiPlayerSettings::getIP()
+std::string MultiPlayerSettings::getIP()
 {
     if (settingIP_LAN)
         return IP_LAN;
@@ -59,17 +55,17 @@ std::string multiPlayerSettings::getIP()
         return IP_Online;
 }
 
-bool multiPlayerSettings::getHost()
+bool MultiPlayerSettings::getHost()
 {
     return host;
 }
 
-bool multiPlayerSettings::getOnlyQueens()
+bool MultiPlayerSettings::getOnlyQueens()
 {
     return onlyQueens;
 }
 
-gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber MultiPlayerSettings::update(sf::Event event, sf::RenderWindow& window)
 {
     if (b_changeName->clicked(event))
     {
@@ -92,7 +88,7 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     {
         host = false;
         settingIP_LAN = true;
-        b_joinLAN->setString("laczenie...");
+        b_joinLAN->setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 11));
         draw(window);
         window.display();
         return gameStateNumber::multiPlayer;
@@ -109,7 +105,7 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     {
         host = false;
         settingIP_LAN = false;
-        b_joinOnline->setString("laczenie...");
+        b_joinOnline->setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 11));
         draw(window);
         window.display();
         return gameStateNumber::multiPlayer;
@@ -151,9 +147,9 @@ gameStateNumber multiPlayerSettings::update(sf::Event event, sf::RenderWindow& w
     return gameStateNumber::def;
 }
 
-void multiPlayerSettings::draw(sf::RenderWindow& window)
+void MultiPlayerSettings::draw(sf::RenderWindow& window)
 {
-    text.setString("Nazwa gracza: " + getPlayerName() + '\n' + "IP gry LAN: " + IP_LAN + '\n' + "IP gry ONLINE: " + IP_Online + "\nSame krolowe (po stworzeniu gry):");
+    text.setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 1) + getPlayerName() + L"\n" + resources->getText(int(gameStateNumber::multiPlayerSettings), 2) + sf::String(IP_LAN) + L"\n" + resources->getText(int(gameStateNumber::multiPlayerSettings), 3) + IP_Online + resources->getText(int(gameStateNumber::multiPlayerSettings), 4));
     window.draw(text);
 
     b_changeName->draw(window);
@@ -164,8 +160,8 @@ void multiPlayerSettings::draw(sf::RenderWindow& window)
     b_joinOnline->draw(window);
     b_createOnline->draw(window);
     if (onlyQueens)
-        b_onlyQueens->setString("Wlaczone");
+        b_onlyQueens->setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 12));
     else
-        b_onlyQueens->setString("Wylaczone");
+        b_onlyQueens->setString(resources->getText(int(gameStateNumber::multiPlayerSettings), 10));
     b_onlyQueens->draw(window);
 }

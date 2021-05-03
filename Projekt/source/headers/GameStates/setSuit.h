@@ -1,20 +1,19 @@
 #pragma once
-#include "game.h"
-class setSuit :
-    public gameState
+#include "Game.h"
+class SetSuit :
+    public GameState
 {
-    sf::Font font;
-    game* prev;
+    Game* prev;
 
     sf::Text text;
 
-    std::unique_ptr<button> b_clubs;
-    std::unique_ptr<button> b_diamonds;
-    std::unique_ptr<button> b_hearts;
-    std::unique_ptr<button> b_spades;
+    std::unique_ptr<Button> b_clubs;
+    std::unique_ptr<Button> b_diamonds;
+    std::unique_ptr<Button> b_hearts;
+    std::unique_ptr<Button> b_spades;
 
 public:
-    setSuit(game* _game, Resources* _resources);
+    SetSuit(Game* _game, Resources* _resources);
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };

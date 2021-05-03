@@ -1,16 +1,14 @@
 #pragma once
-#include "gameState.h"
-class changeName :
-	public gameState
+#include "GameState.h"
+class ChangeName :
+	public GameState
 {
-	sf::Font font;
-
 	sf::Text currentName;
 
-	std::unique_ptr<button> b_back;
+	std::unique_ptr<Button> b_back;
 
 public:
-	changeName(Resources* _resources);
+	ChangeName(Resources* _resources);
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };

@@ -1,12 +1,13 @@
 #include "..\headers\GameStates\singlePlayer.h"
+#include "..\headers\Resources.h"
 
-singlePlayer::singlePlayer(singlePlayerSettings* prev, Resources* _resources)
-	: game(_resources, prev->getOnlyQueens())
+SinglePlayer::SinglePlayer(SinglePlayerSettings* prev, Resources* _resources)
+	: Game(_resources, prev->getOnlyQueens())
 {
 	amountOfPlayers = prev->getAmountOfPlayers();
 	sleepDuration = prev->getBotSpeed();
 
-	player = std::make_unique<Player>(deck, resources->getFont(), 1);
+	player = std::make_unique<Player>(deck, resources, 1);
 
 	bool oneBot;
 	if (amountOfPlayers == 2)
@@ -15,10 +16,10 @@ singlePlayer::singlePlayer(singlePlayerSettings* prev, Resources* _resources)
 		oneBot = false;
 
 	for (int i = 2; i < amountOfPlayers + 1; i++)
-		bots.push_back(std::make_unique<AI>(deck, resources->getFont(), resources->getTexturePtr("deck"), i, oneBot));
+		bots.push_back(std::make_unique<AI>(deck, resources, i, oneBot));
 }
 
-AI* singlePlayer::getAI(int ID)
+AI* SinglePlayer::getAI(int ID)
 {
 	for (auto bot = bots.begin(); bot < bots.end(); bot++)
 		if ((*bot)->getID() == ID)
@@ -26,10 +27,14 @@ AI* singlePlayer::getAI(int ID)
 	return nullptr;
 }
 
-void singlePlayer::botsTakesTurn()
+void SinglePlayer::botsTakesTurn()
 {
 	for (auto bot = bots.begin(); bot < bots.end(); bot++)
 	{
+		for (auto bot = bots.begin(); bot < bots.end(); bot++)
+		{
+			(*bot)->rememberCard(deck.front()->getSuit(), deck.front()->getFigure());
+		}
 		if (turn == (*bot)->getID())
 		{
 			(*bot)->setTextColor(sf::Color::Green);
@@ -97,7 +102,7 @@ void singlePlayer::botsTakesTurn()
 	threadRunning = false;
 }
 
-gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber SinglePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
 	if (end && threadRunning == false)
 		return gameStateNumber::endgame;
@@ -112,19 +117,19 @@ gameStateNumber singlePlayer::update(sf::Event event, sf::RenderWindow& window)
 	if(wonCounter == amountOfPlayers)
 		return gameStateNumber::endgame;
 
-	return game::update(event, window);	
+	return Game::update(event, window);	
 }
 
-void singlePlayer::draw(sf::RenderWindow& window)
+void SinglePlayer::draw(sf::RenderWindow& window)
 {
 	if (turn != 1 && threadRunning == false)
 	{
 		threadRunning = true;
-		std::thread t1(&singlePlayer::botsTakesTurn, this);
+		std::thread t1(&SinglePlayer::botsTakesTurn, this);
 		t1.detach();
 	}
 
-	game::draw(window);
+	Game::draw(window);
 
 	for (auto bot = bots.begin(); bot < bots.end(); bot++)
 		(*bot)->draw(window);
