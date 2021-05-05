@@ -8,12 +8,12 @@ Język polski;
 Aktualnie gra: ;
 #instruction
 Zasady:
-
+ 
 Na początku gry każdy z graczy dostaje do ręki 5 kart z talli 52 kart.
 Pierwsza karta z talli polożona jest na środku stołu.
 Celem gry jest pozbycie się wszystkich kart z ręki poprzez zagrywanie
 ich na kartę na stole, jeśli obie mają pasujący kolor lub figurę.
-
+ 
 Poszczególne karty mają następujące efekty:
 As: Gracz żąda koloru dla nastepnęgo gracza
 Dwójki/trójki: Następny gracz dobiera dwie/trzy karty
@@ -22,25 +22,25 @@ Walety: Gracz żąda figury dla calej kolejki
 Królowe: Królową można zagrać na dowolną kartę niefunkcyjną,
                 na królową można zagrać dowolną kartę
 Król Serce/Pik: Następny/poprzedni gracz dobiera 5 kart
-
+ 
 Przed kartami funkcyjnymi można bronić się tylko zagrywając kartę o
 tej samej funkcji.;
 Sterowanie:
-
+ 
 Lewy przycisk myszy:
 Zagranie karty/nacisnięcie przycisku
-
+ 
 Strzałki w lewo/prawo lub kółko myszy w dół/górę:
 Przesuwanie kart w recę w lewo/prawo
-
+ 
 F11:
 Pełny ekran/okienko
-
+ 
 Escape:
 Wyjście do menu;
 Autor:
 	Jakub Nowak
-
+ 
 Podziekowania:
 	Tekstura tła: Image by Danny Santamaria Osorio from Pixabay
 	Tekstura przycisku: Image by 1117826 from Pixabay
@@ -72,17 +72,18 @@ miejsce;
 miejsce;
 Rozpocznij;
 Wróć do menu;
-
-Same królowe włączone;
-
+ 
+Same królowe wlaczone;
+ 
 Uczestnicy:
-
+ 
 ;
-
-Ilość kart : ;
-
-Opóźnienie : ;
+ 
+Ilosc kart : ;
+ 
+Opoznienie : ;
 Błąd połączenia;
+Niezgodność wersji językowych;
 Nie udalo sie dołączyć do gry o podanym IP;
 Oczekiwanie
 na gracza...;
@@ -92,7 +93,7 @@ miejsce;
 Nazwa gracza: ;
 IP gry LAN: ;
 IP gry ONLINE: ;
-
+ 
 Same królowe (po stworzeniu gry):;
 Zmień;
 Dołącz do
@@ -146,14 +147,14 @@ dziewiątek;
 dziesiątek;
 Następny gracz
 dobierze: ;
-
+ 
 Ilość kart: ;
-
+ 
 Opóźnienie: ;
 #AI
 Komputer ;
-
+ 
 Ilość kart: ;
-
+ 
 Opóźnienie: ;
 #

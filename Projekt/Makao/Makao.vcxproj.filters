@@ -39,6 +39,9 @@
     <ClInclude Include="..\source\headers\GameStates\Endgame.h">
       <Filter>headers\GameStates</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\headers\GameStates\Error.h">
+      <Filter>headers\GameStates</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\headers\GameStates\Game.h">
       <Filter>headers\GameStates</Filter>
     </ClInclude>
@@ -94,6 +97,9 @@
       <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="..\source\GameStates\Endgame.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\GameStates\Error.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="..\source\GameStates\Game.cpp">

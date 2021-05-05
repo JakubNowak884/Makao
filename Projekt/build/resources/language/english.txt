@@ -8,12 +8,12 @@ English language;
 Currently playing: ;
 #instruction
 Rules:
-
+ 
 At the beginning of the game, each player put 5 cards into the hand of 52
 cards. The first card from the deck is placed in the center of the table.
 The object of the game is to get rid of all cards in your hand by playing
 them on a stealth card if you both have a matching color or face shape.
-
+ 
 Individual cards have the following effects:
 Ace: The player requests a color for the next player
 Deuces / Threes: The next player draws two / three cards
@@ -22,25 +22,25 @@ Jacks: The player demands a piece for the entire turn
 Queens: The Queen can be played on any non-functional card that
                  any card can be played on the queen
 Hearts / Spades King: The next / previous player draws 5 cards
-
+ 
 You can only defend yourself from the function cards by playing
 the card with the same function .;
 Controls:
-
+ 
 Left mouse button:
 Play a card / press a button
-
+ 
 Left / right arrows or mouse wheel down / up:
 Moving cards in hand left / right
-
+ 
 F11:
 Full screen / window
-
+ 
 Escape:
 Exit to the menu;
 Author:
 	Jakub Nowak
-
+ 
 Acknowledgments:
 	Background texture: Image by Danny Santamaria Osorio from Pixabay
 	Button texture: Image by 1117826 from Pixabay
@@ -72,27 +72,28 @@ Delete
   Slot;
 Start;
 Back to  menu;
-
+ 
 Only the queens included;
-
+ 
 Participants:
-
+ 
 ;
-
+ 
 Number of cards: ;
-
+ 
 Delay: ;
 Connection error;
+Language versions mismatch;
 Could not join the game with the given IP;
-Waiting
-on the player ...;
+Waiting for
+the player ...;
 Add
 Slot;
 #multiPlayerSettings
 Player's name: ;
 LAN Game IP:;
 ONLINE game IP:;
-
+ 
 Only queens (after creating the game):;
 Change;
 join to
@@ -107,7 +108,7 @@ Off;
 connection...;
 On;
 #changeIP
-Current IP:;
+Current IP: ;
 Go back;
 #endgame
 End of the game!
@@ -146,14 +147,14 @@ nine;
 ten;
 Next player
 will draw: ;
-
+ 
 Number of cards: ;
-
+ 
 Delay: ;
 #AI
 Computer ;
-
+ 
 Amount of cards: ;
-
+ 
 Delay: ;
 #

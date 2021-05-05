@@ -70,6 +70,8 @@ protected:
     suitNumber currentSuit = suitNumber::null;
     figureNumber currentFigure = figureNumber::null;
 
+    bool threadRunning2 = false;
+
 public:
     Game(Resources* _resources, bool onlyQueens = false);
     virtual ~Game() {};
@@ -80,7 +82,6 @@ public:
     int getAmountOfPlayers();
     int getWon();
     void bumpTurn();
-    void botsTakesTurn(bool withThread = true);
     gameStateNumber cardDoThings(Card* current, int& _delay, int ID, bool bot = false);
     virtual gameStateNumber update(sf::Event event, sf::RenderWindow& window);
     virtual void draw(sf::RenderWindow& window);

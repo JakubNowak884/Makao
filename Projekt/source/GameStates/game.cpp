@@ -177,21 +177,21 @@ gameStateNumber Game::update(sf::Event event, sf::RenderWindow& window)
 	{
 		if ((event.mouseWheelScroll.delta > 0 || event.key.code == sf::Keyboard::Right) && (player->hand.front())->getX() < 800)
 		{
-			for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+			for (auto i = player->hand.begin(); i != player->hand.end(); i++)
 			{
 				(*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
 			}
 		}
 		else if ((event.mouseWheelScroll.delta < 0 || event.key.code == sf::Keyboard::Left) && player->hand.back()->getX() > 0)
 		{
-			for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+			for (auto i = player->hand.begin(); i != player->hand.end(); i++)
 			{
 				(*i)->setPosition(sf::Vector2f((*i)->getX() - 128, 800));
 			}
 		}
 	}
 
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && !threadRunning2)
 		return gameStateNumber::menu;
 
 	if (turn == player->getID())
@@ -201,7 +201,7 @@ gameStateNumber Game::update(sf::Event event, sf::RenderWindow& window)
 		{
 			if (player->getDelay() == 0)
 			{
-				for (std::vector<std::shared_ptr<Card>>::iterator i = player->hand.begin(); i != player->hand.end(); i++)
+				for (auto i = player->hand.begin(); i != player->hand.end(); i++)
 				{
 					(*i)->uptade(getMousePos(window));
 					if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && (*i)->isChosen())

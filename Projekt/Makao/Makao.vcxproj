@@ -84,7 +84,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;sfml-audio.lib;sfml-graphics.lib;sfml-main.lib;sfml-network.lib;sfml-system.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -99,6 +99,7 @@
     <ClInclude Include="..\source\headers\GameStates\ChangeIP.h" />
     <ClInclude Include="..\source\headers\GameStates\ChangeName.h" />
     <ClInclude Include="..\source\headers\GameStates\Endgame.h" />
+    <ClInclude Include="..\source\headers\GameStates\Error.h" />
     <ClInclude Include="..\source\headers\GameStates\Game.h" />
     <ClInclude Include="..\source\headers\GameStates\GameState.h" />
     <ClInclude Include="..\source\headers\GameStates\Instruction.h" />
@@ -120,6 +121,7 @@
     <ClCompile Include="..\source\GameStates\ChangeIP.cpp" />
     <ClCompile Include="..\source\GameStates\ChangeName.cpp" />
     <ClCompile Include="..\source\GameStates\Endgame.cpp" />
+    <ClCompile Include="..\source\GameStates\Error.cpp" />
     <ClCompile Include="..\source\GameStates\Game.cpp" />
     <ClCompile Include="..\source\GameStates\GameState.cpp" />
     <ClCompile Include="..\source\GameStates\Instruction.cpp" />

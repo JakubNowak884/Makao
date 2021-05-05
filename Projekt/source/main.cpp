@@ -1,5 +1,5 @@
-#include "headers\StateMachine.h"
-#include "headers\Resources.h"
+#include "headers/StateMachine.h"
+#include "headers/Resources.h"
 
 #include <iostream>
 #include <conio.h>
@@ -25,7 +25,7 @@ int main()
         file.close();
         return 0;
     }
-    std::unique_ptr<StateMachine> game = std::make_unique<StateMachine>(resources.get());
+    std::unique_ptr<StateMachine> game = std::make_unique<StateMachine>(resources);
     std::unique_ptr<sf::Sprite> background = std::make_unique<sf::Sprite>(resources->getTexture("background"));
     background->setPosition(-480, 0);
     bool fullScreen = false;
@@ -35,7 +35,15 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (!game->update(event, window)) window.close();
+            try 
+            {
+                if (!game->update(event, window))
+                    window.close();
+            }
+            catch (std::wstring error)
+            {
+                game->exception(error);
+            }
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F11)
             {
@@ -75,7 +83,14 @@ int main()
             if (event.type == sf::Event::Closed) window.close();
         }
         window.draw(*background.get());
-        game->draw(window);
+        try
+        {
+            game->draw(window);
+        }
+        catch (std::wstring error)
+        {
+            game->exception(error);
+        }
         window.display();
     }
     

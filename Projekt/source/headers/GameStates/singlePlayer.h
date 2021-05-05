@@ -13,8 +13,6 @@ class SinglePlayer :
 
     std::thread t;
 
-    bool threadRunning = false;
-
 public:
     SinglePlayer(SinglePlayerSettings* prev, Resources* _resources);
     AI* getAI(int ID);

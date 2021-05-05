@@ -21,9 +21,11 @@ class MultiPlayer :
 	std::string podium;
 
 	sf::TcpListener listener;
-	char buffer[600];
+	char buffer[700];
 	std::size_t received;
-	char data[600];
+	std::size_t sent;
+	char data[700];
+	sf::Packet packet;
 
 	std::unique_ptr<Button> b_addSlot;
 	std::unique_ptr<Button> b_deleteSlot;
@@ -33,11 +35,16 @@ class MultiPlayer :
 	int state = 1;
 	int maxID = 1;
 	bool waiting = false;
-	bool threadRunning = false;
 	bool myTurn = true;
 	bool host = true;
+	bool threadRunning = false;
+
+	int guest1Won = 0;
+	int guest2Won = 0;
+	int guest3Won = 0;
 
 	std::thread t;
+	std::exception_ptr texcpt = nullptr;
 
 public:
 	MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources);
@@ -45,8 +52,8 @@ public:
 	void listen(sf::TcpSocket& guest);
 	void waitForStart();
 	void waitForData(sf::TcpSocket& guest);
-	void putDataToSend();
-	bool loadDataFromBuffer(bool onlyDeck = false);
+	sf::Packet putDataToSend(bool onlyDeck = false);
+	void loadDataFromBuffer(bool onlyDeck = false);
 	void initializeInfo();
 	std::string getPodium();
 	gameStateNumber update(sf::Event event, sf::RenderWindow& window);

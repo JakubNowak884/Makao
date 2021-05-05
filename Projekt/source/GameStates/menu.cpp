@@ -1,5 +1,5 @@
 #include "../headers/GameStates/menu.h"
-#include "..\headers\Resources.h"
+#include "../headers/Resources.h"
 
 int Menu::languageVersion = 0;
 

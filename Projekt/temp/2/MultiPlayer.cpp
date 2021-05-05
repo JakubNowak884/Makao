@@ -48,6 +48,7 @@ MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
 		}
 		else
 		{
+			guest1.setBlocking(false);
 			text.setString(buffer);
 			std::string str = text.getString();
 			if (str[str.length() - 1] != resources->getLanguageVersion())
@@ -58,7 +59,7 @@ MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
 			sf::String playerNamesf = getPlayerName();
 			text.setString(str + playerNamesf);
 			std::string playerName = playerNamesf;
-			if (guest1.send(playerName.c_str(), playerName.length() + 1) != sf::Socket::Done)
+			if (guest1.send(playerName.c_str(), playerName.length() + 1, sent) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
@@ -109,9 +110,10 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 		}
 		if (listener.accept(guest) == sf::Socket::Done)
 		{
+			guest.setBlocking(false);
 			std::string temp = text.getString();
 			temp += resources->getLanguageVersion();
-			if (guest.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+			if (guest.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
@@ -121,7 +123,7 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 			}
 			text.setString(text.getString() + buffer);
 			temp[0] = maxID;
-			if (guest.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+			if (guest.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
@@ -138,7 +140,7 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 			switch (maxID)
 			{
 			case 3:
-				if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+				if (guest1.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -148,7 +150,7 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 				}
 				break;
 			case 4:
-				if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+				if (guest1.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -156,7 +158,7 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
-				if (guest2.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+				if (guest2.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -178,8 +180,8 @@ void MultiPlayer::listen(sf::TcpSocket& guest)
 
 void MultiPlayer::waitForStart()
 {
-	try
-	{
+	//try
+	//{
 		switch (guest1.receive(buffer, sizeof(buffer), received))
 		{
 		case sf::Socket::Done:
@@ -225,17 +227,17 @@ void MultiPlayer::waitForStart()
 			break;
 		}
 		threadRunning = false;
-	}
-	catch (std::wstring error)
+	//}
+	/*catch (std::wstring error)
 	{
 		texcpt = std::current_exception();
-	}
+	}*/
 }
 
 void MultiPlayer::waitForData(sf::TcpSocket& guest)
 {
-	try
-	{
+	/*try
+	{*/
 		switch (guest.receive(packet))
 		{
 		case sf::Socket::Done:
@@ -314,11 +316,11 @@ void MultiPlayer::waitForData(sf::TcpSocket& guest)
 			break;
 		}
 		threadRunning = false;
-	}
+	/*}
 	catch (std::wstring error)
 	{
 		texcpt = std::current_exception();
-	}
+	}*/
 }
 
 sf::Packet MultiPlayer::putDataToSend(bool onlyDeck)
@@ -492,12 +494,13 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 	case 1:
 		if (player->getID() != 1)
 		{
-			if (!threadRunning)
+			waitForStart();
+			/*if (!threadRunning)
 			{
 				threadRunning = true;
 				t = std::thread(&MultiPlayer::waitForStart, this);
 				t.detach();
-			}
+			}*/
 		}
 		if (waiting)
 		{
@@ -543,7 +546,7 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 			switch (maxID)
 			{
 			case 4:
-				if (guest3.send(temp.c_str(), 5) != sf::Socket::Done)
+				if (guest3.send(temp.c_str(), 5, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -554,7 +557,7 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				loadDataFromBuffer();
 				[[fallthrough]];
 			case 3:
-				if (guest2.send(temp.c_str(), 5) != sf::Socket::Done)
+				if (guest2.send(temp.c_str(), 5, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -565,7 +568,7 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				loadDataFromBuffer();
 				[[fallthrough]];
 			case 2:
-				if (guest1.send(temp.c_str(), 5) != sf::Socket::Done)
+				if (guest1.send(temp.c_str(), 5, sent) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -607,19 +610,19 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				switch (maxID)
 				{
 				case 4:
-					if (guest3.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest3.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 3:
-					if (guest2.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest2.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 2:
-					if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest1.send(temp.c_str(), temp.length() + 1, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
@@ -685,36 +688,40 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 		}
 		else if (turn != player->getID() && !myTurn)
 		{
-			if (!threadRunning)
-			{
+			/*if (!threadRunning)
+			{*/
 				if (host)
 				{
 					switch (turn)
 					{
 					case 2:
-						threadRunning = true;
+						waitForData(guest1);
+						/*threadRunning = true;
 						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
-						t.detach();
+						t.detach();*/
 						break;
 					case 3:
-						threadRunning = true;
+						waitForData(guest2);
+						/*threadRunning = true;
 						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest2));
-						t.detach();
+						t.detach();*/
 						break;
 					case 4:
-						threadRunning = true;
+						waitForData(guest3);
+						/*threadRunning = true;
 						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest3));
-						t.detach();
+						t.detach();*/
 						break;
 					}
 				}
 				else
 				{
-					threadRunning = true;
+					waitForData(guest1);
+					/*threadRunning = true;
 					t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
-					t.detach();
+					t.detach();*/
 				}
-			}
+			//}
 		}
 		if (wonCounter == amountOfPlayers - 1)
 		{
@@ -760,19 +767,19 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				switch (maxID)
 				{
 				case 4:
-					if (guest3.send(temp3.c_str(), 100) != sf::Socket::Done) 
+					if (guest3.send(temp3.c_str(), 100, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 3:
-					if (guest2.send(temp3.c_str(), 100) != sf::Socket::Done)
+					if (guest2.send(temp3.c_str(), 100, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 2:
-					if (guest1.send(temp3.c_str(), 100) != sf::Socket::Done)
+					if (guest1.send(temp3.c_str(), 100, sent) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}

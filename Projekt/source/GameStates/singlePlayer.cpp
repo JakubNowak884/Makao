@@ -99,12 +99,12 @@ void SinglePlayer::botsTakesTurn()
 		bumpTurn();
 	}
 
-	threadRunning = false;
+	threadRunning2 = false;
 }
 
 gameStateNumber SinglePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (end && threadRunning == false)
+	if (end && threadRunning2 == false)
 		return gameStateNumber::endgame;
 
 	
@@ -122,9 +122,9 @@ gameStateNumber SinglePlayer::update(sf::Event event, sf::RenderWindow& window)
 
 void SinglePlayer::draw(sf::RenderWindow& window)
 {
-	if (turn != 1 && threadRunning == false)
+	if (turn != 1 && threadRunning2 == false)
 	{
-		threadRunning = true;
+		threadRunning2 = true;
 		std::thread t1(&SinglePlayer::botsTakesTurn, this);
 		t1.detach();
 	}

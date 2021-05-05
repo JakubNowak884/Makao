@@ -23,6 +23,7 @@ void Resources::loadResources()
 
 void Resources::loadLanguage(std::string _language)
 {
+	languageVersion = _language[0];
 	for (auto i = language.begin(); i != language.end(); i++)
 		i->clear();
 	language.clear();
@@ -55,7 +56,7 @@ void Resources::loadLanguage(std::string _language)
 	}
 	if (language[0].size() != 7 || language[1].size() != 5 || language[2].size() != 2 || language[3].size() != 7)
 		throw("Language file incorrect format");
-	if (language[5].size() != 14 || language[6].size() != 12 || language[7].size() != 2 || language[8].size() != 3)
+	if (language[5].size() != 15 || language[6].size() != 12 || language[7].size() != 2 || language[8].size() != 3)
 		throw("Language file incorrect format");
 	if (language[9].size() != 5 || language[10].size() != 7 || language[11].size() != 17 || language[12].size() != 3)
 		throw("Language file incorrect format");
@@ -90,4 +91,9 @@ sf::Texture* Resources::getTexturePtr(std::string texture)
 		return textures[1].get();
 	else
 		return textures[2].get();
+}
+
+char Resources::getLanguageVersion()
+{
+	return languageVersion;
 }
