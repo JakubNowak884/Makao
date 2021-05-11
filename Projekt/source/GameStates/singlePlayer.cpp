@@ -1,14 +1,14 @@
 #include "..\headers\GameStates\singlePlayer.h"
 #include "..\headers\Resources.h"
 
-SinglePlayer::SinglePlayer(SinglePlayerSettings* prev, Resources* _resources)
+SinglePlayer::SinglePlayer(SinglePlayerSettings* prev, std::shared_ptr<Resources> _resources)
 	: Game(_resources, prev->getOnlyQueens())
 {
 	amountOfPlayers = prev->getAmountOfPlayers();
 	sleepDuration = prev->getBotSpeed();
 
 	player = std::make_unique<Player>(deck, resources, 1);
-
+	//jeœli tylko jeden gracz komputerowy znajduje siê on u góry ekranu
 	bool oneBot;
 	if (amountOfPlayers == 2)
 		oneBot = true;
@@ -31,6 +31,7 @@ void SinglePlayer::botsTakesTurn()
 {
 	for (auto bot = bots.begin(); bot < bots.end(); bot++)
 	{
+		//ka¿dy z graczy komputerowych zapamiêtuje aktualn¹ kartê na stole
 		for (auto bot = bots.begin(); bot < bots.end(); bot++)
 		{
 			(*bot)->rememberCard(deck.front()->getSuit(), deck.front()->getFigure());
@@ -38,9 +39,11 @@ void SinglePlayer::botsTakesTurn()
 		if (turn == (*bot)->getID())
 		{
 			(*bot)->setTextColor(sf::Color::Green);
+			//tworzenie odstêpu czasowego miêdzy turami graczy komputerowych
 			std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
 			if ((*bot)->getWon() == 0)
 			{
+				//jesli wszyscy pozostali gracze zakoñczyli rozgrywkê
 				if (wonCounter == amountOfPlayers - 1)
 				{
 					wonCounter++;
@@ -53,6 +56,7 @@ void SinglePlayer::botsTakesTurn()
 					{
 						while ((*bot)->hasACardAbleToPlay(deck, actionCardIsActive, currentSuit, currentFigure))
 						{
+							//sprawdzenie czy karta zagrana przez gracza komputerowego to As lub Walet
 							switch (cardDoThings((*bot)->playACard(deck, actionCardIsActive, currentSuit, currentFigure), (*bot)->getDelay(), (*bot)->getID(), true))
 							{
 							case gameStateNumber::setSuit:
@@ -64,7 +68,7 @@ void SinglePlayer::botsTakesTurn()
 							default:
 								break;
 							}
-
+							//zwyciêstwo gracza komputerowego
 							if ((*bot)->handEmpty())
 							{
 								wonCounter++;
@@ -74,8 +78,10 @@ void SinglePlayer::botsTakesTurn()
 					}
 					else
 					{
+						//dobranie karty jeœli talia ma wiêcej ni¿ jedn¹ kartê oraz nie jest aktualnie zagrana Czwórka
 						if (deck.front() != deck.back() && !four)
 							cardDoThings((*bot)->drawACard(deck, actionCardIsActive, currentSuit, currentFigure, addDrawAmount), (*bot)->getDelay(), (*bot)->getID(), true);
+						//jeœli jest zagrana czwórka ustawienie opóŸnienia dla aktualnego gracza komputerowego
 						else if (four)
 						{
 							(*bot)->setDelay(delay);
@@ -92,29 +98,28 @@ void SinglePlayer::botsTakesTurn()
 			bumpTurn();
 		}
 	}
-
+	//jeœli gracz ludzki skoñczy³ rozgrywkê ustawienie opóŸnienia miêdzy turami graczy komputerowych na zero
 	if (player->getWon() != 0)
 	{
 		sleepDuration = 0;
 		bumpTurn();
 	}
 
-	threadRunning2 = false;
+	threadRunning = false;
 }
 
 gameStateNumber SinglePlayer::update(sf::Event event, sf::RenderWindow& window)
 {
-	if (end && threadRunning2 == false)
+	if (end && threadRunning == false)
 		return gameStateNumber::endgame;
-
-	
+	//jeœli gracze komputerowi skoñczyli grê
 	if (wonCounter == amountOfPlayers - 1 && player->getWon() == 0)
 	{
 		player->setWon(1 + wonCounter);
 		return gameStateNumber::endgame;
 	}
-
-	if(wonCounter == amountOfPlayers)
+	//jeœli wszyscy gracze skoñczyli grê
+	if (wonCounter == amountOfPlayers)
 		return gameStateNumber::endgame;
 
 	return Game::update(event, window);	
@@ -122,9 +127,10 @@ gameStateNumber SinglePlayer::update(sf::Event event, sf::RenderWindow& window)
 
 void SinglePlayer::draw(sf::RenderWindow& window)
 {
-	if (turn != 1 && threadRunning2 == false)
+	//jeœli gracz skoñczy³ turê, tura graczy komputerowych rozpoczyna pracê na osobnym w¹tku
+	if (turn != 1 && threadRunning == false)
 	{
-		threadRunning2 = true;
+		threadRunning = true;
 		std::thread t1(&SinglePlayer::botsTakesTurn, this);
 		t1.detach();
 	}

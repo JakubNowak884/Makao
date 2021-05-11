@@ -1,13 +1,10 @@
 #include "../headers/GameStates/menu.h"
 #include "../headers/Resources.h"
 
-int Menu::languageVersion = 0;
-
-Menu::Menu(Resources* _resources)
+Menu::Menu(std::shared_ptr<Resources> _resources)
     : GameState(_resources)
 {
     initText(currentPlayer, 0, 0, 36);
-    currentPlayer.setString(resources->getText(int(gameStateNumber::menu), 6) + getPlayerName());
 
     b_changeName = std::make_unique<Button>(resources->getText(int(gameStateNumber::menu), 1), resources->getFont(), 150, 40, currentPlayer.getLocalBounds().width + 30, 25, resources->getTexturePtr("button"), 36);
     b_singlePlayer = std::make_unique<Button>(resources->getText(int(gameStateNumber::menu), 2), resources->getFont(), 600, 150, 400, 150, resources->getTexturePtr("button"));
@@ -41,7 +38,7 @@ gameStateNumber Menu::update(sf::Event event, sf::RenderWindow& window)
     }
     if (b_language->clicked(event))
     {
-        if (languageVersion == 0)
+        if (resources->getLanguageVersion() == 'p')
         {
             try
             {
@@ -55,7 +52,6 @@ gameStateNumber Menu::update(sf::Event event, sf::RenderWindow& window)
                 file.close();
                 return gameStateNumber::quit;
             }
-            languageVersion = 1;
         }
         else 
         {
@@ -71,7 +67,6 @@ gameStateNumber Menu::update(sf::Event event, sf::RenderWindow& window)
                 file.close();
                 return gameStateNumber::quit;
             }
-            languageVersion = 0;
         }
         return gameStateNumber::menu;
     }

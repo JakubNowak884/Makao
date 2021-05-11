@@ -1,10 +1,6 @@
 #include "headers/StateMachine.h"
 #include "headers/Resources.h"
 
-#include <iostream>
-#include <conio.h>
-
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "Makao");

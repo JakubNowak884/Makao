@@ -1,7 +1,7 @@
 #include "headers\AI.h"
 #include "headers\Resources.h"
 
-AI::AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, bool onlyOne)
+AI::AI(std::list<std::shared_ptr<Card>>& deck, std::shared_ptr<Resources> _resources, int _ID, bool onlyOne)
 	: resources(_resources)
 {
 	info.setFont(resources->getFont());
@@ -10,22 +10,22 @@ AI::AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, b
 	if (onlyOne)
 	{
 		info.setPosition(470, 10);
-		cardBack = new Object(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
+		cardBack = std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
 	}
 	else {
 		switch (_ID)
 		{
 		case 2:		
 			info.setPosition(10, 210);
-			cardBack = new Object(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White);
+			cardBack = std::make_unique<Object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		case 3:
 			info.setPosition(470, 10);
-			cardBack = new Object(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
+			cardBack = std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		case 4:
 			info.setPosition(580, 210);
-			cardBack = new Object(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White);
+			cardBack = std::make_unique<Object>(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White);
 			break;
 		default:
 			break;
@@ -48,11 +48,6 @@ AI::AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, b
 	ID = _ID;
 	won = 0;
 	delay = 0;
-}
-
-AI::~AI()
-{
-	delete cardBack;
 }
 
 int AI::getID()

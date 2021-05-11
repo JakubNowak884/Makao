@@ -1,11 +1,11 @@
 #include "..\headers\GameStates\setSuit.h"
 #include "..\headers\Resources.h"
 
-SetSuit::SetSuit(Game* _game, Resources* _resources)
+SetSuit::SetSuit(Game* _game, std::shared_ptr<Resources> _resources)
     : GameState(_resources)
 {
-    initText(text, 0, 0, 48);
-    text.setString(resources->getText(int(gameStateNumber::setSuit), 1));
+    initText(textChoose, 0, 0, 48);
+    textChoose.setString(resources->getText(int(gameStateNumber::setSuit), 1));
 
     b_clubs = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 2), resources->getFont(), 200, 100, 200, 150, resources->getTexturePtr("button"), 32);
     b_diamonds = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 3), resources->getFont(), 200, 100, 200, 260, resources->getTexturePtr("button"), 32);
@@ -17,16 +17,17 @@ SetSuit::SetSuit(Game* _game, Resources* _resources)
 
 gameStateNumber SetSuit::update(sf::Event event, sf::RenderWindow& window)
 {
-    if (event.type == sf::Event::MouseWheelScrolled)
+    //przesuwanie kart w rêce w prawo lub w lewo
+    if (event.type == sf::Event::MouseWheelScrolled || event.type == sf::Event::KeyPressed)
     {
-        if (event.mouseWheelScroll.delta > 0 && (prev->getHand().front())->getX() < 800)
+        if ((event.mouseWheelScroll.delta > 0 || event.key.code == sf::Keyboard::Right) && (prev->getHand().front())->getX() < 800)
         {
             for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
                 (*i)->setPosition(sf::Vector2f((*i)->getX() + 128, 800));
             }
         }
-        else if (event.mouseWheelScroll.delta < 0 && prev->getHand().back()->getX() > 0)
+        else if ((event.mouseWheelScroll.delta < 0 || event.key.code == sf::Keyboard::Left) && prev->getHand().back()->getX() > 0)
         {
             for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
             {
@@ -72,7 +73,7 @@ void SetSuit::draw(sf::RenderWindow& window)
             (*i)->draw(window);
     }
 
-    window.draw(text);
+    window.draw(textChoose);
 
     b_clubs->draw(window);
     b_diamonds->draw(window);

@@ -1,13 +1,10 @@
 #include "..\headers\GameStates\singlePlayerSettings.h"
 #include "..\headers\Resources.h"
 
-SinglePlayerSettings::SinglePlayerSettings(Resources* _resources)
+SinglePlayerSettings::SinglePlayerSettings(std::shared_ptr<Resources> _resources)
 	: GameState(_resources)
 {
 	initText(settings, 0, 0, 42);
-	settings.setString(resources->getText(int(gameStateNumber::singlePlayerSettings), 1) + std::to_wstring(amountOfPlayers) + L"\n\n" +
-		resources->getText(int(gameStateNumber::singlePlayerSettings), 2) + std::to_wstring(botSpeed) + L" ms\n\n" +
-		resources->getText(int(gameStateNumber::singlePlayerSettings), 3));
 
 	b_addAmountOfPlayers = std::make_unique<Button>("+", resources->getFont(), 50, 50, 720, 35, resources->getTexturePtr("button"), 58);
 	b_reduceAmountOfPlayers = std::make_unique<Button>("-", resources->getFont(), 50, 50, 655, 35, resources->getTexturePtr("button"), 58);
@@ -65,13 +62,10 @@ gameStateNumber SinglePlayerSettings::update(sf::Event event, sf::RenderWindow& 
 	{
 		return gameStateNumber::singlePlayer;
 	}
-	if (b_toMenu->clicked(event))
+	if (b_toMenu->clicked(event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
 	{
 		return gameStateNumber::menu;
 	}
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-		return gameStateNumber::menu;
 
 	b_addAmountOfPlayers->uptade(getMousePos(window));
 	b_reduceAmountOfPlayers->uptade(getMousePos(window));
@@ -92,6 +86,7 @@ void SinglePlayerSettings::draw(sf::RenderWindow& window)
 		resources->getText(int(gameStateNumber::singlePlayerSettings), 2) + std::to_wstring(botSpeed) + L" ms\n\n" +
 		resources->getText(int(gameStateNumber::singlePlayerSettings), 3));
 	window.draw(settings);
+
 	b_addAmountOfPlayers->draw(window);
 	b_reduceAmountOfPlayers->draw(window);
 	b_addBotSpeed->draw(window);

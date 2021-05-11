@@ -1,13 +1,10 @@
 #include "..\headers\GameStates\changeIP.h"
 #include "..\headers\Resources.h"
 
-ChangeIP::ChangeIP(MultiPlayerSettings* _prev, Resources* _resources)
-    : GameState(_resources)
+ChangeIP::ChangeIP(MultiPlayerSettings* _prev, std::shared_ptr<Resources> _resources)
+    : GameState(_resources), prev(_prev)
 {
-    prev = _prev;
-
     initText(currentIP, 0, 200, 36);
-    currentIP.setString(resources->getText(int(gameStateNumber::changeIP), 1) + sf::String(prev->getIP()));
 
     b_back = std::make_unique<Button>(resources->getText(int(gameStateNumber::changeIP), 2), resources->getFont(), 600, 150, 400, 600, resources->getTexturePtr("button"));
 }
@@ -20,7 +17,7 @@ gameStateNumber ChangeIP::update(sf::Event event, sf::RenderWindow& window)
         prev->setIP(sign);
     }
 
-    if (b_back->clicked(event))
+    if (b_back->clicked(event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
     {
         return gameStateNumber::resume;
     }

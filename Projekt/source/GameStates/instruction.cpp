@@ -1,7 +1,7 @@
 #include "..\headers\GameStates\instruction.h"
 #include "..\headers\Resources.h"
 
-Instruction::Instruction(Resources* _resources)
+Instruction::Instruction(std::shared_ptr<Resources> _resources)
 	: GameState (_resources)
 {
 	initText(rules, 0, 0, 24);
@@ -14,10 +14,7 @@ Instruction::Instruction(Resources* _resources)
 	credits.setString(resources->getText(int(gameStateNumber::instruction), 3));
 
 	initText(page1, 15, 660, 18);
-	page1.setString(resources->getText(int(gameStateNumber::instruction), 4) + std::to_wstring(page) + L"/3");
-
 	initText(page2, 700, 660, 18);
-	page2.setString(resources->getText(int(gameStateNumber::instruction), 4) + std::to_wstring(page) + L"/3");
 
 	b_pageDown = std::make_unique<Button>("<", resources->getFont(), 100, 100, 60, 740, resources->getTexturePtr("button"));
 	b_pageUp = std::make_unique<Button>(">", resources->getFont(), 100, 100, 740, 740, resources->getTexturePtr("button"));
@@ -76,6 +73,7 @@ void Instruction::draw(sf::RenderWindow& window)
 	default:
 		break;
 	}
+
 	page1.setString(resources->getText(int(gameStateNumber::instruction), 4) + std::to_wstring(page) + L"/3");
 	page2.setString(resources->getText(int(gameStateNumber::instruction), 4) + std::to_wstring(page) + L"/3");
 	window.draw(page1);

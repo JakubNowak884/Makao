@@ -32,6 +32,8 @@ Button::Button(const std::string& textToBeShowed, sf::Font& font, float _width, 
 	text.setFont(font);
 	text.setString(textToBeShowed);
 	text.setCharacterSize(int(textSize));
+	//Ustawienie napisu na œrodku przycisku.
+	//Szerokoœæ to d³ugoœæ tekstu dzielona na dwa, wysokoœæ to 75% rozmiaru czcionki plus rozmiar czcionki pomno¿ony razy iloœæ znaków koñca wiersza podzielona na dwa.
 	text.setOrigin(text.getLocalBounds().width / 2, (float(textSize) * 3 / 4) + textSize * textEndl(textToBeShowed));
 	text.setPosition(_x, _y);
 }
@@ -42,6 +44,8 @@ Button::Button(const std::wstring& textToBeShowed, sf::Font& font, float _width,
 	text.setFont(font);
 	text.setString(textToBeShowed);
 	text.setCharacterSize(textSize);
+	//Ustawienie napisu na œrodku przycisku.
+	//Szerokoœæ to d³ugoœæ tekstu dzielona na dwa, wysokoœæ to 75% rozmiaru czcionki plus rozmiar czcionki pomno¿ony razy iloœæ znaków koñca wiersza podzielona na dwa.
 	text.setOrigin(text.getLocalBounds().width / 2, (float(textSize) * 3 / 4) + textSize * textEndl(textToBeShowed));
 	text.setPosition(_x, _y);
 }

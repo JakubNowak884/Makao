@@ -35,9 +35,9 @@ class AI
 		suitNumber suit;
 		figureNumber figure;
 	};
-	Resources* resources;
+	std::shared_ptr<Resources> resources;
 
-	Object* cardBack = nullptr;
+	std::unique_ptr<Object> cardBack = nullptr;
 	sf::Text info;
 	std::vector<std::shared_ptr<Card>> hand;
 	std::list<std::unique_ptr<cardPlayed>> cardsPlayed;
@@ -48,8 +48,7 @@ class AI
 	bool second = false;
 
 public:
-	AI(std::list<std::shared_ptr<Card>>& deck, Resources* _resources, int _ID, bool onlyOne = false);
-	~AI();
+	AI(std::list<std::shared_ptr<Card>>& deck, std::shared_ptr<Resources> _resources, int _ID, bool onlyOne = false);
 
 	int getID();
 	int getWon();

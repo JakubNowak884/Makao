@@ -8,38 +8,45 @@
 
 class Object
 {
-	sf::RectangleShape shape;
-	float x;
-	float y;
-	float width;
-	float height;
-	bool chosen;
+	sf::RectangleShape shape;	/*!< Kszta³t obiektu na ekranie, mo¿e zostaæ na³o¿ona na niego tekstura. */
+	float x;					/*!< Pozycja obiektu na osi X ekranu. */
+	float y;					/*!< Pozycja obiektu na osi Y ekranu. */
+	float width;				/*!< Szerokoœæ obiektu. */
+	float height;				/*!< Wysokoœæ obiektu. */
+	bool chosen;				/*!< Informacje czy u¿ytkownik aktulnie ma kursor myszki na obiekcie. */
 
 public:
-	Object()
-		: x(0), y(0), width(0), height(0), chosen(false) {}
-	Object(float _width, float _height, float _x, float _y, sf::Texture* texture, sf::Color color = sf::Color::Black)
-		: x(_x), y(_y), width(_width), height(_height), chosen(false)
-	{
-		shape.setSize(sf::Vector2f(_width, _height));
-		shape.setOrigin(sf::Vector2f(_width/2, _height/2));
-		shape.setPosition(sf::Vector2f(_x, _y));
-		shape.setTexture(texture);
-	}
+	Object();
+	/**
+	  * \brief Konstruktor wieloargumentowy.
+	  * \param _width szerokoœæ obiektu.
+	  * \param _height wysokoœæ obiektu
+	  * \param _x obiektu na osi X ekranu
+	  * \param _y obiektu na osi Y ekranu
+	  * \param texture tekstura obiektu.
+	  * \param color kolor obiektu.
+	  */
+	Object(float _width, float _height, float _x, float _y, sf::Texture* texture, sf::Color color = sf::Color::Black);
 
 	float getX();
 	float getY();
 	float getWidth();
 	float getHeight();
 	bool isChosen();
-
 	sf::RectangleShape& getShape();
 
 	void setChosen(bool newChosen);
 	virtual void setPosition(sf::Vector2f position);
 	void setShapeColor(sf::Color color);
-
+	/**
+	   * \brief Funkcja aktualizuj¹ca stan obiektu na ekranie.
+	   * \param mousePos pozycja myszy na ekranie.
+	   */
 	virtual void uptade(sf::Vector2f mousePos);
+	/**
+	   * \brief Funkcja rysuj¹ca obiekt na ekranie.
+	   * \param window okno gry.
+	   */
 	virtual void draw(sf::RenderWindow& window);
 };
 

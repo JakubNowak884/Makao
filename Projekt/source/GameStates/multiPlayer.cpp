@@ -2,21 +2,22 @@
 #include "..\headers\Resources.h"
 #include "windows.h"
 
-MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
+MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, std::shared_ptr<Resources> _resources)
 	: Game(_resources, _prev->getOnlyQueens())
 {
 	prev = _prev;
-
-	initText(text, 0, 0, 36);
-	if (prev->getLAN())
-		text.setString(resources->getText(int(gameStateNumber::multiPlayer), 1));
-	else
-		text.setString(resources->getText(int(gameStateNumber::multiPlayer), 2));
 
 	b_addSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 3), resources->getFont(), 250, 100, 405, 200, resources->getTexturePtr("button"), 38);
 	b_deleteSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 4), resources->getFont(), 250, 100, 665, 200, resources->getTexturePtr("button"), 38);
 	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 5), resources->getFont(), 600, 150, 400, 540, resources->getTexturePtr("button"));
 	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600, 150, 400, 700, resources->getTexturePtr("button"));
+
+	initText(textLobby, 0, 0, 36);
+	//ustawienie tekstu w zale¿noœci od ustawieñ rozgrywki wielu graczy
+	if (prev->getLAN())
+		textLobby.setString(resources->getText(int(gameStateNumber::multiPlayer), 1));
+	else
+		textLobby.setString(resources->getText(int(gameStateNumber::multiPlayer), 2));
 
 	if (prev->getHost())
 	{
@@ -27,14 +28,16 @@ MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
 		else
 			temp = sf::IpAddress::getPublicAddress().toString();
 
-		text.setString(text.getString() + temp);
+		textLobby.setString(textLobby.getString() + temp);
 
 		if (prev->getOnlyQueens())
-			text.setString(text.getString() + resources->getText(int(gameStateNumber::multiPlayer), 7) + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
+			textLobby.setString(textLobby.getString() + resources->getText(int(gameStateNumber::multiPlayer), 7) + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
 		else 
-			text.setString(text.getString() + L"\n" + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
+			textLobby.setString(textLobby.getString() + L"\n" + resources->getText(int(gameStateNumber::multiPlayer), 8) + L"1." + getPlayerName());
 
 		player = std::make_unique<Player>(deck, resources, maxID);
+
+		listener.setBlocking(false);
 	}
 	else
 	{
@@ -42,50 +45,54 @@ MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, Resources* _resources)
 		{
 			throw (resources->getText(int(gameStateNumber::multiPlayer), 13));
 		}
-		if (guest1.receive(buffer, sizeof(buffer), received) != sf::Socket::Done)
+		//otrzymanie pakietu z wersj¹ jêzykow¹, aktualn¹ liczb¹ graczy oraz ustawieniami gry
+		if (guest1.receive(packet) != sf::Socket::Done)
 		{
 			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 		}
 		else
 		{
-			text.setString(buffer);
-			std::string str = text.getString();
-			if (str[str.length() - 1] != resources->getLanguageVersion())
+			int languageVersion;
+			packet >> languageVersion;
+			if (resources->getLanguageVersion() != languageVersion)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 12));
 			}
-			str.erase(str.end() - 1);
-			sf::String playerNamesf = getPlayerName();
-			text.setString(str + playerNamesf);
-			std::string playerName = playerNamesf;
-			if (guest1.send(playerName.c_str(), playerName.length() + 1) != sf::Socket::Done)
+
+			packet >> maxID;
+
+			sf::String temp;
+			packet >> temp;
+			textLobby.setString(temp + getPlayerName());
+			//wys³anie pakietu z nazw¹ gracza
+			sf::Packet packetToSend;
+			packetToSend << getPlayerName();
+
+			if (guest1.send(packetToSend) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			if (guest1.receive(buffer, sizeof(buffer), received) != sf::Socket::Done)
-			{
-				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			}
-			maxID = buffer[0];
+			//otrzymanie pakietu z tali¹ kart
 			if (guest1.receive(packet) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			loadDataFromBuffer(true);
+			loadDataFromPacket(true);
 			player = std::make_unique<Player>(deck, resources, maxID);
+			//odes³anie talii kart, po utworzeniu obiektu gracz
 			if (guest1.send(putDataToSend(true)) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
 			myTurn = false;
 			host = false;
+			guest1.setBlocking(false);
 		}
 	}
 }
 
 MultiPlayer::~MultiPlayer()
 {
-	while (!t.joinable());
 	guest3.disconnect();
 	guest2.disconnect();
 	guest1.disconnect();
@@ -94,237 +101,228 @@ MultiPlayer::~MultiPlayer()
 
 void MultiPlayer::listen(sf::TcpSocket& guest)
 {
-	try
+	if (listener.accept(guest) == sf::Socket::Done)
 	{
-		switch (listener.listen(50052))
+		sf::Packet packetToSend;
+		packetToSend << resources->getLanguageVersion();
+		packetToSend << maxID;
+		packetToSend << textLobby.getString();
+		//wys³anie pakietu z wersj¹ jêzykow¹, aktualn¹ liczb¹ graczy oraz ustawieniami gry
+		if (guest.send(packetToSend) != sf::Socket::Done)
 		{
-		case sf::Socket::Done:
-			break;
-		case sf::Socket::Error:
 			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		default:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
 		}
-		if (listener.accept(guest) == sf::Socket::Done)
+		//otrzymanie pakietu z nazw¹ gracza, który do³¹czy³ do gry
+		if (guest.receive(packet) != sf::Socket::Done)
 		{
-			std::string temp = text.getString();
-			temp += resources->getLanguageVersion();
-			if (guest.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		}
+		std::wstring temp;
+		packet >> temp;
+		textLobby.setString(textLobby.getString() + temp);
+		//wys³anie pakietu z tali¹ kart
+		if (guest.send(putDataToSend(true)) != sf::Socket::Done)
+		{
+			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		}
+		//otrzymanie pakietu z zmodyfikowan¹ tali¹ kart
+		if (guest.receive(packet) != sf::Socket::Done)
+		{
+			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		}
+		loadDataFromPacket(true);
+
+		sf::Packet packetToSend2;
+		packetToSend2 << 9;
+		packetToSend2 << textLobby.getString();
+		//wys³anie informacji o nowym graczu i talii do pozosta³ych graczy
+		switch (maxID)
+		{
+		case 3:
+			if (guest1.send(packetToSend2) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			if (guest.receive(buffer, sizeof(buffer), received) != sf::Socket::Done)
+			if (guest1.send(putDataToSend(true)) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			text.setString(text.getString() + buffer);
-			temp[0] = maxID;
-			if (guest.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+			break;
+		case 4:
+			if (guest1.send(packetToSend2) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			if (guest.send(putDataToSend(true)) != sf::Socket::Done)
+			if (guest1.send(putDataToSend(true)) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			if (guest.receive(packet) != sf::Socket::Done)
+			if (guest2.send(packetToSend2) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			loadDataFromBuffer(true);
-			temp = text.getString();
-			switch (maxID)
+			if (guest2.send(putDataToSend(true)) != sf::Socket::Done)
 			{
-			case 3:
-				if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				if (guest1.send(putDataToSend(true)) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				break;
-			case 4:
-				if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				if (guest1.send(putDataToSend(true)) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				if (guest2.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				if (guest2.send(putDataToSend(true)) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
+				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
 		}
 		waiting = false;
 		b_addSlot->setChosen(false);
-		threadRunning = false;
-	}
-	catch (std::wstring error)
-	{
-		texcpt= std::current_exception();
+		listener.close();
+		guest.setBlocking(false);
 	}
 }
 
 void MultiPlayer::waitForStart()
 {
-	try
+	switch (guest1.receive(packet))
 	{
-		switch (guest1.receive(buffer, sizeof(buffer), received))
+	case sf::Socket::Done:
+	{
+		guest1.setBlocking(true);
+		int choice = 0;
+		packet >> choice;
+		//pakiet dostarczy³ wiadomoœæ o opuszczeniu gry przez za³o¿yciela
+		switch (choice)
 		{
-		case sf::Socket::Done:
-			if (buffer[0] != 2 && buffer[0] != 3 && buffer[0] != 4 && buffer[0] != '0')
-			{
-				text.setString(buffer);
-				if (guest1.receive(packet) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				loadDataFromBuffer(true);
-			}
-			else if (buffer[0] == '0')
+		case 0:
+			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+			break;
+		//pakiet dostarczy³ wiadomoœæ o do³¹czeniu nowego gracza
+		case 9:
+		{
+			sf::String temp;
+			packet >> temp;
+			textLobby.setString(temp);
+			if (guest1.receive(packet) != sf::Socket::Done)
 			{
 				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 			}
-			else
-			{
-				amountOfPlayers = buffer[0];
-				initializeInfo();
-				if (guest1.send(putDataToSend()) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				if (guest1.receive(packet) != sf::Socket::Done)
-				{
-					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-				}
-				loadDataFromBuffer();
-				state = 2;
-			}
+			loadDataFromPacket(true);
+		}
 			break;
-		case sf::Socket::Disconnected:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		case sf::Socket::Partial:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		case sf::Socket::Error:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
+		//pakiet dostarczy³ wiadomoœæ o ostatecznej liczbie graczy - oznacza to rozpoczêcie gry
 		default:
+			amountOfPlayers = choice;
+			initializeInfo();
+			//wys³anie informacji o stanie gry z perspektywy konkretnego gracza
+			if (guest1.send(putDataToSend()) != sf::Socket::Done)
+			{
+				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+			}
+			//otrzymanie informacji o ogólnym stanie gry
+			if (guest1.receive(packet) != sf::Socket::Done)
+			{
+				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+			}
+			loadDataFromPacket();
+			state = multiPlayerState::game;
 			break;
 		}
-		threadRunning = false;
 	}
-	catch (std::wstring error)
-	{
-		texcpt = std::current_exception();
+		guest1.setBlocking(false);
+		break;
+	case sf::Socket::Disconnected:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	case sf::Socket::Partial:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	case sf::Socket::Error:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	default:
+		break;
 	}
 }
 
 void MultiPlayer::waitForData(sf::TcpSocket& guest)
 {
-	try
+	switch (guest.receive(packet))
 	{
-		switch (guest.receive(packet))
+	case sf::Socket::Done:
+		loadDataFromPacket();
+		//jeœli gracz by³ za³o¿ycielem gry rozsy³a on otrzymane dane do pozosta³ych graczy
+		if (host)
 		{
-		case sf::Socket::Done:
-			loadDataFromBuffer();
-			if (host)
+			switch (maxID)
 			{
-				switch (maxID)
+			case 3:
+				switch (turn)
 				{
-				case 3:
-					switch (turn)
+				case 1:
+					if (guest1.send(putDataToSend()) != sf::Socket::Done)
 					{
-					case 1:
-						if (guest1.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						break;
-					case 3:
-						if (guest2.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						break;
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					break;
-				case 4:
-					switch (turn)
+				case 3:
+					if (guest2.send(putDataToSend()) != sf::Socket::Done)
 					{
-					case 1:
-						if (guest1.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						if (guest2.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						break;
-					case 3:
-						if (guest2.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						if (guest3.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						break;
-					case 4:
-						if (guest1.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						if (guest3.send(putDataToSend()) != sf::Socket::Done)
-						{
-							throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-						}
-						break;
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					break;
 				}
+				break;
+			case 4:
+				switch (turn)
+				{
+				case 1:
+					if (guest1.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					if (guest2.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					break;
+				case 3:
+					if (guest2.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					if (guest3.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					break;
+				case 4:
+					if (guest1.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					if (guest3.send(putDataToSend()) != sf::Socket::Done)
+					{
+						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+					}
+					break;
+				}
+				break;
 			}
-			if (turn == player->getID())
-				myTurn = true;
-			break;
-		case sf::Socket::Disconnected:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		case sf::Socket::Partial:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		case sf::Socket::Error:
-			throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
-			break;
-		default:
-			break;
 		}
-		threadRunning = false;
-	}
-	catch (std::wstring error)
-	{
-		texcpt = std::current_exception();
+		if (turn == player->getID())
+			myTurn = true;
+		break;
+	case sf::Socket::Disconnected:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	case sf::Socket::Partial:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	case sf::Socket::Error:
+		throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+		break;
+	default:
+		break;
 	}
 }
 
-sf::Packet MultiPlayer::putDataToSend(bool onlyDeck)
+sf::Packet MultiPlayer::putDataToSend(bool onlyDeckAndGameData)
 {
 	sf::Packet packet;
-	if (!onlyDeck)
+	//do pakietu dodawane s¹ informacje o poszczególnych graczach
+	if (!onlyDeckAndGameData)
 	{
 		if (host) 
 		{
@@ -344,6 +342,7 @@ sf::Packet MultiPlayer::putDataToSend(bool onlyDeck)
 			packet << player->getWon();
 		}
 	}
+	//do pakietu dodawane s¹ infromacje o rozgrywce
 	packet << turn;
 	packet << wonCounter;
 	packet << actionCardIsActive;
@@ -353,7 +352,7 @@ sf::Packet MultiPlayer::putDataToSend(bool onlyDeck)
 	packet << delay;
 	packet << int(currentSuit);
 	packet << int(currentFigure);
-
+	//do pakietu dodawana jest informacja o talii kart
 	for (auto i = deck.begin(); i != deck.end(); i++)
 	{
 		packet << int((*i)->getFigure());
@@ -362,9 +361,10 @@ sf::Packet MultiPlayer::putDataToSend(bool onlyDeck)
 	return packet;
 }
 
-void MultiPlayer::loadDataFromBuffer(bool onlyDeck)
+void MultiPlayer::loadDataFromPacket(bool onlyDeckAndGameData)
 {
-	if (!onlyDeck)
+	//z pakietu czytane s¹ informacje o graczach
+	if (!onlyDeckAndGameData)
 	{
 		if (host)
 		{
@@ -372,7 +372,7 @@ void MultiPlayer::loadDataFromBuffer(bool onlyDeck)
 			sf::String text;
 			packet >> ID;
 			packet >> text;
-			infoPlayer[size_t(ID - 2)].setString(text);
+			infoPlayer[size_t(int(ID) - 2)].setString(text);
 			switch (ID)
 			{
 			case 2:
@@ -402,7 +402,7 @@ void MultiPlayer::loadDataFromBuffer(bool onlyDeck)
 			}
 		}
 	}
-
+	//z pakietu czytane s¹ informacje o rozgrywce
 	packet >> turn;
 	packet >> wonCounter;
 	packet >> actionCardIsActive;
@@ -418,12 +418,12 @@ void MultiPlayer::loadDataFromBuffer(bool onlyDeck)
 	currentFigure = figureNumber(currentFigureInt);
 
 	deck.clear();
-
+	//z pakietu czytane s¹ informacje o talii
 	while (!packet.endOfPacket())
 	{
 		packet >> currentFigureInt;
 		packet >> currentSuitInt;
-		deck.push_back(std::make_shared<Card>(figureNumber(currentFigureInt), suitNumber(currentSuitInt), resources->getFont(), resources->getTexturePtr("deck"), 120, 180, 400, 400, sf::Color::White));
+		deck.push_back(std::make_shared<Card>(figureNumber(currentFigureInt), suitNumber(currentSuitInt), resources->getTexturePtr("deck"), 120, 180, 400, 400));
 	}
 }
 
@@ -432,7 +432,7 @@ void MultiPlayer::initializeInfo()
 	sf::Text infoPlayer1;
 	infoPlayer1.setFont(resources->getFont());
 	infoPlayer1.setCharacterSize(24);
-
+	//w zale¿noœci od liczby graczy informacje o nich oraz grafika ich rewersu kart umieszczana jest w ró¿nych miejscach na ekranie
 	switch (amountOfPlayers)
 	{
 	case 2:
@@ -440,8 +440,6 @@ void MultiPlayer::initializeInfo()
 		infoPlayer.push_back(infoPlayer1);
 
 		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
 	case 3:
 		infoPlayer1.setPosition(10, 210);
@@ -451,11 +449,7 @@ void MultiPlayer::initializeInfo()
 		infoPlayer.push_back(infoPlayer1);
 
 		cardback.push_back(std::make_unique<Object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[1]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[1]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
 	case 4:
 		infoPlayer1.setPosition(10, 210);
@@ -468,15 +462,15 @@ void MultiPlayer::initializeInfo()
 		infoPlayer.push_back(infoPlayer1);
 
 		cardback.push_back(std::make_unique<Object>(120, 180, 70, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[0]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[0]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		cardback.push_back(std::make_unique<Object>(120, 180, 400, 100, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[1]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[1]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		cardback.push_back(std::make_unique<Object>(120, 180, 640, 400, resources->getTexturePtr("deck"), sf::Color::White));
-		cardback[2]->getShape().setTexture(resources->getTexturePtr("deck"));
-		cardback[2]->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 		break;
+	}
+
+	for (auto i = cardback.begin(); i != cardback.end(); i++)
+	{
+		(*i)->getShape().setTexture(resources->getTexturePtr("deck"));
+		(*i)->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
 	}
 }
 
@@ -489,61 +483,70 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 {
 	switch (state)
 	{
-	case 1:
+	case multiPlayerState::lobby:
+		//jeœli gracz nie jest za³o¿ycielem gry oczekuje on na start
 		if (player->getID() != 1)
 		{
-			if (!threadRunning)
-			{
-				threadRunning = true;
-				t = std::thread(&MultiPlayer::waitForStart, this);
-				t.detach();
-			}
+			waitForStart();
 		}
+		//jeœli gra aktualnie oczekuje na do³¹czenie gracza
 		if (waiting)
 		{
-			if (!threadRunning)
+			switch (maxID)
 			{
-				threadRunning = true;
-				switch (maxID)
-				{
-				case 2:
-					t = std::thread(&MultiPlayer::listen, this, std::ref(guest1));
-					break;
-				case 3:
-					t = std::thread(&MultiPlayer::listen, this, std::ref(guest2));
-					break;
-				case 4:
-					t = std::thread(&MultiPlayer::listen, this, std::ref(guest3));
-					break;
-				}
-				t.detach();
+			case 2:
+				listen(guest1);
+				break;
+			case 3:
+				listen(guest2);
+				break;
+			case 4:
+				listen(guest3);
+				break;
 			}
 		}
 		if (b_addSlot->clicked(event) && !waiting)
 		{
+			switch (listener.listen(50052))
+			{
+			case sf::Socket::Done:
+				break;
+			case sf::Socket::Error:
+				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+				break;
+			default:
+				throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
+				break;
+			}
 			maxID++;
-			text.setString(text.getString() + '\n' + std::to_string(maxID) + '.');
+			textLobby.setString(textLobby.getString() + '\n' + std::to_string(maxID) + '.');
 			waiting = true;
 		}
-		if(b_deleteSlot->clicked(event))
+		if (b_deleteSlot->clicked(event))
 		{
 			maxID--;
-			std::string temp = text.getString();
+			std::string temp = textLobby.getString();
+			//usuniêcie miejsca na gracza wyœwietlanego w poczekalni
 			temp.erase(temp.length() - 3, 3);
-			text.setString(temp);
+			textLobby.setString(temp);
+			//zakoñczenie oczekiwania na gracza
 			listener.close();
+			waiting = false;
 			b_deleteSlot->setChosen(false);
 		}
 		if (b_start->clicked(event))
 		{
-			std::string temp = " ";
-			temp[0] = maxID;
+			listener.close();
+			//przes³anie informacji o ostatecznej liczbie graczy do wszystkich goœci, otrzymanie informacji o grze z perspektywy ka¿dego z goœci
+			sf::Packet packetToSend;
+			packetToSend << maxID;
 			amountOfPlayers = maxID;
 			initializeInfo();
 			switch (maxID)
 			{
 			case 4:
-				if (guest3.send(temp.c_str(), 5) != sf::Socket::Done)
+				guest3.setBlocking(true);
+				if (guest3.send(packetToSend) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -551,10 +554,11 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
-				loadDataFromBuffer();
+				loadDataFromPacket();
 				[[fallthrough]];
 			case 3:
-				if (guest2.send(temp.c_str(), 5) != sf::Socket::Done)
+				guest2.setBlocking(true);
+				if (guest2.send(packetToSend) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -562,10 +566,11 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
-				loadDataFromBuffer();
+				loadDataFromPacket();
 				[[fallthrough]];
 			case 2:
-				if (guest1.send(temp.c_str(), 5) != sf::Socket::Done)
+				guest1.setBlocking(true);
+				if (guest1.send(packetToSend) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
@@ -573,9 +578,10 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
-				loadDataFromBuffer();
+				loadDataFromPacket();
 				break;
 			}
+			//przes³anie do ka¿dego z goœci ogólnych(wspólnych) informacji o grze
 			switch (maxID)
 			{
 			case 4:
@@ -583,43 +589,48 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
+				guest3.setBlocking(false);
 				[[fallthrough]];
 			case 3:
 				if (guest2.send(putDataToSend()) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
+				guest2.setBlocking(false);
 				[[fallthrough]];
 			case 2:
 				if (guest1.send(putDataToSend()) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
+				guest1.setBlocking(false);
 				break;
 			}
-			state = 2;
+			state = multiPlayerState::game;
 		}
 		if (b_menu->clicked(event))
 		{
+			//jeœli gracz bêd¹cy za³o¿ycielem opuœci rozgrywkê, do reszty przesy³ana jest odpowiednia informacja
 			if (host)
 			{
-				std::string temp = "0";
+				sf::Packet packetToSend;
+				packetToSend << 0;
 				switch (maxID)
 				{
 				case 4:
-					if (guest3.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest3.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 3:
-					if (guest2.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest2.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 2:
-					if (guest1.send(temp.c_str(), temp.length() + 1) != sf::Socket::Done)
+					if (guest1.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
@@ -643,14 +654,13 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 			b_start->uptade(getMousePos(window));
 
 		b_menu->uptade(getMousePos(window));
-
-		if (!host && guest1.getLocalPort() == 0)
-			state = 0;
-
 		break;
-	case 2:
+
+		case multiPlayerState::game:
+		//gracz w³aœnie zakoñczy³ turê
 		if (turn != player->getID() && myTurn)
 		{
+			//jeœli jest za³o¿ycielem przesy³a informacje o aktualnym stanie gry wszystkim pozosta³ym graczom
 			if (host)
 			{
 				switch (maxID)
@@ -674,6 +684,7 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 					}
 				}
 			}
+			//w przeciwnym wypadku przesy³a informacje o grze w³aœcicielowi
 			else
 			{
 				if (guest1.send(putDataToSend()) != sf::Socket::Done)
@@ -683,41 +694,35 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 			}
 			myTurn = false;
 		}
+		//gracz aktualnie nie wykonuje tury
 		else if (turn != player->getID() && !myTurn)
 		{
-			if (!threadRunning)
+			//jeœli gracz jest za³o¿ycielem w zale¿noœci od tury oczekuje na dane o grze od konkretnego gracza
+			if (host)
 			{
-				if (host)
+				switch (turn)
 				{
-					switch (turn)
-					{
-					case 2:
-						threadRunning = true;
-						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
-						t.detach();
-						break;
-					case 3:
-						threadRunning = true;
-						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest2));
-						t.detach();
-						break;
-					case 4:
-						threadRunning = true;
-						t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest3));
-						t.detach();
-						break;
-					}
-				}
-				else
-				{
-					threadRunning = true;
-					t = std::thread(&MultiPlayer::waitForData, this, std::ref(guest1));
-					t.detach();
+				case 2:
+					waitForData(guest1);
+					break;
+				case 3:
+					waitForData(guest2);
+					break;
+				case 4:
+					waitForData(guest3);
+					break;
 				}
 			}
+			//w przeciwnym wypadku gracz oczekuje na dane o grze od za³o¿yciela
+			else
+			{
+				waitForData(guest1);
+			}
 		}
+		//wszyscy gracze oprócz jednego zakoñczyli rozgrywkê
 		if (wonCounter == amountOfPlayers - 1)
 		{
+			//jeœli gracz jest za³o¿ycielem tworzy informacje o podium, a nastêpnie przesy³a je do reszty graczy
 			if (host)
 			{
 				podium = " ";
@@ -729,8 +734,10 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 					switch (i)
 					{
 					case 0:
+						//jeœli gracz nie ma ustalonego miejsca, to znaczy, ¿e zaj¹³ ostatnie
 						if (guest1Won == 0)
 							guest1Won = amountOfPlayers;
+						//z informacji o graczu uzyskiwana jest jego nazwa
 						results[guest1Won] = temp.erase(temp.length() - 31, 31) + "\n";
 						break;
 					case 1:
@@ -750,42 +757,44 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 
 				sf::String str = getPlayerName();
 				results[player->getWon()] = str + "\n";
-
+				
 				for (int i = 1; i < amountOfPlayers + 1; i++)
 					podium = podium + std::to_string(i) + ". " + results[i];
-
-				std::string temp3 = podium;
-				temp3[0] = int(podium.length() - 1);
+				//wys³anie informacji o zajêtych przez graczy miejscach do pozosta³ych graczy
+				sf::Packet packetToSend;
+				packetToSend << podium;
 
 				switch (maxID)
 				{
 				case 4:
-					if (guest3.send(temp3.c_str(), 100) != sf::Socket::Done) 
+					if (guest3.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 3:
-					if (guest2.send(temp3.c_str(), 100) != sf::Socket::Done)
+					if (guest2.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					[[fallthrough]];
 				case 2:
-					if (guest1.send(temp3.c_str(), 100) != sf::Socket::Done)
+					if (guest1.send(packetToSend) != sf::Socket::Done)
 					{
 						throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 					}
 					break;
 				}
 			}
+			//w przeciwnym wypadku gracz oczekuje na dane od za³o¿yciela o zajêtych przez graczy miejscach 
 			else
 			{
-				if (guest1.receive(buffer, sizeof(buffer), received) != sf::Socket::Done)
+				guest1.setBlocking(true);
+				if (guest1.receive(packet) != sf::Socket::Done)
 				{
 					throw (resources->getText(int(gameStateNumber::multiPlayer), 11));
 				}
-				podium = std::string(&buffer[1], buffer[0]);
+				packet >> podium;
 			}
 
 			return gameStateNumber::endgame;
@@ -801,24 +810,26 @@ gameStateNumber MultiPlayer::update(sf::Event event, sf::RenderWindow& window)
 
 void MultiPlayer::draw(sf::RenderWindow& window)
 {
-	if (texcpt)
-		std::rethrow_exception(texcpt);
 	switch (state)
 	{
-	case 1:
+	case multiPlayerState::lobby:
+		//zmiana napisu na przycisku w zale¿noœci od dodania/oczekiwania na gracza
 		if (waiting)
 			b_addSlot->setString(resources->getText(int(gameStateNumber::multiPlayer), 14));
 		else
 			b_addSlot->setString(resources->getText(int(gameStateNumber::multiPlayer), 15));
-		window.draw(text);
+		window.draw(textLobby);
 		b_addSlot->draw(window);
 		b_deleteSlot->draw(window);
 		b_start->draw(window);
 		b_menu->draw(window);
 		break;
-	case 2:
+	case multiPlayerState::game:
+		//zresetowanie kolorów napisu informacji o graczach
 		for (auto i = infoPlayer.begin(); i != infoPlayer.end(); i++)
 			i->setFillColor(sf::Color::White);
+		//ustalenie który gracz aktualnie wykonuje turê, w zale¿noœci od ID gracza
+		//w zale¿noœci od aktualnej tury, zmieniany jest kolor na zielony odpowiednich elementów tabeli informacji o graczach
 		switch (player->getID())
 		{
 		case 1:

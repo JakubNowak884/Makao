@@ -3,18 +3,30 @@
 class SetSuit :
     public GameState
 {
-    Game* prev;
+    Game* prev;                             /*!< WskaŸnik na obiekt poprzedniego stanu gry. */
 
-    sf::Text text;
+    sf::Text textChoose;                    /*!< Tekst wyœwietlaj¹cy napis wyboru. */
 
-    std::unique_ptr<Button> b_clubs;
-    std::unique_ptr<Button> b_diamonds;
-    std::unique_ptr<Button> b_hearts;
-    std::unique_ptr<Button> b_spades;
+    std::unique_ptr<Button> b_clubs;        /*!< Przycisk wyboru trefl. */
+    std::unique_ptr<Button> b_diamonds;     /*!< Przycisk wyboru karo. */
+    std::unique_ptr<Button> b_hearts;       /*!< Przycisk wyboru serc. */
+    std::unique_ptr<Button> b_spades;       /*!< Przycisk wyboru pik. */
 
 public:
-    SetSuit(Game* _game, Resources* _resources);
+    /**
+      * \brief Konstruktor dwuargumentowy.
+      * \param _game wskaŸnik na poprzedni stan gry.
+      * \param _resources wskaŸnik na obiekt klasy przechowuj¹cy zasoby gry.
+      * \see GameState::GameState(std::shared_ptr<Resources> _resources)
+      */
+    SetSuit(Game* _game, std::shared_ptr<Resources> _resources);
+    /**
+      * \see GameState::update(sf::Event event, sf::RenderWindow& window)
+      */
     gameStateNumber update(sf::Event event, sf::RenderWindow& window);
+    /**
+      * \see GameState::draw(sf::RenderWindow& window)
+      */
     void draw(sf::RenderWindow& window);
 };
 
