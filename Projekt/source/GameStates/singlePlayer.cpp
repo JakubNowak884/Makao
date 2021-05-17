@@ -1,5 +1,4 @@
 #include "..\headers\GameStates\singlePlayer.h"
-#include "..\headers\Resources.h"
 
 SinglePlayer::SinglePlayer(SinglePlayerSettings* prev, std::shared_ptr<Resources> _resources)
 	: Game(_resources, prev->getOnlyQueens())
@@ -59,10 +58,10 @@ void SinglePlayer::botsTakesTurn()
 							//sprawdzenie czy karta zagrana przez gracza komputerowego to As lub Walet
 							switch (cardDoThings((*bot)->playACard(deck, actionCardIsActive, currentSuit, currentFigure), (*bot)->getDelay(), (*bot)->getID(), true))
 							{
-							case gameStateNumber::setSuit:
+							case gameStateNumber::wantSuit:
 								currentSuit = (*bot)->wantSuit();
 								break;
-							case gameStateNumber::setFigure:
+							case gameStateNumber::wantFigure:
 								currentFigure = (*bot)->wantFigure();
 								break;
 							default:

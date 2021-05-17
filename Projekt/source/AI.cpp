@@ -7,6 +7,7 @@ AI::AI(std::list<std::shared_ptr<Card>>& deck, std::shared_ptr<Resources> _resou
 	info.setFont(resources->getFont());
 	info.setCharacterSize(24);
 
+	//jeœli tylko jeden gracz komputerowy zostanie utworzony jego graficzne przedstawienie znajduje siê u góry ekranu
 	if (onlyOne)
 	{
 		info.setPosition(470, 10);
@@ -33,7 +34,7 @@ AI::AI(std::list<std::shared_ptr<Card>>& deck, std::shared_ptr<Resources> _resou
 	}
 
 	cardBack->getShape().setTextureRect(sf::IntRect(296, 920, 145, 230));
-
+	//utworzenie rêki gracza komputerowego
 	int j = 0;
 	for (std::list<std::shared_ptr<Card>>::iterator i = deck.begin(); i != deck.end(); ++i)
 	{
@@ -87,10 +88,13 @@ void AI::setTextColor(sf::Color color)
 
 suitNumber AI::wantSuit()
 {
+	//jeœli gracz komputerowy ma karty w rêce ¿¹da on koloru który posiada
 	if (hand.size() > 0)
 		return hand.front()->getSuit();
+	//jeœli gracz komputerowy ¿¹da koloru swoj¹ ostatni¹ kartê, ¿¹da on koloru który zosta³ zagrany w najwiêkszej iloœci
 	else
 	{
+		//utworzenie wektora, którego ka¿dy element reprezentuje mo¿liwy do za¿¹dania kolor
 		std::vector<howManyCards> vec;
 		for (int i = 1; i < 4; i++)
 		{
@@ -98,6 +102,7 @@ suitNumber AI::wantSuit()
 			howManyCards temp(suit);
 			vec.push_back(temp);
 		}
+		//zliczanie ile razy ka¿dy kolor zosta³ zagrany w trakcie gry
 		for (auto i = cardsPlayed.begin(); i != cardsPlayed.end(); i++)
 		{
 			for (auto j = vec.begin(); j != vec.end(); j++)
@@ -113,6 +118,7 @@ suitNumber AI::wantSuit()
 
 figureNumber AI::wantFigure()
 {
+	//jeœli gracz komputerowy posiada conajmniej jedn¹ kartê w rêce i mo¿e zostaæ ona za¿¹dana, to ¿¹da jej
 	if (hand.size() > 0)
 	{
 		for (auto i = hand.begin(); i != hand.end(); ++i)
@@ -137,9 +143,13 @@ figureNumber AI::wantFigure()
 			case figureNumber::ten:
 				return figureNumber::ten;
 				break;
+			default:
+				break;
 			}
 		}
 	}
+	//inaczej gracz komputerowy ¿¹da figury, która zosta³a zagrana w najwiêkszej iloœci
+	//utworzenie wektora, którego ka¿dy element reprezentuje mo¿liw¹ do za¿¹dania figurê
 	std::vector<howManyCards> vec;
 	for (int i = 5; i < 11; i++)
 	{
@@ -147,6 +157,7 @@ figureNumber AI::wantFigure()
 		howManyCards temp(figure);
 		vec.push_back(temp);
 	}
+	//zliczanie ile razy ka¿da z figur zosta³a zagrana w trakcie gry
 	for (auto i = cardsPlayed.begin(); i != cardsPlayed.end(); i++)
 	{
 		for (auto j = vec.begin(); j != vec.end(); j++)
@@ -162,6 +173,7 @@ figureNumber AI::wantFigure()
 void AI::rememberCard(suitNumber suit, figureNumber figure)
 {
 	cardsPlayed.push_back(std::make_unique<cardPlayed>(suit, figure));
+	//jeœli iloœæ kart przekroczy 52, znaczy to ¿e na pewno siê powtarzaj¹, wiêc pierwszy element listy zostaje usuwany
 	if (cardsPlayed.size() > 52)
 		cardsPlayed.pop_front();
 }
@@ -185,6 +197,7 @@ Card* AI::playACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsAct
 	{
 		if ((*i)->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 		{
+			//jeœli gracz komputerowy posiada³ królow¹ to nie zagrywa jej, ale funkcja zapamiêtuje ten fakt
 			if ((*i)->getFigure() == figureNumber::queen)
 			{
 				queen = true;
@@ -197,6 +210,7 @@ Card* AI::playACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsAct
 			return deck.front().get();
 		}
 	}
+	//jeœli ¿adna karta nie zosta³a zagrana, ale gracz komputerowy posiada królow¹ w rêce to zagrywa j¹
 	if (queen)
 	{
 		deck.push_front((*temp));
@@ -209,6 +223,7 @@ Card* AI::playACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsAct
 
 Card* AI::drawACard(std::list<std::shared_ptr<Card>>& deck, bool actionCardIsActive, suitNumber currentSuit, figureNumber currentFigure, int howMany)
 {
+	//jeœli dobrana karta mo¿e zostaæ zagrana, to jest zagrywana odrazu
 	if (deck.back()->ableToPlay(deck.front().get(), actionCardIsActive, currentSuit, currentFigure, second))
 	{
 		deck.push_front(deck.back());

@@ -1,15 +1,14 @@
 #include "..\headers\GameStates\singlePlayerSettings.h"
-#include "..\headers\Resources.h"
 
 SinglePlayerSettings::SinglePlayerSettings(std::shared_ptr<Resources> _resources)
 	: GameState(_resources)
 {
 	initText(settings, 0, 0, 42);
 
-	b_addAmountOfPlayers = std::make_unique<Button>("+", resources->getFont(), 50, 50, 720, 35, resources->getTexturePtr("button"), 58);
-	b_reduceAmountOfPlayers = std::make_unique<Button>("-", resources->getFont(), 50, 50, 655, 35, resources->getTexturePtr("button"), 58);
-	b_addBotSpeed = std::make_unique<Button>("+", resources->getFont(), 50, 50, 720, 175, resources->getTexturePtr("button"), 58);
-	b_reduceBotSpeed = std::make_unique<Button>("-", resources->getFont(), 50, 50, 655, 175, resources->getTexturePtr("button"), 58);
+	b_addAmountOfPlayers = std::make_unique<Button>("+", resources->getFont(), 50.0f, 50.0f, 720.0f, 35.0f, resources->getTexturePtr("button"), 58);
+	b_reduceAmountOfPlayers = std::make_unique<Button>("-", resources->getFont(), 50.0f, 50.0f, 655.0f, 35.0f, resources->getTexturePtr("button"), 58);
+	b_addBotSpeed = std::make_unique<Button>("+", resources->getFont(), 50.0f, 50.0f, 720.0f, 175.0f, resources->getTexturePtr("button"), 58);
+	b_reduceBotSpeed = std::make_unique<Button>("-", resources->getFont(), 50.0f, 50.0f, 655.0f, 175.0f, resources->getTexturePtr("button"), 58);
 	b_onlyQueens = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 7), resources->getFont(), 200, 50, 400, 285, resources->getTexturePtr("button"), 38);
 	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 4), resources->getFont(), 600, 150, 400, 500, resources->getTexturePtr("button"));
 	b_toMenu = std::make_unique<Button>(resources->getText(int(gameStateNumber::singlePlayerSettings), 5), resources->getFont(), 600, 150, 400, 675, resources->getTexturePtr("button"));

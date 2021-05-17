@@ -1,23 +1,22 @@
-#include "..\headers\GameStates\setFigure.h"
-#include "..\headers\Resources.h"
+#include "..\headers\GameStates\WantFigure.h"
 
-SetFigure::SetFigure(Game* _game, std::shared_ptr<Resources> _resources)
-    : GameState(resources)
+WantFigure::WantFigure(Game* _game, std::shared_ptr<Resources> _resources)
+    : GameState(_resources)
 {
     initText(textChoose, 0, 0, 48);
-    textChoose.setString(resources->getText(int(gameStateNumber::setFigure), 1));
+    textChoose.setString(resources->getText(int(gameStateNumber::wantFigure), 1));
 
-    b_five = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 2), resources->getFont(), 200, 100, 200, 150, resources->getTexturePtr("button"), 32);
-    b_six = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 3), resources->getFont(), 200, 100, 600, 150, resources->getTexturePtr("button"), 32);
-    b_seven = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 4), resources->getFont(), 200, 100, 200, 260, resources->getTexturePtr("button"), 32);
-    b_eight = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 5), resources->getFont(), 200, 100, 600, 260, resources->getTexturePtr("button"), 32);
-    b_nine = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 6), resources->getFont(), 200, 100, 200, 370, resources->getTexturePtr("button"), 32);
-    b_ten = std::make_unique<Button>(resources->getText(int(gameStateNumber::setFigure), 7), resources->getFont(), 200, 100, 600, 370, resources->getTexturePtr("button"), 32);
+    b_five = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 2), resources->getFont(), 200.0f, 100.0f, 200.0f, 150.0f, resources->getTexturePtr("button"), 32);
+    b_six = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 3), resources->getFont(), 200.0f, 100.0f, 600.0f, 150.0f, resources->getTexturePtr("button"), 32);
+    b_seven = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 4), resources->getFont(), 200.0f, 100.0f, 200.0f, 260.0f, resources->getTexturePtr("button"), 32);
+    b_eight = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 5), resources->getFont(), 200.0f, 100.0f, 600.0f, 260.0f, resources->getTexturePtr("button"), 32);
+    b_nine = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 6), resources->getFont(), 200.0f, 100.0f, 200.0f, 370.0f, resources->getTexturePtr("button"), 32);
+    b_ten = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantFigure), 7), resources->getFont(), 200.0f, 100.0f, 600.0f, 370.0f, resources->getTexturePtr("button"), 32);
 
     prev = _game;
 }
 
-gameStateNumber SetFigure::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber WantFigure::update(sf::Event event, sf::RenderWindow& window)
 {
     //przesuwanie kart w rêce w prawo lub w lewo
     if (event.type == sf::Event::MouseWheelScrolled || event.type == sf::Event::KeyPressed)
@@ -78,7 +77,7 @@ gameStateNumber SetFigure::update(sf::Event event, sf::RenderWindow& window)
     return gameStateNumber::def;
 }
 
-void SetFigure::draw(sf::RenderWindow& window)
+void WantFigure::draw(sf::RenderWindow& window)
 {
     for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
     {

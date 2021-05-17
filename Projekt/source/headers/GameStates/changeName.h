@@ -3,9 +3,9 @@
 class ChangeName :
 	public GameState
 {
-	sf::Text currentName; /*!< Tekst wyœwietlaj¹cy aktualn¹ nazwê gracza. */
+	sf::Text currentName;				/*!< Tekst wyœwietlaj¹cy aktualn¹ nazwê gracza. */
 
-	std::unique_ptr<Button> b_back; /*!< Przycisk powrotu do poprzedniego stanu gry. */
+	std::unique_ptr<Button> b_back;		/*!< Przycisk powrotu do poprzedniego stanu gry. */
 
 public:
 	/**

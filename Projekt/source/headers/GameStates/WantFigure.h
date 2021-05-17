@@ -1,6 +1,6 @@
 #pragma once
 #include "Game.h"
-class SetFigure :
+class WantFigure :
     public GameState
 {
     Game* prev;                         /*!< WskaŸnik na obiekt poprzedniego stanu gry. */
@@ -21,7 +21,7 @@ public:
        * \param _resources wskaŸnik na obiekt klasy przechowuj¹cy zasoby gry.
        * \see GameState::GameState(std::shared_ptr<Resources> _resources)
        */
-    SetFigure(Game* _game, std::shared_ptr<Resources> _resources);
+    WantFigure(Game* _game, std::shared_ptr<Resources> _resources);
     /**
        * \see GameState::update(sf::Event event, sf::RenderWindow& window)
        */

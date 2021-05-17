@@ -1,5 +1,4 @@
 #include "..\headers\GameStates\gameState.h"
-#include "..\headers\Resources.h"
 
 std::wstring GameState::playerName = L"Gracz";
 

@@ -20,20 +20,19 @@ enum class gameStateNumber
 	multiPlayerSettings, 
 	changeIP, 
 	endgame, 
-	setSuit, 
-	setFigure, 
+	wantSuit, 
+	wantFigure, 
 	game, 
 	AI, 
 	resume 
 };
 
-class Resources;
 class GameState
 {
-	static std::wstring playerName; /*!< Nazwa gracza wyœwietlana w g³ównym menu oraz podczas gry. */
+	static std::wstring playerName;				/*!< Nazwa gracza wyœwietlana w g³ównym menu oraz podczas gry. */
 
 	protected:
-		std::shared_ptr<Resources> resources; /*!< WskaŸnik na obiekt klasy przechowuj¹cy zasoby gry. */
+		std::shared_ptr<Resources> resources;	/*!< WskaŸnik na obiekt klasy przechowuj¹cy zasoby gry. */
 
 	public:
 		/**

@@ -32,6 +32,10 @@ public:
 	float getY();
 	float getWidth();
 	float getHeight();
+	/**
+	  * \brief Funkcja sprawdzaj¹ca czy u¿ytkownik aktulnie celuje kursorem na obiekt.
+	  * \return true jeœli u¿ytkownik aktualnie wskazuje kursorem na obiekt, inaczej false.
+	  */
 	bool isChosen();
 	sf::RectangleShape& getShape();
 

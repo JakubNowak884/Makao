@@ -1,5 +1,4 @@
 #include "..\headers\GameStates\Error.h"
-#include "..\headers\Resources.h"
 
 Error::Error(std::wstring _error, std::shared_ptr<Resources> _resources)
 	: GameState(_resources)
@@ -7,7 +6,7 @@ Error::Error(std::wstring _error, std::shared_ptr<Resources> _resources)
 	initText(error, 0, 0, 36);
 	error.setString(_error);
 
-	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600, 150, 400, 700, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600.0f, 150.0f, 400.0f, 700.0f, resources->getTexturePtr("button"));
 }
 
 gameStateNumber Error::update(sf::Event event, sf::RenderWindow& window)

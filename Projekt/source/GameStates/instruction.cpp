@@ -1,5 +1,4 @@
 #include "..\headers\GameStates\instruction.h"
-#include "..\headers\Resources.h"
 
 Instruction::Instruction(std::shared_ptr<Resources> _resources)
 	: GameState (_resources)
@@ -16,8 +15,8 @@ Instruction::Instruction(std::shared_ptr<Resources> _resources)
 	initText(page1, 15, 660, 18);
 	initText(page2, 700, 660, 18);
 
-	b_pageDown = std::make_unique<Button>("<", resources->getFont(), 100, 100, 60, 740, resources->getTexturePtr("button"));
-	b_pageUp = std::make_unique<Button>(">", resources->getFont(), 100, 100, 740, 740, resources->getTexturePtr("button"));
+	b_pageDown = std::make_unique<Button>("<", resources->getFont(), 100.0f, 100.0f, 60.0f, 740.0f, resources->getTexturePtr("button"));
+	b_pageUp = std::make_unique<Button>(">", resources->getFont(), 100.0f, 100.0f, 740.0f, 740.0f, resources->getTexturePtr("button"));
 	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::instruction), 5), resources->getFont(), 500, 100, 400, 740, resources->getTexturePtr("button"), 64);
 }
 

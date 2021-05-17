@@ -1,11 +1,10 @@
 #include "..\headers\GameStates\endgame.h"
-#include "..\headers\Resources.h"
 
 Endgame::Endgame(SinglePlayer* prev, std::shared_ptr<Resources> _resources)
 	: GameState(_resources)
 {
 	initText(textResults, 0, 0, 48);
-	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::endgame), 3), resources->getFont(), 600, 100, 400, 700, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::endgame), 3), resources->getFont(), 600.0f, 150.0f, 400.0f, 700.0f, resources->getTexturePtr("button"));
 
 	std::string textToShow = sf::String(resources->getText(int(gameStateNumber::endgame), 1));
 	//zapisanie wyników graczy komputerowych

@@ -60,10 +60,10 @@
     <ClInclude Include="..\source\headers\GameStates\MultiPlayerSettings.h">
       <Filter>headers\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\headers\GameStates\SetFigure.h">
+    <ClInclude Include="..\source\headers\GameStates\WantFigure.h">
       <Filter>headers\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\headers\GameStates\SetSuit.h">
+    <ClInclude Include="..\source\headers\GameStates\WantSuit.h">
       <Filter>headers\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="..\source\headers\GameStates\SinglePlayer.h">
@@ -120,10 +120,10 @@
     <ClCompile Include="..\source\GameStates\MultiPlayerSettings.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\GameStates\SetFigure.cpp">
+    <ClCompile Include="..\source\GameStates\WantFigure.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\GameStates\SetSuit.cpp">
+    <ClCompile Include="..\source\GameStates\WantSuit.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="..\source\GameStates\SinglePlayer.cpp">

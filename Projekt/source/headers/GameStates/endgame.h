@@ -9,11 +9,11 @@
 class Endgame :
     public GameState
 {
-    sf::Text textResults; /*!< Tekst wyœwietlaj¹cy wyniki gry. */
+    sf::Text textResults;                   /*!< Tekst wyœwietlaj¹cy wyniki gry. */
 
-    std::unique_ptr<Button> b_menu; /*!< Przycisk powrotu do menu gry. */
+    std::unique_ptr<Button> b_menu;         /*!< Przycisk powrotu do menu gry. */
 
-    std::map<int, std::string> results; /*!< Mapa przechowuj¹ca nazwy graczy oraz odpowiednio zajête przez nich miejsca. */
+    std::map<int, std::string> results;     /*!< Mapa przechowuj¹ca nazwy graczy oraz odpowiednio zajête przez nich miejsca. */
 
 public:
     /**

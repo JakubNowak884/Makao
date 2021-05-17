@@ -9,8 +9,8 @@
 #include "GameStates/ChangeIP.h"
 #include "GameStates/MultiPlayer.h"
 #include "GameStates/Endgame.h"
-#include "GameStates/SetSuit.h"
-#include "GameStates/SetFigure.h"
+#include "GameStates/WantSuit.h"
+#include "GameStates/WantFigure.h"
 #include "GameStates/Error.h"
 
 class StateMachine

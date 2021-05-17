@@ -13,6 +13,7 @@ int main()
         resources->loadResources();
         resources->loadLanguage("polish");
     }
+    //zapisanie komunikatu wyj¹tku do pliku tekstowego
     catch (const char* error)
     {
         std::ofstream file;
@@ -64,6 +65,7 @@ int main()
 
             if (event.type == sf::Event::Resized)
             {
+                //jeœli szerokoœæ i wysokoœæ okna przekroczy 800 piskeli ekran gry zostanie proporcjonalnie powiêkszony
                 if ((event.size.width) >= 800 && (event.size.height) >= 800)
                 {
                     sf::View area2(sf::FloatRect(-float((event.size.width * 0.9f - 800)/2), 0, event.size.width * 0.9f, 800));

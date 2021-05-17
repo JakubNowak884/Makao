@@ -1,12 +1,11 @@
 #include "..\headers\GameStates\changeName.h"
-#include "..\headers\Resources.h"
 
 ChangeName::ChangeName(std::shared_ptr<Resources> _resources)
     : GameState(_resources)
 {
     initText(currentName, 0, 200, 36);
 
-    b_back = std::make_unique<Button>(resources->getText(int(gameStateNumber::changeName), 2), resources->getFont(), 600, 150, 400, 600, resources->getTexturePtr("button"));
+    b_back = std::make_unique<Button>(resources->getText(int(gameStateNumber::changeName), 2), resources->getFont(), 600.0f, 150.0f, 400.0f, 600.0f, resources->getTexturePtr("button"));
 }
 
 gameStateNumber ChangeName::update(sf::Event event, sf::RenderWindow& window)

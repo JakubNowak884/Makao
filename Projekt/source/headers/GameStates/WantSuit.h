@@ -1,6 +1,6 @@
 #pragma once
 #include "Game.h"
-class SetSuit :
+class WantSuit :
     public GameState
 {
     Game* prev;                             /*!< WskaŸnik na obiekt poprzedniego stanu gry. */
@@ -19,7 +19,7 @@ public:
       * \param _resources wskaŸnik na obiekt klasy przechowuj¹cy zasoby gry.
       * \see GameState::GameState(std::shared_ptr<Resources> _resources)
       */
-    SetSuit(Game* _game, std::shared_ptr<Resources> _resources);
+    WantSuit(Game* _game, std::shared_ptr<Resources> _resources);
     /**
       * \see GameState::update(sf::Event event, sf::RenderWindow& window)
       */

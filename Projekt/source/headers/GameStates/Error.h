@@ -5,8 +5,8 @@
 class Error :
     public GameState
 {
-    sf::Text error; /*!< Tekst wyœwietlaj¹cy przekazany b³¹d. */
-    std::unique_ptr<Button> b_menu; /*!< Przycisk powrotu do menu gry. */
+    sf::Text error;                     /*!< Tekst wyœwietlaj¹cy przekazany b³¹d. */
+    std::unique_ptr<Button> b_menu;     /*!< Przycisk powrotu do menu gry. */
 
 public:
     /**

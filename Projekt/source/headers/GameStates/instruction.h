@@ -3,15 +3,15 @@
 class Instruction :
     public GameState
 {
-    sf::Text rules; /*!< Tekst wyœwietlaj¹cy zasady. */
-    sf::Text controls; /*!< Tekst wyœwietlaj¹cy sterowanie. */
-    sf::Text credits; /*!< Tekst wyœwietlaj¹cy autora i podziêkowania. */
-    sf::Text page1; /*!< Tekst wyœwietlaj¹cy aktualn¹ stronê. */
-    sf::Text page2; /*!< Tekst wyœwietlaj¹cy aktualn¹ stronê. */
+    sf::Text rules;                         /*!< Tekst wyœwietlaj¹cy zasady. */
+    sf::Text controls;                      /*!< Tekst wyœwietlaj¹cy sterowanie. */
+    sf::Text credits;                       /*!< Tekst wyœwietlaj¹cy autora i podziêkowania. */
+    sf::Text page1;                         /*!< Tekst wyœwietlaj¹cy aktualn¹ stronê. */
+    sf::Text page2;                         /*!< Tekst wyœwietlaj¹cy aktualn¹ stronê. */
 
-    std::unique_ptr<Button> b_pageDown; /*!< Przycisk cofaj¹cy stronê. */
-    std::unique_ptr<Button> b_pageUp; /*!< Przycisk przewracaj¹cy stronê. */
-    std::unique_ptr<Button> b_menu; /*!< Przycisk powrotu do menu gry. */
+    std::unique_ptr<Button> b_pageDown;     /*!< Przycisk cofaj¹cy stronê. */
+    std::unique_ptr<Button> b_pageUp;       /*!< Przycisk przewracaj¹cy stronê. */
+    std::unique_ptr<Button> b_menu;         /*!< Przycisk powrotu do menu gry. */
 
     int page = 1; /*!< Numer aktualnej strony. */
 

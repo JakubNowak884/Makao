@@ -66,7 +66,7 @@ bool StateMachine::update(sf::Event event, sf::RenderWindow& window)
 	{
 		delete prev;
 		prev = current;
-		//sprawdzenie czy poprzedni stan gry by³ gr¹ dla jednego gracze, czy dla wielu
+		//sprawdzenie czy poprzedni stan gry by³ gr¹ dla jednego gracza, czy dla wielu
 		MultiPlayer* temp = dynamic_cast<MultiPlayer*>(prev);
 		if (temp == nullptr)
 			current = new Endgame(dynamic_cast<SinglePlayer*>(prev), resources);
@@ -98,14 +98,18 @@ bool StateMachine::update(sf::Event event, sf::RenderWindow& window)
 		return false;
 		break;
 
-	case gameStateNumber::setSuit:
+	case gameStateNumber::wantSuit:
 		prev = current;
-		current = new SetSuit(dynamic_cast<Game*>(prev), resources);
+		current = new WantSuit(dynamic_cast<Game*>(prev), resources);
 		break;
 
-	case gameStateNumber::setFigure:
+	case gameStateNumber::wantFigure:
+	{
 		prev = current;
-		current = new SetFigure(dynamic_cast<Game*>(prev), resources);
+		Game* temp = dynamic_cast<Game*>(prev);
+		if (temp != nullptr)
+			current = new WantFigure(temp, resources); 
+	}
 		break;
 
 	case gameStateNumber::resume:

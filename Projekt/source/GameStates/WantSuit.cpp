@@ -1,21 +1,20 @@
-#include "..\headers\GameStates\setSuit.h"
-#include "..\headers\Resources.h"
+#include "..\headers\GameStates\WantSuit.h"
 
-SetSuit::SetSuit(Game* _game, std::shared_ptr<Resources> _resources)
+WantSuit::WantSuit(Game* _game, std::shared_ptr<Resources> _resources)
     : GameState(_resources)
 {
     initText(textChoose, 0, 0, 48);
-    textChoose.setString(resources->getText(int(gameStateNumber::setSuit), 1));
+    textChoose.setString(resources->getText(int(gameStateNumber::wantSuit), 1));
 
-    b_clubs = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 2), resources->getFont(), 200, 100, 200, 150, resources->getTexturePtr("button"), 32);
-    b_diamonds = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 3), resources->getFont(), 200, 100, 200, 260, resources->getTexturePtr("button"), 32);
-    b_hearts = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 4), resources->getFont(), 200, 100, 600, 150, resources->getTexturePtr("button"), 32);
-    b_spades = std::make_unique<Button>(resources->getText(int(gameStateNumber::setSuit), 5), resources->getFont(), 200, 100, 600, 260, resources->getTexturePtr("button"), 32);
+    b_clubs = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantSuit), 2), resources->getFont(), 200.0f, 100.0f, 200.0f, 150.0f, resources->getTexturePtr("button"), 32);
+    b_diamonds = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantSuit), 3), resources->getFont(), 200.0f, 100.0f, 200.0f, 260.0f, resources->getTexturePtr("button"), 32);
+    b_hearts = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantSuit), 4), resources->getFont(), 200.0f, 100.0f, 600.0f, 150.0f, resources->getTexturePtr("button"), 32);
+    b_spades = std::make_unique<Button>(resources->getText(int(gameStateNumber::wantSuit), 5), resources->getFont(), 200.0f, 100.0f, 600.0f, 260.0f, resources->getTexturePtr("button"), 32);
 
     prev = _game;
 }
 
-gameStateNumber SetSuit::update(sf::Event event, sf::RenderWindow& window)
+gameStateNumber WantSuit::update(sf::Event event, sf::RenderWindow& window)
 {
     //przesuwanie kart w rêce w prawo lub w lewo
     if (event.type == sf::Event::MouseWheelScrolled || event.type == sf::Event::KeyPressed)
@@ -65,7 +64,7 @@ gameStateNumber SetSuit::update(sf::Event event, sf::RenderWindow& window)
     return gameStateNumber::def;
 }
 
-void SetSuit::draw(sf::RenderWindow& window)
+void WantSuit::draw(sf::RenderWindow& window)
 {
     for (std::vector<std::shared_ptr<Card>>::iterator i = prev->getHand().begin(); i != prev->getHand().end(); i++)
     {

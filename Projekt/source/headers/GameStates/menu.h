@@ -4,14 +4,14 @@
 class Menu :
     public GameState
 {
-    sf::Text currentPlayer; /*!< Tekst wyœwietlaj¹cy aktualn¹ nazwê gracza. */
+    sf::Text currentPlayer;                     /*!< Tekst wyœwietlaj¹cy aktualn¹ nazwê gracza. */
 
-    std::unique_ptr<Button> b_changeName; /*!< Przycisk zmiany nazwy gracza. */
-    std::unique_ptr<Button> b_singlePlayer; /*!< Przycisk przejœcia do ustawieñ gry w jednego gracza. */
-    std::unique_ptr<Button> b_multiPlayer; /*!< Przycisk przejœcia do ustawieñ gry w wielu graczy. */
-    std::unique_ptr<Button> b_instruction; /*!< Przycisk przejœcia do instrukcji. */
-    std::unique_ptr<Button> b_quit; /*!< Przycisk wyjœcia z gry. */
-    std::unique_ptr<Button> b_language; /*!< Przycisk zmiany jêzyka gry. */
+    std::unique_ptr<Button> b_changeName;       /*!< Przycisk zmiany nazwy gracza. */
+    std::unique_ptr<Button> b_singlePlayer;     /*!< Przycisk przejœcia do ustawieñ gry w jednego gracza. */
+    std::unique_ptr<Button> b_multiPlayer;      /*!< Przycisk przejœcia do ustawieñ gry w wielu graczy. */
+    std::unique_ptr<Button> b_instruction;      /*!< Przycisk przejœcia do instrukcji. */
+    std::unique_ptr<Button> b_quit;             /*!< Przycisk wyjœcia z gry. */
+    std::unique_ptr<Button> b_language;         /*!< Przycisk zmiany jêzyka gry. */
 
 public:
     /**

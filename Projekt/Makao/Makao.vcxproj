@@ -106,8 +106,8 @@
     <ClInclude Include="..\source\headers\GameStates\Menu.h" />
     <ClInclude Include="..\source\headers\GameStates\MultiPlayer.h" />
     <ClInclude Include="..\source\headers\GameStates\MultiPlayerSettings.h" />
-    <ClInclude Include="..\source\headers\GameStates\SetFigure.h" />
-    <ClInclude Include="..\source\headers\GameStates\SetSuit.h" />
+    <ClInclude Include="..\source\headers\GameStates\WantFigure.h" />
+    <ClInclude Include="..\source\headers\GameStates\WantSuit.h" />
     <ClInclude Include="..\source\headers\GameStates\SinglePlayer.h" />
     <ClInclude Include="..\source\headers\GameStates\SinglePlayerSettings.h" />
     <ClInclude Include="..\source\headers\Resources.h" />
@@ -128,8 +128,8 @@
     <ClCompile Include="..\source\GameStates\Menu.cpp" />
     <ClCompile Include="..\source\GameStates\MultiPlayer.cpp" />
     <ClCompile Include="..\source\GameStates\MultiPlayerSettings.cpp" />
-    <ClCompile Include="..\source\GameStates\SetFigure.cpp" />
-    <ClCompile Include="..\source\GameStates\SetSuit.cpp" />
+    <ClCompile Include="..\source\GameStates\WantFigure.cpp" />
+    <ClCompile Include="..\source\GameStates\WantSuit.cpp" />
     <ClCompile Include="..\source\GameStates\SinglePlayer.cpp" />
     <ClCompile Include="..\source\GameStates\SinglePlayerSettings.cpp" />
     <ClCompile Include="..\source\Resources.cpp" />

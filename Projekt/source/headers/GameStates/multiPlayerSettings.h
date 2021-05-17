@@ -16,6 +16,7 @@ class MultiPlayerSettings :
 	std::unique_ptr<Button> b_createLAN;			/*!< Przycisk utworzenia lokalnej rozgrywki. */
 	std::unique_ptr<Button> b_joinOnline;			/*!< Przycisk do³¹czenia do globalnej rogrywki. */
 	std::unique_ptr<Button> b_createOnline;			/*!< Przycisk utworzenia globalnej rozgrywki. */
+	std::unique_ptr<Button> b_menu;					/*!< Przycisk powrotu do menu gry. */
 	std::unique_ptr<Button> b_onlyQueens;			/*!< Przycisk ustawiaj¹cy, czy talia w utworzonej rozgrywce bêdzie zawiera³a tylko królowe. */
 
 	bool settingIP_LAN = true;						/*!< Zmienna informuj¹ca czy aktulnie ustawiane jest lub rozgrywka zosta³a rozpoczêta/utworzona z u¿yciem lokalnego adresu IP. */

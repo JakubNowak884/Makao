@@ -5,10 +5,6 @@
 #include <string>
 #include <fstream>
 #include <locale>
-#include <io.h>
-#include <fcntl.h>
-#include <sstream>
-#include <codecvt>
 #include <stdexcept>
 
 class Resources

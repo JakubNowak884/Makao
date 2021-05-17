@@ -15,11 +15,11 @@ Celem gry jest pozbycie się wszystkich kart z ręki poprzez zagrywanie
 ich na kartę na stole, jeśli obie mają pasujący kolor lub figurę.
  
 Poszczególne karty mają następujące efekty:
-As: Gracz żąda koloru dla nastepnęgo gracza
+As: Gracz żąda koloru dla nastepnego gracza
 Dwójki/trójki: Następny gracz dobiera dwie/trzy karty
 Czwórki: Następny gracz czeka 1 kolejkę
-Walety: Gracz żąda figury dla calej kolejki
-Królowe: Królową można zagrać na dowolną kartę niefunkcyjną,
+Walety: Gracz żąda figury dla całej kolejki
+Królowe: Królową można zagrać na dowolną kartę nie funkcyjną,
                 na królową można zagrać dowolną kartę
 Król Serce/Pik: Następny/poprzedni gracz dobiera 5 kart
  
@@ -28,10 +28,10 @@ tej samej funkcji.;
 Sterowanie:
  
 Lewy przycisk myszy:
-Zagranie karty/nacisnięcie przycisku
+Zagranie karty/naciśnięcie przycisku
  
 Strzałki w lewo/prawo lub kółko myszy w dół/górę:
-Przesuwanie kart w recę w lewo/prawo
+Przesuwanie kart w rece w lewo/prawo
  
 F11:
 Pełny ekran/okienko

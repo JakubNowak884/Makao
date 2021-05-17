@@ -31,6 +31,7 @@ void Resources::loadLanguage(std::string _language)
 	for (auto i = language.begin(); i != language.end(); i++)
 		i->clear();
 	language.clear();
+	//umo¿liwienie wczytania polskich znaków
 	std::wifstream file;
 	file.imbue(std::locale("en_US.UTF-8"));
 	file.open("..\\resources\\language\\" + _language + ".txt");

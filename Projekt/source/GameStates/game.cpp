@@ -1,12 +1,11 @@
 #include "..\headers\GameStates\game.h"
-#include "..\headers\Resources.h"
 
 Game::Game(std::shared_ptr<Resources> _resources, bool onlyQueens)
 	: GameState(_resources)
 {
-	b_fold = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 1), resources->getFont(), 110, 50, 400, 280, resources->getTexturePtr("button"), 32);
-	b_makao = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 2), resources->getFont(), 110, 50, 400, 225, resources->getTexturePtr("button"), 32);
-	b_draw = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 3), resources->getFont(), 280, 60, 400, 530, resources->getTexturePtr("button"), 42);
+	b_fold = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 1), resources->getFont(), 110.0f, 50.0f, 400.0f, 280.0f, resources->getTexturePtr("button"), 32);
+	b_makao = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 2), resources->getFont(), 110.0f, 50.0f, 400.0f, 225.0f, resources->getTexturePtr("button"), 32);
+	b_draw = std::make_unique<Button>(resources->getText(int(gameStateNumber::game), 3), resources->getFont(), 280.0f, 60.0f, 400.0f, 530.0f, resources->getTexturePtr("button"), 42);
 
 	initText(wanting, 250, 575, 32);
 	initText(addDraw, 0, 0, 32);
@@ -19,7 +18,7 @@ Game::Game(std::shared_ptr<Resources> _resources, bool onlyQueens)
 		{
 			for (int figure = 1; figure < 14; figure++)
 			{
-				deckToCopy.push_back(std::make_shared<Card>(figureNumber(12), suitNumber(suit), resources->getTexturePtr("deck"), 120, 180, 400, 400));
+				deckToCopy.push_back(std::make_shared<Card>(figureNumber(12), suitNumber(suit), resources->getTexturePtr("deck"), 120.0f, 180.0f, 400.0f, 400.0f));
 			}
 		}
 	}
@@ -30,7 +29,7 @@ Game::Game(std::shared_ptr<Resources> _resources, bool onlyQueens)
 		{
 			for (int figure = 1; figure < 14; figure++)
 			{
-				deckToCopy.push_back(std::make_shared<Card>(figureNumber(figure), suitNumber(suit), resources->getTexturePtr("deck"), 120, 180, 400, 400));
+				deckToCopy.push_back(std::make_shared<Card>(figureNumber(figure), suitNumber(suit), resources->getTexturePtr("deck"), 120.0f, 180.0f, 400.0f, 400.0f));
 			}
 		}
 
@@ -100,7 +99,7 @@ gameStateNumber Game::cardDoThings(Card* current, int& _delay, int ID, bool bot)
 		{
 		case figureNumber::ace:
 			actionCardIsActive = true;
-			return gameStateNumber::setSuit;
+			return gameStateNumber::wantSuit;
 			break;
 
 		case figureNumber::two:
@@ -128,7 +127,7 @@ gameStateNumber Game::cardDoThings(Card* current, int& _delay, int ID, bool bot)
 		case figureNumber::jack:
 			actionCardIsActive = true;
 			jackID = ID;
-			return gameStateNumber::setFigure;
+			return gameStateNumber::wantFigure;
 			break;
 
 		case figureNumber::king:

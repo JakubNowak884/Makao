@@ -1,16 +1,14 @@
 #include "..\headers\GameStates\multiPlayer.h"
-#include "..\headers\Resources.h"
-#include "windows.h"
 
 MultiPlayer::MultiPlayer(MultiPlayerSettings* _prev, std::shared_ptr<Resources> _resources)
 	: Game(_resources, _prev->getOnlyQueens())
 {
 	prev = _prev;
 
-	b_addSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 3), resources->getFont(), 250, 100, 405, 200, resources->getTexturePtr("button"), 38);
-	b_deleteSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 4), resources->getFont(), 250, 100, 665, 200, resources->getTexturePtr("button"), 38);
-	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 5), resources->getFont(), 600, 150, 400, 540, resources->getTexturePtr("button"));
-	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600, 150, 400, 700, resources->getTexturePtr("button"));
+	b_addSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 3), resources->getFont(), 250.0f, 100.0f, 405.0f, 200.0f, resources->getTexturePtr("button"), 38);
+	b_deleteSlot = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 4), resources->getFont(), 250.0f, 100.0f, 665.0f, 200.0f, resources->getTexturePtr("button"), 38);
+	b_start = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 5), resources->getFont(), 600.0f, 150.0f, 400.0f, 540.0f, resources->getTexturePtr("button"));
+	b_menu = std::make_unique<Button>(resources->getText(int(gameStateNumber::multiPlayer), 6), resources->getFont(), 600.0f, 150.0f, 400.0f, 700.0f, resources->getTexturePtr("button"));
 
 	initText(textLobby, 0, 0, 36);
 	//ustawienie tekstu w zale¿noœci od ustawieñ rozgrywki wielu graczy
@@ -372,7 +370,7 @@ void MultiPlayer::loadDataFromPacket(bool onlyDeckAndGameData)
 			sf::String text;
 			packet >> ID;
 			packet >> text;
-			infoPlayer[size_t(int(ID) - 2)].setString(text);
+			infoPlayer[size_t(ID - 2)].setString(text);
 			switch (ID)
 			{
 			case 2:
@@ -423,7 +421,7 @@ void MultiPlayer::loadDataFromPacket(bool onlyDeckAndGameData)
 	{
 		packet >> currentFigureInt;
 		packet >> currentSuitInt;
-		deck.push_back(std::make_shared<Card>(figureNumber(currentFigureInt), suitNumber(currentSuitInt), resources->getTexturePtr("deck"), 120, 180, 400, 400));
+		deck.push_back(std::make_shared<Card>(figureNumber(currentFigureInt), suitNumber(currentSuitInt), resources->getTexturePtr("deck"), 120.0f, 180.0f, 400.0f, 400.0f));
 	}
 }
 
